@@ -1,4 +1,4 @@
-renderer = require 'ts/render/context'
+renderer = require '../renderer'
 
 
 updateHelper = (updateFn) ->
