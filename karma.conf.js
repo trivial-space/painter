@@ -1,9 +1,15 @@
 // Karma configuration
-var path = require('path'),
-    config = require('./webpack.config.js');
+var assign = require('object-assign'),
+    config = require('./webpack.config.js'),
 
-delete config.entry;
-delete config.output;
+    // add custom option to webpack config
+    webpack = assign({}, config, {
+        cache: true,
+        debug: true,
+        watch: true,
+        devtool: '#inline-source-map'
+    });
+
 
 module.exports = function (config) {
     config.set({
@@ -29,33 +35,7 @@ module.exports = function (config) {
         },
 
 
-        webpack: {
-
-            cache: true,
-            debug: true,
-            watch: true,
-            devtool: '#inline-source-map',
-
-            module: {
-                loaders: [
-                    {
-                        exclude: /node_modules/,
-                        loader: 'babel-loader',
-                        test: /\.js$/
-                    }, {
-                        loader: 'coffee-loader',
-                        test: /\.coffee$/
-                    }
-                ]
-            },
-
-            resolve: {
-                extensions: ['', '.js', '.json', '.coffee'],
-                root: [
-                    path.resolve(__dirname, "./lib")
-                ]
-            }
-        },
+        webpack: webpack,
 
 
         webpackMiddleware: {
