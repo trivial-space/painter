@@ -1,0 +1,23 @@
+{
+    "extend": ["eslint:recommended"],
+    "parserOptions": {
+        "ecmaVersion": 7,
+        "sourceType": "module"
+    },
+    "rules": {
+        "semi": [2, "never"],
+        "no-unused-vars": 1,
+        "no-undef": 2,
+        "no-const-assign": 2,
+        "no-class-assign": 2
+    },
+    "globals": {
+        "expect": true,
+        "sinon": true
+    },
+    "env": {
+        "browser": true,
+        "mocha": true,
+        "commonjs": true
+    }
+}
