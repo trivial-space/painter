@@ -4,9 +4,9 @@
 	else if(typeof define === 'function' && define.amd)
 		define([], factory);
 	else if(typeof exports === 'object')
-		exports["tsRenderer"] = factory();
+		exports["tvsRenderer"] = factory();
 	else
-		root["tsRenderer"] = factory();
+		root["tvsRenderer"] = factory();
 })(this, function() {
 return /******/ (function(modules) { // webpackBootstrap
 /******/ 	// The module cache
@@ -57,40 +57,22 @@ return /******/ (function(modules) { // webpackBootstrap
 	'use strict';
 
 	Object.defineProperty(exports, '__esModule', {
-	    value: true
+	  value: true
 	});
 
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+	function _interopExportWildcard(obj, defaults) { var newObj = defaults({}, obj); delete newObj['default']; return newObj; }
+
+	function _defaults(obj, defaults) { var keys = Object.getOwnPropertyNames(defaults); for (var i = 0; i < keys.length; i++) { var key = keys[i]; var value = Object.getOwnPropertyDescriptor(defaults, key); if (value && value.configurable && obj[key] === undefined) { Object.defineProperty(obj, key, value); } } return obj; }
 
 	var _renderer = __webpack_require__(1);
 
-	var _renderer2 = _interopRequireDefault(_renderer);
-
-	var _constants = __webpack_require__(2);
-
-	var _constants2 = _interopRequireDefault(_constants);
-
-	var _assetLib = __webpack_require__(3);
-
-	var _assetLib2 = _interopRequireDefault(_assetLib);
-
-	var _utils = __webpack_require__(4);
-
-	var _utils2 = _interopRequireDefault(_utils);
-
-	exports['default'] = {
-	    Renderer: _renderer2['default'],
-	    Constants: _constants2['default'],
-	    AssetLib: _assetLib2['default'],
-	    utils: _utils2['default']
-	};
-	module.exports = exports['default'];
+	_defaults(exports, _interopExportWildcard(_renderer, _defaults));
 
 /***/ },
 /* 1 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var consts, create, getBufferData, init, initGeometries, initLayers, initObjects, initSettings, initShaders, lib, makeClear, renderLayers, renderObject, setTextureParams, typedArrayToGLType, updatStaticLayer, updateGeometry, updateLayer, updateObject, updateRenderTarget, updateShader, updateSize;
+	var consts, create, getBufferData, init, initGeometries, initLayers, initObjects, initShaders, lib, makeClear, renderLayers, renderObject, setTextureParams, typedArrayToGLType, updatStaticLayer, updateGeometry, updateLayer, updateObject, updateRenderTarget, updateSettings, updateShader, updateSize;
 
 	consts = __webpack_require__(2);
 
@@ -106,7 +88,15 @@ return /******/ (function(modules) { // webpackBootstrap
 	    throw Error('WebGL-Context could not be initialized!');
 	  }
 	  ctx = {
-	    settings: {},
+	    settings: {
+	      clearColor: [0.0, 0.0, 0.0, 1.0],
+	      minFilter: 'LINEAR',
+	      wrap: 'CLAMP_TO_EDGE',
+	      clearBits: makeClear(gl, ['DEPTH', 'COLOR']),
+	      enable: ['DEPTH_TEST'],
+	      width: canvas.width,
+	      height: canvas.height
+	    },
 	    shaders: {},
 	    geometries: {},
 	    layers: {},
@@ -115,13 +105,15 @@ return /******/ (function(modules) { // webpackBootstrap
 	    target: {},
 	    gl: gl
 	  };
+	  updateSettings(ctx(ctx.settings));
 	  updateGeometry(ctx, '_renderQuad', lib.geometries._renderQuad);
 	  updateShader(ctx, '_renderResult', lib.shaders._renderResult);
-	  return updateObject(ctx, '_result', lib.objects._resultObject);
+	  updateObject(ctx, '_result', lib.objects._resultObject);
+	  return updateSize(ctx);
 	};
 
 	init = function(ctx, data) {
-	  initSettings(ctx, data.settings);
+	  updateSettings(ctx, data.settings);
 	  initShaders(ctx, data.shaders);
 	  initGeometries(ctx, data.geometries);
 	  initLayers(ctx, data.layers);
@@ -178,18 +170,33 @@ return /******/ (function(modules) { // webpackBootstrap
 	  return ctx;
 	};
 
-	initSettings = function(ctx, data) {
-	  var j, len, param, ref;
+	updateSettings = function(ctx, data) {
+	  var j, l, len, len1, param, ref, ref1;
 	  data || (data = {});
-	  ctx.settings.clearColor = data.clearColor || [0.0, 0.0, 0.0, 1.0];
-	  ctx.settings.minFilter = data.minFilter || 'LINEAR';
-	  ctx.settings.wrap = data.wrap || 'CLAMP_TO_EDGE';
-	  ctx.settings.clearBits = makeClear(ctx.gl, data.clearBuffers || ['DEPTH', 'COLOR']);
-	  ctx.settings.enable = data.enable || ['DEPTH_TEST'];
-	  ref = ctx.settings.enable;
-	  for (j = 0, len = ref.length; j < len; j++) {
-	    param = ref[j];
-	    ctx.gl.enable(ctx.gl[param]);
+	  if (data.clearColor != null) {
+	    ctx.settings.clearColor = data.clearColor;
+	  }
+	  if (data.minFilter != null) {
+	    ctx.settings.minFilter = data.minFilter;
+	  }
+	  if (data.wrap != null) {
+	    ctx.settings.wrap = data.wrap;
+	  }
+	  if (data.clearBuffers != null) {
+	    ctx.settings.clearBits = makeClear(ctx.gl, data.clearBuffers);
+	  }
+	  if (data.enable != null) {
+	    ref = ctx.settings.enable;
+	    for (j = 0, len = ref.length; j < len; j++) {
+	      param = ref[j];
+	      ctx.gl.disable(ctx.gl[param]);
+	    }
+	    ctx.settings.enable = data.enable;
+	    ref1 = ctx.settings.enable;
+	    for (l = 0, len1 = ref1.length; l < len1; l++) {
+	      param = ref1[l];
+	      ctx.gl.enable(ctx.gl[param]);
+	    }
 	  }
 	  return ctx;
 	};
@@ -290,16 +297,15 @@ return /******/ (function(modules) { // webpackBootstrap
 	    layer.height = data.height || ctx.settings.height;
 	    updateRenderTarget(ctx.gl, layer, data);
 	  }
-	  switch (data.type) {
-	    case consts.LayerType.STATIC:
-	      updateStaticLayer(layer, data);
-	      break;
-	    case consts.LayerType.RENDER:
-	      layer.objects = data.objects;
-	      break;
-	    case consts.LayerType.EFFECT:
-	      layer.object = data;
-	      layer.object.geometry = '_renderQuad';
+	  if (data.asset) {
+	    updateStaticLayer(layer, data);
+	  }
+	  if (data.objects) {
+	    layer.objects = data.objects;
+	  }
+	  if (data.shader) {
+	    layer.object = data;
+	    layer.object.geometry = '_renderQuad';
 	  }
 	  return ctx;
 	};
@@ -315,11 +321,15 @@ return /******/ (function(modules) { // webpackBootstrap
 	  gl.bindTexture(gl.TEXTURE_2D, null);
 	};
 
-	updateSize = function(ctx) {
+	updateSize = function(ctx, width, height) {
 	  var gl;
 	  gl = ctx.gl;
-	  ctx.settings.width = gl.canvas.clientWidth;
-	  ctx.settings.height = gl.canvas.clientHeight;
+	  if (width != null) {
+	    ctx.settings.width = width;
+	  }
+	  if (height != null) {
+	    ctx.settings.height = height;
+	  }
 	  if (gl.canvas.width !== ctx.settings.width || gl.canvas.height !== ctx.settings.height) {
 	    gl.canvas.height = ctx.settings.height;
 	    gl.canvas.width = ctx.settings.width;
@@ -352,13 +362,13 @@ return /******/ (function(modules) { // webpackBootstrap
 	      gl.clearColor.apply(gl, layer.clearColor || ctx.settings.clearColor);
 	      gl.clear(ctx.settings.clearBits);
 	    }
-	    if (layer.type === consts.LayerType.RENDER) {
+	    if (layer.objects) {
 	      ref = layer.objects;
 	      for (l = 0, len1 = ref.length; l < len1; l++) {
 	        id = ref[l];
 	        renderObject(ctx, ctx.objects[id]);
 	      }
-	    } else if (layer.type === consts.LayerType.EFFECT) {
+	    } else if (layer.shader) {
 	      renderObject(ctx, layer.object);
 	    }
 	    if (renderToTarget) {
@@ -391,7 +401,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    value = object.uniforms[name];
 	    switch (uniform.type) {
 	      case 't':
-	        texture = value === consts.SOURCE_LAYER ? ctx.source.texture : ctx.layers[value].texture;
+	        texture = value ? ctx.layers[value].texture : ctx.source.texture;
 	        gl.activeTexture(gl['TEXTURE' + textureCount]);
 	        gl.bindTexture(gl.TEXTURE_2D, texture);
 	        gl.uniform1i(index, textureCount);
@@ -521,7 +531,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = {
 	  create: create,
 	  init: init,
-	  initSettings: initSettings,
+	  updateSettings: updateSettings,
 	  updateObject: updateObject,
 	  updateGeometry: updateGeometry,
 	  updateShader: updateShader,
@@ -534,14 +544,6 @@ return /******/ (function(modules) { // webpackBootstrap
 /***/ },
 /* 2 */
 /***/ function(module, exports) {
-
-	exports.SOURCE_LAYER = 'source';
-
-	exports.LayerType = {
-	  RENDER: 'render',
-	  EFFECT: 'effect',
-	  STATIC: 'static'
-	};
 
 	exports.attribType = {
 	  'f 1': 'FLOAT',
@@ -576,11 +578,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 /***/ },
 /* 3 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var consts;
-
-	consts = __webpack_require__(2);
+/***/ function(module, exports) {
 
 	module.exports = {
 	  geometries: {
@@ -615,57 +613,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	  objects: {
 	    _resultObject: {
 	      shader: '_renderResult',
-	      geometry: '_renderQuad',
-	      uniforms: {
-	        'source': consts.SOURCE_LAYER
-	      }
+	      geometry: '_renderQuad'
 	    }
 	  }
-	};
-
-
-/***/ },
-/* 4 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	Object.defineProperty(exports, '__esModule', {
-	    value: true
-	});
-
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
-
-	var _entitySystemUpdateReactions = __webpack_require__(5);
-
-	var _entitySystemUpdateReactions2 = _interopRequireDefault(_entitySystemUpdateReactions);
-
-	exports['default'] = {
-	    ESUpdateReactions: _entitySystemUpdateReactions2['default']
-	};
-	module.exports = exports['default'];
-
-/***/ },
-/* 5 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var renderer, updateHelper;
-
-	renderer = __webpack_require__(1);
-
-	updateHelper = function(updateFn) {
-	  return function(name) {
-	    return function(scene, obj) {
-	      return updateFn(scene, name, obj);
-	    };
-	  };
-	};
-
-	module.exports = {
-	  updateShader: updateHelper(renderer.updateShader),
-	  updateLayer: updateHelper(renderer.updateLayer),
-	  updateObject: updateHelper(renderer.updateObject),
-	  updateGeometry: updateHelper(renderer.updateGeometry)
 	};
 
 

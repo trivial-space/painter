@@ -1,13 +1,3 @@
-
-exports.SOURCE_LAYER = 'source'
-
-
-exports.LayerType =
-  RENDER: 'render'
-  EFFECT: 'effect'
-  STATIC: 'static'
-
-
 exports.attribType =
   'f 1': 'FLOAT'
   'f 2': 'FLOAT'
@@ -36,4 +26,3 @@ exports.attribItemSize =
   'b 2': 2
   'b 3': 3
   'b 4': 4
-

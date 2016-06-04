@@ -1,6 +1,3 @@
-consts = require './constants'
-
-
 module.exports =
 
 
@@ -61,5 +58,3 @@ module.exports =
     _resultObject:
       shader: '_renderResult'
       geometry: '_renderQuad'
-      uniforms:
-        'source': consts.SOURCE_LAYER

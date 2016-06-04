@@ -5,9 +5,9 @@ module.exports = {
     entry: path.resolve(__dirname, "./lib/index"),
 
     output: {
-        path: path.resolve(__dirname, "./build"),
+        path: path.resolve(__dirname, "./dist"),
         filename: "tvs-renderer.js",
-        library: 'tsRenderer',
+        library: 'tvsRenderer',
         libraryTarget: "umd"
     },
 

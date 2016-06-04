@@ -11,7 +11,15 @@ create = (canvas) ->
     throw Error 'WebGL-Context could not be initialized!'
 
   ctx =
-    settings: {}
+    settings:
+      clearColor: [ 0.0, 0.0, 0.0, 1.0 ]
+      minFilter: 'LINEAR'
+      wrap: 'CLAMP_TO_EDGE'
+      clearBits:  makeClear gl, [ 'DEPTH', 'COLOR' ]
+      enable: ['DEPTH_TEST']
+      width: canvas.width
+      height: canvas.height
+
     shaders: {}
     geometries: {}
     layers: {}
@@ -20,13 +28,15 @@ create = (canvas) ->
     target: {}
     gl: gl
 
+  updateSettings ctx ctx.settings
   updateGeometry ctx, '_renderQuad', lib.geometries._renderQuad
   updateShader ctx, '_renderResult', lib.shaders._renderResult
   updateObject ctx, '_result', lib.objects._resultObject
+  updateSize ctx
 
 
 init = (ctx, data) ->
-  initSettings ctx, data.settings
+  updateSettings ctx, data.settings
   initShaders ctx, data.shaders
   initGeometries ctx, data.geometries
   initLayers ctx, data.layers
@@ -67,15 +77,21 @@ updateObject = (ctx, id, object) ->
   ctx
 
 
-initSettings = (ctx, data) ->
+updateSettings = (ctx, data) ->
   data or= {}
-  ctx.settings.clearColor = data.clearColor or [ 0.0, 0.0, 0.0, 1.0 ]
-  ctx.settings.minFilter = data.minFilter or 'LINEAR'
-  ctx.settings.wrap = data.wrap or 'CLAMP_TO_EDGE'
-  ctx.settings.clearBits = makeClear ctx.gl, data.clearBuffers or [ 'DEPTH', 'COLOR' ]
-  ctx.settings.enable = data.enable or ['DEPTH_TEST']
-  for param in ctx.settings.enable
-    ctx.gl.enable ctx.gl[param]
+  ctx.settings.clearColor = data.clearColor if data.clearColor?
+  ctx.settings.minFilter = data.minFilter if data.minFilter?
+  ctx.settings.wrap = data.wrap if data.wrap?
+  if data.clearBuffers?
+    ctx.settings.clearBits = makeClear ctx.gl, data.clearBuffers
+
+  if data.enable?
+    for param in ctx.settings.enable
+      ctx.gl.disable ctx.gl[param]
+    ctx.settings.enable = data.enable
+    for param in ctx.settings.enable
+      ctx.gl.enable ctx.gl[param]
+
   ctx
 
 
@@ -163,14 +179,13 @@ updateLayer = (ctx, name, data) ->
     layer.height = data.height or ctx.settings.height
     updateRenderTarget ctx.gl, layer, data
 
-  switch data.type
-    when consts.LayerType.STATIC
-      updateStaticLayer layer, data
-    when consts.LayerType.RENDER
-      layer.objects = data.objects
-    when consts.LayerType.EFFECT
-      layer.object = data
-      layer.object.geometry = '_renderQuad'
+  if data.asset
+    updateStaticLayer layer, data
+  if data.objects
+    layer.objects = data.objects
+  if data.shader
+    layer.object = data
+    layer.object.geometry = '_renderQuad'
 
   ctx
 
@@ -189,11 +204,12 @@ updatStaticLayer = (ctx, layer, data) ->
   return
 
 
-updateSize = (ctx) ->
+updateSize = (ctx, width, height) ->
   gl = ctx.gl
-  ctx.settings.width = gl.canvas.clientWidth
-  ctx.settings.height = gl.canvas.clientHeight
-  if gl.canvas.width isnt ctx.settings.width or gl.canvas.height isnt ctx.settings.height
+  ctx.settings.width = width if width?
+  ctx.settings.height = height if height?
+  if gl.canvas.width isnt ctx.settings.width or
+      gl.canvas.height isnt ctx.settings.height
     gl.canvas.height = ctx.settings.height
     gl.canvas.width = ctx.settings.width
   updateRenderTarget ctx.gl, ctx.source, ctx.settings
@@ -231,11 +247,11 @@ renderLayers = (ctx, layerIds) ->
       gl.clearColor.apply gl, layer.clearColor or ctx.settings.clearColor
       gl.clear ctx.settings.clearBits
 
-    if layer.type == consts.LayerType.RENDER
+    if layer.objects
       for id in layer.objects
         renderObject ctx, ctx.objects[id]
 
-    else if layer.type == consts.LayerType.EFFECT
+    else if layer.shader
       renderObject ctx, layer.object
 
     # swap own renderTargets if necessary
@@ -268,10 +284,10 @@ renderObject = (ctx, object) ->
     switch uniform.type
       when 't'
         texture =
-          if value is consts.SOURCE_LAYER
-            ctx.source.texture
-          else
+          if value
             ctx.layers[value].texture
+          else
+            ctx.source.texture
         gl.activeTexture gl['TEXTURE' + textureCount]
         gl.bindTexture gl.TEXTURE_2D, texture
         gl.uniform1i index, textureCount
@@ -385,7 +401,7 @@ typedArrayToGLType = (array, gl) ->
 module.exports = {
   create
   init
-  initSettings
+  updateSettings
   updateObject
   updateGeometry
   updateShader

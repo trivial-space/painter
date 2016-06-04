@@ -2,19 +2,24 @@
   "name": "tvs-renderer",
   "version": "0.0.1",
   "description": "trivialspace renderer - a webgl rendering engine",
-  "main": "build/tvs-renderer",
+  "main": "dist/tvs-renderer",
   "devDependencies": {
     "babel": "^5.6.14",
-    "babel-loader": "^5.3.2",
+    "babel-loader": "^5.4.0",
+    "chokidar-socket-emitter": "^0.5.2",
     "coffee-loader": "^0.7.2",
     "coffee-script": "^1.10.0",
+    "eslint": "^2.11.1",
+    "gulp": "^3.9.1",
+    "gulp-connect": "^4.0.0",
+    "gulp-livereload": "^3.8.1",
+    "jspm": "^0.16.36",
     "karma": "^0.13.8",
     "karma-chai-sinon": "^0.1.5",
     "karma-chrome-launcher": "^0.2.0",
     "karma-firefox-launcher": "^0.1.6",
     "karma-mocha": "^0.2.0",
     "karma-mocha-reporter": "^1.1.1",
-    "karma-phantomjs-launcher": "^0.2.1",
     "karma-safari-launcher": "^0.1.1",
     "karma-sourcemap-loader": "^0.3.5",
     "karma-webpack": "^1.7.0",
@@ -23,5 +28,17 @@
     "phantomjs": "^1.9.17",
     "sinon": "^1.15.4",
     "webpack": "^1.13.1"
+  },
+  "jspm": {
+    "configFile": "examples/config.js",
+    "dependencies": {
+      "gl-matrix": "npm:gl-matrix@^2.3.2"
+    },
+    "devDependencies": {
+      "babel": "npm:babel-core@^5.8.24",
+      "babel-runtime": "npm:babel-runtime@^5.8.24",
+      "core-js": "npm:core-js@^1.1.4",
+      "systemjs-hot-reloader": "github:capaj/systemjs-hot-reloader@^0.6.0"
+    }
   }
 }
