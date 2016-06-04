@@ -2,7 +2,10 @@
     "extend": ["eslint:recommended"],
     "parserOptions": {
         "ecmaVersion": 7,
-        "sourceType": "module"
+        "sourceType": "module",
+        "ecmaFeatures": {
+          "experimentalObjectRestSpread": true
+        }
     },
     "rules": {
         "semi": [2, "never"],
@@ -13,7 +16,8 @@
     },
     "globals": {
         "expect": true,
-        "sinon": true
+        "sinon": true,
+        "Float32Array": true
     },
     "env": {
         "browser": true,
