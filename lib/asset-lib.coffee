@@ -3,7 +3,7 @@ module.exports =
 
   geometries:
 
-    _renderQuad:
+    renderQuad:
       attribs:
         "position":
           buffer: new Float32Array [
@@ -27,7 +27,7 @@ module.exports =
 
   shaders:
 
-    _renderResult:
+    basicEffect:
       vert:
         """
           attribute vec2 position;
@@ -55,6 +55,6 @@ module.exports =
 
   objects:
 
-    _resultObject:
-      shader: '_renderResult'
-      geometry: '_renderQuad'
+    resultScreen:
+      shader: 'basicEffect'
+      geometry: 'renderQuad'

@@ -28,10 +28,10 @@ create = (canvas) ->
     target: {}
     gl: gl
 
-  updateSettings ctx ctx.settings
-  updateGeometry ctx, '_renderQuad', lib.geometries._renderQuad
-  updateShader ctx, '_renderResult', lib.shaders._renderResult
-  updateObject ctx, '_result', lib.objects._resultObject
+  updateSettings ctx, ctx.settings
+  updateGeometry ctx, '_renderQuad', lib.geometries.renderQuad
+  updateShader ctx, '_renderResult', lib.shaders.basicEffect
+  updateObject ctx, '_result', lib.objects.resultScreen
   updateSize ctx
 
 
@@ -73,6 +73,7 @@ initObjects = (ctx, data) ->
 
 
 updateObject = (ctx, id, object) ->
+  object.uniforms ?= {}
   ctx.objects[id] = object
   ctx
 
@@ -170,7 +171,6 @@ updateGeometry = (ctx, name, data) ->
 
 updateLayer = (ctx, name, data) ->
   layer = ctx.layers[name] ?= {}
-  layer.type = data.type
   layer.noClear = data.noClear
   layer.clearColor = data.clearColor or ctx.settings.clearColor
 
@@ -186,6 +186,7 @@ updateLayer = (ctx, name, data) ->
   if data.shader
     layer.object = data
     layer.object.geometry = '_renderQuad'
+    layer.object.uniforms ?= {}
 
   ctx
 
@@ -251,7 +252,7 @@ renderLayers = (ctx, layerIds) ->
       for id in layer.objects
         renderObject ctx, ctx.objects[id]
 
-    else if layer.shader
+    else if layer.object
       renderObject ctx, layer.object
 
     # swap own renderTargets if necessary
@@ -408,4 +409,5 @@ module.exports = {
   updateLayer
   updateSize
   renderLayers
+  lib
 }

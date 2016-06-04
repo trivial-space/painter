@@ -5,9 +5,12 @@ definition =
   settings:
     enable: ["DEPTH_TEST", "CULL_FACE"] # default DEPTH_TEST
     clearBuffers: ["COLOR", "DEPTH"]
-    clearColor: [1.0, 1.0, 1.0, 1.0]
-    # set width and hight with css and call updateSize
-    # after adding the canvas to the dom
+    clearColor: [ 0.0, 0.0, 0.0, 1.0 ]
+    minFilter: 'LINEAR'
+    wrap: 'CLAMP_TO_EDGE'
+    width: 1000
+    height: 800
+
 
   shaders:
     "space-color":
@@ -20,10 +23,11 @@ definition =
         "modelMatrix": "m 4"
         "projectionMatrix": "m 4"
         "texture1": "t"
+        "source": "t" # don't specify in object to get the previous pipeline result
 
 
   layers:
-    "object-layer": # type is one of ["render", "static", "data", "effect"]
+    "object-layer":
       objects: ["mycube"]
     "full-layer":
       objects: ["mymesh"]

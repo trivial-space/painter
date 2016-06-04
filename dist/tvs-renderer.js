@@ -105,10 +105,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	    target: {},
 	    gl: gl
 	  };
-	  updateSettings(ctx(ctx.settings));
-	  updateGeometry(ctx, '_renderQuad', lib.geometries._renderQuad);
-	  updateShader(ctx, '_renderResult', lib.shaders._renderResult);
-	  updateObject(ctx, '_result', lib.objects._resultObject);
+	  updateSettings(ctx, ctx.settings);
+	  updateGeometry(ctx, '_renderQuad', lib.geometries.renderQuad);
+	  updateShader(ctx, '_renderResult', lib.shaders.basicEffect);
+	  updateObject(ctx, '_result', lib.objects.resultScreen);
 	  return updateSize(ctx);
 	};
 
@@ -166,6 +166,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 	updateObject = function(ctx, id, object) {
+	  if (object.uniforms == null) {
+	    object.uniforms = {};
+	  }
 	  ctx.objects[id] = object;
 	  return ctx;
 	};
@@ -287,9 +290,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 	updateLayer = function(ctx, name, data) {
-	  var base, layer;
+	  var base, base1, layer;
 	  layer = (base = ctx.layers)[name] != null ? base[name] : base[name] = {};
-	  layer.type = data.type;
 	  layer.noClear = data.noClear;
 	  layer.clearColor = data.clearColor || ctx.settings.clearColor;
 	  if (data.buffered) {
@@ -306,6 +308,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	  if (data.shader) {
 	    layer.object = data;
 	    layer.object.geometry = '_renderQuad';
+	    if ((base1 = layer.object).uniforms == null) {
+	      base1.uniforms = {};
+	    }
 	  }
 	  return ctx;
 	};
@@ -368,7 +373,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        id = ref[l];
 	        renderObject(ctx, ctx.objects[id]);
 	      }
-	    } else if (layer.shader) {
+	    } else if (layer.object) {
 	      renderObject(ctx, layer.object);
 	    }
 	    if (renderToTarget) {
@@ -537,7 +542,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	  updateShader: updateShader,
 	  updateLayer: updateLayer,
 	  updateSize: updateSize,
-	  renderLayers: renderLayers
+	  renderLayers: renderLayers,
+	  lib: lib
 	};
 
 
@@ -582,7 +588,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	module.exports = {
 	  geometries: {
-	    _renderQuad: {
+	    renderQuad: {
 	      attribs: {
 	        "position": {
 	          buffer: new Float32Array([-1, 1, -1, -1, 1, 1, 1, -1]),
@@ -598,7 +604,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }
 	  },
 	  shaders: {
-	    _renderResult: {
+	    basicEffect: {
 	      vert: "attribute vec2 position;\nattribute vec2 uv;\nvarying vec2 vUv;\nvoid main() {\n    vUv = uv;\n    gl_Position = vec4(position, 0.0, 1.0);\n}",
 	      frag: "uniform sampler2D source;\nvarying vec2 vUv;\nvoid main() {\n    gl_FragColor = texture2D(source, vUv);\n}",
 	      attribs: {
@@ -611,9 +617,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }
 	  },
 	  objects: {
-	    _resultObject: {
-	      shader: '_renderResult',
-	      geometry: '_renderQuad'
+	    resultScreen: {
+	      shader: 'basicEffect',
+	      geometry: 'renderQuad'
 	    }
 	  }
 	};
