@@ -17,6 +17,7 @@ create = (canvas) ->
       wrap: 'CLAMP_TO_EDGE'
       clearBits:  makeClear gl, [ 'DEPTH', 'COLOR' ]
       enable: ['DEPTH_TEST']
+      blend: ["SRC_ALPHA", "ONE_MINUS_SRC_ALPHA"]
       width: canvas.width
       height: canvas.height
 
@@ -39,8 +40,8 @@ init = (ctx, data) ->
   updateSettings ctx, data.settings
   initShaders ctx, data.shaders
   initGeometries ctx, data.geometries
-  initLayers ctx, data.layers
   initObjects ctx, data.objects
+  initLayers ctx, data.layers
   updateSize ctx
 
 
@@ -80,18 +81,23 @@ updateObject = (ctx, id, object) ->
 
 updateSettings = (ctx, data) ->
   data or= {}
+  gl = ctx.gl
   ctx.settings.clearColor = data.clearColor if data.clearColor?
   ctx.settings.minFilter = data.minFilter if data.minFilter?
   ctx.settings.wrap = data.wrap if data.wrap?
   if data.clearBuffers?
-    ctx.settings.clearBits = makeClear ctx.gl, data.clearBuffers
+    ctx.settings.clearBits = makeClear gl, data.clearBuffers
 
   if data.enable?
     for param in ctx.settings.enable
-      ctx.gl.disable ctx.gl[param]
+      gl.disable gl[param]
     ctx.settings.enable = data.enable
     for param in ctx.settings.enable
-      ctx.gl.enable ctx.gl[param]
+      gl.enable gl[param]
+
+  ctx.settings.blend = data.blend if data.blend?
+  if ctx.settings.blend?.length
+    setBlendFunc gl, ctx.settings.blend
 
   ctx
 
@@ -180,9 +186,15 @@ updateLayer = (ctx, name, data) ->
     updateRenderTarget ctx.gl, layer, data
 
   if data.asset
-    updateStaticLayer layer, data
+    updateStaticLayer ctx.gl, layer, data
   if data.objects
-    layer.objects = data.objects
+    layer.transparents = []
+    layer.opaques = []
+    for id in data.objects
+      if ctx.objects[id].blend
+        layer.transparents.push id
+      else
+        layer.opaques.push id
   if data.shader
     layer.object = data
     layer.object.geometry = '_renderQuad'
@@ -191,13 +203,12 @@ updateLayer = (ctx, name, data) ->
   ctx
 
 
-updatStaticLayer = (ctx, layer, data) ->
-  gl = ctx.gl
+updateStaticLayer = (gl, layer, data) ->
   texture = layer.texture ?= gl.createTexture()
 
   gl.bindTexture gl.TEXTURE_2D, texture
 
-  setTextureParams ctx.gl, data
+  setTextureParams gl, data
   gl.texImage2D gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, data.asset
   gl.generateMipmap gl.TEXTURE_2D
 
@@ -248,12 +259,17 @@ renderLayers = (ctx, layerIds) ->
       gl.clearColor.apply gl, layer.clearColor or ctx.settings.clearColor
       gl.clear ctx.settings.clearBits
 
-    if layer.objects
-      for id in layer.objects
-        renderObject ctx, ctx.objects[id]
-
-    else if layer.object
+    if layer.object
       renderObject ctx, layer.object
+
+    else if layer.opaques
+      for id in layer.opaques
+        renderObject ctx, ctx.objects[id]
+      if layer.transparents.length
+        gl.enable(gl.BLEND)
+        for id in layer.transparents
+          renderObject ctx, ctx.objects[id]
+        gl.disable(gl.BLEND)
 
     # swap own renderTargets if necessary
     if renderToTarget
@@ -273,8 +289,7 @@ renderObject = (ctx, object) ->
   gl.useProgram shader.program
 
   for name, attrib of shader.attribs
-    buffIndex = geometry.attribs[name]
-    gl.bindBuffer gl.ARRAY_BUFFER, buffIndex
+    gl.bindBuffer gl.ARRAY_BUFFER, geometry.attribs[name]
     gl.enableVertexAttribArray attrib.index
     gl.vertexAttribPointer attrib.index, attrib.itemSize, attrib.type, false, 0, 0
 
@@ -332,6 +347,10 @@ renderObject = (ctx, object) ->
 makeClear = (gl, clearArray) ->
   f = (res, item) -> res | gl[item + '_BUFFER_BIT']
   clearArray.reduce f, 0
+
+
+setBlendFunc = (gl, blendOpts) ->
+  gl.blendFunc.apply gl, blendOpts.map (opt) -> gl[opt]
 
 
 setTextureParams = (gl, data) ->

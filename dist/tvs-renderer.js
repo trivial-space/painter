@@ -72,7 +72,7 @@ return /******/ (function(modules) { // webpackBootstrap
 /* 1 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var consts, create, getBufferData, init, initGeometries, initLayers, initObjects, initShaders, lib, makeClear, renderLayers, renderObject, setTextureParams, typedArrayToGLType, updatStaticLayer, updateGeometry, updateLayer, updateObject, updateRenderTarget, updateSettings, updateShader, updateSize;
+	var consts, create, getBufferData, init, initGeometries, initLayers, initObjects, initShaders, lib, makeClear, renderLayers, renderObject, setBlendFunc, setTextureParams, typedArrayToGLType, updateGeometry, updateLayer, updateObject, updateRenderTarget, updateSettings, updateShader, updateSize, updateStaticLayer;
 
 	consts = __webpack_require__(2);
 
@@ -94,6 +94,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      wrap: 'CLAMP_TO_EDGE',
 	      clearBits: makeClear(gl, ['DEPTH', 'COLOR']),
 	      enable: ['DEPTH_TEST'],
+	      blend: ["SRC_ALPHA", "ONE_MINUS_SRC_ALPHA"],
 	      width: canvas.width,
 	      height: canvas.height
 	    },
@@ -116,8 +117,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	  updateSettings(ctx, data.settings);
 	  initShaders(ctx, data.shaders);
 	  initGeometries(ctx, data.geometries);
-	  initLayers(ctx, data.layers);
 	  initObjects(ctx, data.objects);
+	  initLayers(ctx, data.layers);
 	  return updateSize(ctx);
 	};
 
@@ -174,8 +175,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 	updateSettings = function(ctx, data) {
-	  var j, l, len, len1, param, ref, ref1;
+	  var gl, j, l, len, len1, param, ref, ref1, ref2;
 	  data || (data = {});
+	  gl = ctx.gl;
 	  if (data.clearColor != null) {
 	    ctx.settings.clearColor = data.clearColor;
 	  }
@@ -186,20 +188,26 @@ return /******/ (function(modules) { // webpackBootstrap
 	    ctx.settings.wrap = data.wrap;
 	  }
 	  if (data.clearBuffers != null) {
-	    ctx.settings.clearBits = makeClear(ctx.gl, data.clearBuffers);
+	    ctx.settings.clearBits = makeClear(gl, data.clearBuffers);
 	  }
 	  if (data.enable != null) {
 	    ref = ctx.settings.enable;
 	    for (j = 0, len = ref.length; j < len; j++) {
 	      param = ref[j];
-	      ctx.gl.disable(ctx.gl[param]);
+	      gl.disable(gl[param]);
 	    }
 	    ctx.settings.enable = data.enable;
 	    ref1 = ctx.settings.enable;
 	    for (l = 0, len1 = ref1.length; l < len1; l++) {
 	      param = ref1[l];
-	      ctx.gl.enable(ctx.gl[param]);
+	      gl.enable(gl[param]);
 	    }
+	  }
+	  if (data.blend != null) {
+	    ctx.settings.blend = data.blend;
+	  }
+	  if ((ref2 = ctx.settings.blend) != null ? ref2.length : void 0) {
+	    setBlendFunc(gl, ctx.settings.blend);
 	  }
 	  return ctx;
 	};
@@ -290,7 +298,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 	updateLayer = function(ctx, name, data) {
-	  var base, base1, layer;
+	  var base, base1, id, j, layer, len, ref;
 	  layer = (base = ctx.layers)[name] != null ? base[name] : base[name] = {};
 	  layer.noClear = data.noClear;
 	  layer.clearColor = data.clearColor || ctx.settings.clearColor;
@@ -300,10 +308,20 @@ return /******/ (function(modules) { // webpackBootstrap
 	    updateRenderTarget(ctx.gl, layer, data);
 	  }
 	  if (data.asset) {
-	    updateStaticLayer(layer, data);
+	    updateStaticLayer(ctx.gl, layer, data);
 	  }
 	  if (data.objects) {
-	    layer.objects = data.objects;
+	    layer.transparents = [];
+	    layer.opaques = [];
+	    ref = data.objects;
+	    for (j = 0, len = ref.length; j < len; j++) {
+	      id = ref[j];
+	      if (ctx.objects[id].blend) {
+	        layer.transparents.push(id);
+	      } else {
+	        layer.opaques.push(id);
+	      }
+	    }
 	  }
 	  if (data.shader) {
 	    layer.object = data;
@@ -315,12 +333,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	  return ctx;
 	};
 
-	updatStaticLayer = function(ctx, layer, data) {
-	  var gl, texture;
-	  gl = ctx.gl;
+	updateStaticLayer = function(gl, layer, data) {
+	  var texture;
 	  texture = layer.texture != null ? layer.texture : layer.texture = gl.createTexture();
 	  gl.bindTexture(gl.TEXTURE_2D, texture);
-	  setTextureParams(ctx.gl, data);
+	  setTextureParams(gl, data);
 	  gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, data.asset);
 	  gl.generateMipmap(gl.TEXTURE_2D);
 	  gl.bindTexture(gl.TEXTURE_2D, null);
@@ -345,7 +362,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 	renderLayers = function(ctx, layerIds) {
-	  var directRender, gl, i, id, j, l, last, layer, layerId, len, len1, ref, renderToTarget, tmp;
+	  var directRender, gl, i, id, j, l, last, layer, layerId, len, len1, len2, m, ref, ref1, renderToTarget, tmp;
 	  gl = ctx.gl;
 	  last = layerIds.length - 1;
 	  for (i = j = 0, len = layerIds.length; j < len; i = ++j) {
@@ -367,14 +384,23 @@ return /******/ (function(modules) { // webpackBootstrap
 	      gl.clearColor.apply(gl, layer.clearColor || ctx.settings.clearColor);
 	      gl.clear(ctx.settings.clearBits);
 	    }
-	    if (layer.objects) {
-	      ref = layer.objects;
+	    if (layer.object) {
+	      renderObject(ctx, layer.object);
+	    } else if (layer.opaques) {
+	      ref = layer.opaques;
 	      for (l = 0, len1 = ref.length; l < len1; l++) {
 	        id = ref[l];
 	        renderObject(ctx, ctx.objects[id]);
 	      }
-	    } else if (layer.object) {
-	      renderObject(ctx, layer.object);
+	      if (layer.transparents.length) {
+	        gl.enable(gl.BLEND);
+	        ref1 = layer.transparents;
+	        for (m = 0, len2 = ref1.length; m < len2; m++) {
+	          id = ref1[m];
+	          renderObject(ctx, ctx.objects[id]);
+	        }
+	        gl.disable(gl.BLEND);
+	      }
 	    }
 	    if (renderToTarget) {
 	      tmp = ctx.source;
@@ -385,7 +411,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 	renderObject = function(ctx, object) {
-	  var attrib, buffIndex, geometry, gl, index, name, ref, ref1, shader, texture, textureCount, uniform, value;
+	  var attrib, geometry, gl, index, name, ref, ref1, shader, texture, textureCount, uniform, value;
 	  gl = ctx.gl;
 	  textureCount = 0;
 	  shader = ctx.shaders[object.shader];
@@ -394,8 +420,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  ref = shader.attribs;
 	  for (name in ref) {
 	    attrib = ref[name];
-	    buffIndex = geometry.attribs[name];
-	    gl.bindBuffer(gl.ARRAY_BUFFER, buffIndex);
+	    gl.bindBuffer(gl.ARRAY_BUFFER, geometry.attribs[name]);
 	    gl.enableVertexAttribArray(attrib.index);
 	    gl.vertexAttribPointer(attrib.index, attrib.itemSize, attrib.type, false, 0, 0);
 	  }
@@ -463,6 +488,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	    return res | gl[item + '_BUFFER_BIT'];
 	  };
 	  return clearArray.reduce(f, 0);
+	};
+
+	setBlendFunc = function(gl, blendOpts) {
+	  return gl.blendFunc.apply(gl, blendOpts.map(function(opt) {
+	    return gl[opt];
+	  }));
 	};
 
 	setTextureParams = function(gl, data) {

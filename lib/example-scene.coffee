@@ -6,6 +6,7 @@ definition =
     enable: ["DEPTH_TEST", "CULL_FACE"] # default DEPTH_TEST
     clearBuffers: ["COLOR", "DEPTH"]
     clearColor: [ 0.0, 0.0, 0.0, 1.0 ]
+    blend: ["SRC_ALPHA", "ONE_MINUS_SRC_ALPHA"]
     minFilter: 'LINEAR'
     wrap: 'CLAMP_TO_EDGE'
     width: 1000
