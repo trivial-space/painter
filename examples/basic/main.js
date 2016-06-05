@@ -1,6 +1,6 @@
 import 'systemjs-hot-reloader/default-listener.js'
 import * as renderer from '../../dist/tvs-renderer'
-import {ctx} from './ctx'
+import {ctx} from '../ctx'
 
 console.log(renderer)
 
