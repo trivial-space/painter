@@ -308,9 +308,7 @@ renderObject = (ctx, object) ->
         gl.bindTexture gl.TEXTURE_2D, texture
         gl.uniform1i index, textureCount
         textureCount++
-      when 'f'
-        gl.uniform1f index, value
-      when 'f 1'
+      when 'f', 'f 1'
         gl.uniform1f index, value
       when 'f 2'
         gl.uniform2fv index, value
@@ -324,9 +322,7 @@ renderObject = (ctx, object) ->
         gl.uniformMatrix3fv index, false, value
       when 'm 4'
         gl.uniformMatrix4fv index, false, value
-      when 'i'
-        gl.uniform1i index, value
-      when 'i 1'
+      when 'i', 'i 1'
         gl.uniform1i index, value
       when 'i 2'
         gl.uniform2iv index, value
