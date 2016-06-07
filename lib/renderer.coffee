@@ -132,7 +132,7 @@ updateShader = (ctx, name, data) ->
   for name, type of data.attribs
     attribs[name] =
       index: gl.getAttribLocation shader.program, name
-      type: gl[consts.attribType[type]]
+      type: gl.FLOAT
       itemSize: consts.attribItemSize[type]
 
   uniforms = shader.uniforms = {}
