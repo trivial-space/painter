@@ -1,9 +1,7 @@
 import 'systemjs-hot-reloader/default-listener.js'
-import * as renderer from '../../dist/tvs-renderer'
-import {ctx} from '../ctx'
+import renderer from '../../dist/tvs-renderer.js'
+import {ctx} from '../ctx.js'
 import {mat4} from 'gl-matrix'
-
-console.log(mat4)
 
 
 let planMat = mat4.fromTranslation(mat4.create(), [0, 0, -1]),

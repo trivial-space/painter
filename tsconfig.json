@@ -1,0 +1,26 @@
+{
+    "compilerOptions": {
+        "target": "es5",
+        "lib": ["es6", "dom"],
+        "moduleResolution": "node",
+        "isolatedModules": false,
+        "declaration": false,
+        "noImplicitAny": true,
+        "noImplicitUseStrict": false,
+        "removeComments": true,
+        "noLib": false,
+        "preserveConstEnums": true,
+        "suppressImplicitAnyIndexErrors": true
+    },
+    "exclude": [
+        "node_modules",
+        "jspm_packages",
+        "typings/browser",
+        "typings/browser.d.ts"
+    ],
+    "compileOnSave": false,
+    "buildOnSave": false,
+    "atom": {
+        "rewriteTsconfig": false
+    }
+}

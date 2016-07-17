@@ -1,8 +1,7 @@
 import 'systemjs-hot-reloader/default-listener.js'
-import * as renderer from '../../dist/tvs-renderer'
-import {ctx} from '../ctx'
+import renderer from '../../dist/tvs-renderer.js'
+import {ctx} from '../ctx.js'
 
-console.log(renderer)
 
 const scene = {
   geometries: {

@@ -1,645 +1,388 @@
-(function webpackUniversalModuleDefinition(root, factory) {
-	if(typeof exports === 'object' && typeof module === 'object')
-		module.exports = factory();
-	else if(typeof define === 'function' && define.amd)
-		define([], factory);
-	else if(typeof exports === 'object')
-		exports["tvsRenderer"] = factory();
-	else
-		root["tvsRenderer"] = factory();
-})(this, function() {
-return /******/ (function(modules) { // webpackBootstrap
-/******/ 	// The module cache
-/******/ 	var installedModules = {};
+!function(e, r) {
+    "object" == typeof exports && "object" == typeof module ? module.exports = r() : "function" == typeof define && define.amd ? define([], r) : "object" == typeof exports ? exports.tvsRenderer = r() : e.tvsRenderer = r();
+}(this, function() {
+    return function(e) {
+        function r(a) {
+            if (t[a]) return t[a].exports;
+            var n = t[a] = {
+                exports: {},
+                id: a,
+                loaded: !1
+            };
+            return e[a].call(n.exports, n, n.exports, r), n.loaded = !0, n.exports;
+        }
+        var t = {};
+        return r.m = e, r.c = t, r.p = "", r(0);
+    }([ function(e, r, t) {
+        "use strict";
+        function a(e) {
+            null == e && (e = document.createElement("canvas"));
+            var r = e.getContext("webgl") || e.getContext("experimental-webgl");
+            if (!r) throw Error("WebGL-Context could not be initialized!");
+            var t = {
+                settings: {
+                    clearColor: [ 0, 0, 0, 1 ],
+                    minFilter: "LINEAR",
+                    magFilter: "NEAREST",
+                    wrap: "CLAMP_TO_EDGE",
+                    clearBits: p(r, [ "DEPTH", "COLOR" ]),
+                    enable: [ "DEPTH_TEST" ],
+                    blend: [ "SRC_ALPHA", "ONE_MINUS_SRC_ALPHA" ],
+                    width: e.width,
+                    height: e.height
+                },
+                shaders: {},
+                geometries: {},
+                layers: {},
+                objects: {},
+                source: {},
+                target: {},
+                gl: r
+            };
+            return u(t, t.settings), c(t, "_renderQuad", y["default"].geometries.renderQuad), 
+            d(t, "_renderResult", y["default"].shaders.basicEffect), l(t, "_result", y["default"].objects.resultScreen), 
+            E(t);
+        }
+        function n(e, r) {
+            return u(e, r.settings), i(e, r.shaders), f(e, r.geometries), o(e, r.objects), s(e, r.layers), 
+            E(e);
+        }
+        function i(e, r) {
+            if (r) for (var t in r) {
+                var a = r[t];
+                d(e, t, a);
+            }
+            return e;
+        }
+        function s(e, r) {
+            if (r) for (var t in r) {
+                var a = r[t];
+                g(e, t, a);
+            }
+            return e;
+        }
+        function f(e, r) {
+            if (r) for (var t in r) {
+                var a = r[t];
+                c(e, t, a);
+            }
+            return e;
+        }
+        function o(e, r) {
+            if (r) for (var t in r) {
+                var a = r[t];
+                l(e, t, a);
+            }
+            return e;
+        }
+        function u(e, r) {
+            void 0 === r && (r = {});
+            var t = e.gl;
+            if (null != r.clearColor && (e.settings.clearColor = r.clearColor), null != r.minFilter && (e.settings.minFilter = r.minFilter), 
+            null != r.magFilter && (e.settings.magFilter = r.magFilter), null != r.wrap && (e.settings.wrap = r.wrap), 
+            null != r.clearBuffers && (e.settings.clearBits = p(t, r.clearBuffers)), null != r.enable) {
+                for (var a = 0, n = e.settings.enable; a < n.length; a++) {
+                    var i = n[a];
+                    t.disable(t[i]);
+                }
+                e.settings.enable = r.enable;
+                for (var s = 0, f = e.settings.enable; s < f.length; s++) {
+                    var i = f[s];
+                    t.enable(t[i]);
+                }
+            }
+            return void 0 !== r.blend && (e.settings.blend = r.blend), e.settings.blend && v(t, e.settings.blend), 
+            e;
+        }
+        function l(e, r, t) {
+            return null == t.uniforms && (t.uniforms = {}), e.objects[r] = t, e;
+        }
+        function d(e, r, t) {
+            var a = e.shaders[r] || {}, n = null == a.program, i = e.gl, s = "precision mediump float;\n" + t.frag;
+            n && (a.program = i.createProgram()), null == a.vert && (a.vert = i.createShader(i.VERTEX_SHADER)), 
+            null == a.frag && (a.frag = i.createShader(i.FRAGMENT_SHADER)), i.shaderSource(a.vert, t.vert), 
+            i.shaderSource(a.frag, s), i.compileShader(a.vert), i.compileShader(a.frag), i.getShaderParameter(a.vert, i.COMPILE_STATUS) || console.error("Error Compiling Vertex Shader!\n", i.getShaderInfoLog(a.vert), t.vert), 
+            i.getShaderParameter(a.frag, i.COMPILE_STATUS) || console.error("Error Compiling Fragment Shader!\n", i.getShaderInfoLog(a.frag), t.frag), 
+            n && (i.attachShader(a.program, a.vert), i.attachShader(a.program, a.frag)), i.linkProgram(a.program), 
+            a.attribs = {};
+            for (var f in t.attribs) {
+                var o = t.attribs[f];
+                a.attribs[f] = {
+                    index: i.getAttribLocation(a.program, f),
+                    type: i.FLOAT,
+                    itemSize: U[o]
+                };
+            }
+            a.uniforms = {};
+            for (var u in t.uniforms) a.uniforms[u] = {
+                index: i.getUniformLocation(a.program, u),
+                type: t.uniforms[u]
+            };
+            return e.shaders[r] = a, e;
+        }
+        function c(e, r, t) {
+            var a = e.gl, n = e.geometries[r] || {};
+            n.drawType = a[t.drawType], n.itemCount = t.itemCount;
+            var i = n.attribs || {};
+            for (var s in t.attribs) {
+                var f = t.attribs[s];
+                null == i[s] && (i[s] = a.createBuffer()), a.bindBuffer(a.ARRAY_BUFFER, i[s]), a.bufferData(a.ARRAY_BUFFER, F(f), a[(f.storeType || "STATIC") + "_DRAW"]);
+            }
+            if (n.attribs = i, t.elements) {
+                null == n.elements && (n.elements = {}), null == n.elements.buffer && (n.elements.buffer = a.createBuffer());
+                var o = F(t.elements);
+                n.elements.glType = _(o, a), a.bindBuffer(a.ELEMENT_ARRAY_BUFFER, n.elements.buffer), 
+                a.bufferData(a.ELEMENT_ARRAY_BUFFER, o, a[(t.elements.storeType || "STATIC") + "_DRAW"]);
+            } else n.elements && delete n.elements;
+            return e.geometries[r] = n, e;
+        }
+        function g(e, r, t) {
+            var a = e.layers[r] || {};
+            if (a.noClear = t.noClear, a.clearColor = t.clearColor || e.settings.clearColor, 
+            t.buffered ? (a.renderTarget = {
+                width: t.width || e.settings.width,
+                height: t.height || e.settings.height
+            }, h(e.gl, a.renderTarget, t)) : delete a.renderTarget, t.asset) {
+                var n = a;
+                n.type = "static", m(e.gl, n, t);
+            } else if (t.objects) {
+                var n = a;
+                n.type = "objects", n.transparents = [], n.opaques = [];
+                for (var i = 0, s = t.objects; i < s.length; i++) {
+                    var f = s[i];
+                    e.objects[f].blend ? n.transparents.push(f) : n.opaques.push(f);
+                }
+            } else if (t.shader) {
+                var n = a;
+                n.type = "shader", n.object = {
+                    shader: t.shader,
+                    geometry: "_renderQuad",
+                    uniforms: t.uniforms || {}
+                };
+            }
+            return e.layers[r] = a, e;
+        }
+        function m(e, r, t) {
+            var a = r.texture || e.createTexture();
+            e.bindTexture(e.TEXTURE_2D, a), R(e, t), e.texImage2D(e.TEXTURE_2D, 0, e.RGBA, e.RGBA, e.UNSIGNED_BYTE, t.asset), 
+            e.generateMipmap(e.TEXTURE_2D), e.bindTexture(e.TEXTURE_2D, null), r.texture = a;
+        }
+        function E(e, r, t) {
+            var a = e.gl;
+            return r && (e.settings.width = r), t && (e.settings.height = t), a.canvas.width === e.settings.width && a.canvas.height === e.settings.height || (a.canvas.height = e.settings.height, 
+            a.canvas.width = e.settings.width), h(e.gl, e.source, e.settings), h(e.gl, e.target, e.settings), 
+            e;
+        }
+        function b(e, r) {
+            for (var t = e.gl, a = r.length - 1, n = 0; n < r.length; n++) {
+                var i = r[n], s = e.layers[i], f = n === a, o = !f && null == s.renderTarget;
+                switch (f ? (t.bindFramebuffer(t.FRAMEBUFFER, null), t.viewport(0, 0, t.drawingBufferWidth, t.drawingBufferHeight)) : o ? (t.bindFramebuffer(t.FRAMEBUFFER, e.target.frameBuffer), 
+                t.viewport(0, 0, t.drawingBufferWidth, t.drawingBufferHeight)) : (t.bindFramebuffer(t.FRAMEBUFFER, s.renderTarget.frameBuffer), 
+                t.viewport(0, 0, s.renderTarget.width, s.renderTarget.height)), s.noClear || (t.clearColor.apply(t, s.clearColor || e.settings.clearColor), 
+                t.clear(e.settings.clearBits)), s.type) {
+                  case "shader":
+                    T(e, s.object);
+                    break;
 
-/******/ 	// The require function
-/******/ 	function __webpack_require__(moduleId) {
+                  case "objects":
+                    for (var u = s, l = 0, d = u.opaques; l < d.length; l++) {
+                        var c = d[l];
+                        T(e, e.objects[c]);
+                    }
+                    if (u.transparents.length) {
+                        t.enable(t.BLEND);
+                        for (var g = 0, m = u.transparents; g < m.length; g++) {
+                            var c = m[g];
+                            T(e, e.objects[c]);
+                        }
+                        t.disable(t.BLEND);
+                    }
+                    break;
 
-/******/ 		// Check if module is in cache
-/******/ 		if(installedModules[moduleId])
-/******/ 			return installedModules[moduleId].exports;
+                  case "static":                }
+                if (o) {
+                    var E = e.source;
+                    e.source = e.target, e.target = E;
+                }
+            }
+        }
+        function T(e, r) {
+            var t = 0, a = e.gl, n = e.shaders[r.shader], i = e.geometries[r.geometry];
+            a.useProgram(n.program);
+            for (var s in n.attribs) {
+                var f = n.attribs[s];
+                a.bindBuffer(a.ARRAY_BUFFER, i.attribs[s]), a.enableVertexAttribArray(f.index), 
+                a.vertexAttribPointer(f.index, f.itemSize, f.type, !1, 0, 0);
+            }
+            for (var s in n.uniforms) {
+                var o = n.uniforms[s], u = o.index, l = r.uniforms[s];
+                switch (o.type) {
+                  case "t":
+                    var d = l ? e.layers[l].texture : e.source.texture;
+                    a.activeTexture(a["TEXTURE" + t]), a.bindTexture(a.TEXTURE_2D, d), a.uniform1i(u, t), 
+                    t++;
+                    break;
 
-/******/ 		// Create a new module (and put it into the cache)
-/******/ 		var module = installedModules[moduleId] = {
-/******/ 			exports: {},
-/******/ 			id: moduleId,
-/******/ 			loaded: false
-/******/ 		};
+                  case "f":
+                  case "f 1":
+                    a.uniform1f(u, l);
+                    break;
 
-/******/ 		// Execute the module function
-/******/ 		modules[moduleId].call(module.exports, module, module.exports, __webpack_require__);
+                  case "f 2":
+                    a.uniform2fv(u, l);
+                    break;
 
-/******/ 		// Flag the module as loaded
-/******/ 		module.loaded = true;
+                  case "f 3":
+                    a.uniform3fv(u, l);
+                    break;
 
-/******/ 		// Return the exports of the module
-/******/ 		return module.exports;
-/******/ 	}
+                  case "f 4":
+                    a.uniform4fv(u, l);
+                    break;
 
+                  case "m 2":
+                    a.uniformMatrix2fv(u, !1, l);
+                    break;
 
-/******/ 	// expose the modules object (__webpack_modules__)
-/******/ 	__webpack_require__.m = modules;
+                  case "m 3":
+                    a.uniformMatrix3fv(u, !1, l);
+                    break;
 
-/******/ 	// expose the module cache
-/******/ 	__webpack_require__.c = installedModules;
+                  case "m 4":
+                    a.uniformMatrix4fv(u, !1, l);
+                    break;
 
-/******/ 	// __webpack_public_path__
-/******/ 	__webpack_require__.p = "";
+                  case "i":
+                  case "i 1":
+                    a.uniform1i(u, l);
+                    break;
 
-/******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(0);
-/******/ })
-/************************************************************************/
-/******/ ([
-/* 0 */
-/***/ function(module, exports, __webpack_require__) {
+                  case "i 2":
+                    a.uniform2iv(u, l);
+                    break;
 
-	'use strict';
+                  case "i 3":
+                    a.uniform3iv(u, l);
+                    break;
 
-	Object.defineProperty(exports, '__esModule', {
-	  value: true
-	});
+                  case "i 4":
+                    a.uniform4iv(u, l);
+                    break;
 
-	function _interopExportWildcard(obj, defaults) { var newObj = defaults({}, obj); delete newObj['default']; return newObj; }
-
-	function _defaults(obj, defaults) { var keys = Object.getOwnPropertyNames(defaults); for (var i = 0; i < keys.length; i++) { var key = keys[i]; var value = Object.getOwnPropertyDescriptor(defaults, key); if (value && value.configurable && obj[key] === undefined) { Object.defineProperty(obj, key, value); } } return obj; }
-
-	var _renderer = __webpack_require__(1);
-
-	_defaults(exports, _interopExportWildcard(_renderer, _defaults));
-
-/***/ },
-/* 1 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var consts, create, getBufferData, init, initGeometries, initLayers, initObjects, initShaders, lib, makeClear, renderLayers, renderObject, setBlendFunc, setTextureParams, typedArrayToGLType, updateGeometry, updateLayer, updateObject, updateRenderTarget, updateSettings, updateShader, updateSize, updateStaticLayer;
-
-	consts = __webpack_require__(2);
-
-	lib = __webpack_require__(3);
-
-	create = function(canvas) {
-	  var ctx, gl;
-	  if (canvas == null) {
-	    canvas = document.createElement('canvas');
-	  }
-	  gl = canvas.getContext('webgl') || canvas.getContext('experimental-webgl');
-	  if (!gl) {
-	    throw Error('WebGL-Context could not be initialized!');
-	  }
-	  ctx = {
-	    settings: {
-	      clearColor: [0.0, 0.0, 0.0, 1.0],
-	      minFilter: 'LINEAR',
-	      wrap: 'CLAMP_TO_EDGE',
-	      clearBits: makeClear(gl, ['DEPTH', 'COLOR']),
-	      enable: ['DEPTH_TEST'],
-	      blend: ["SRC_ALPHA", "ONE_MINUS_SRC_ALPHA"],
-	      width: canvas.width,
-	      height: canvas.height
-	    },
-	    shaders: {},
-	    geometries: {},
-	    layers: {},
-	    objects: {},
-	    source: {},
-	    target: {},
-	    gl: gl
-	  };
-	  updateSettings(ctx, ctx.settings);
-	  updateGeometry(ctx, '_renderQuad', lib.geometries.renderQuad);
-	  updateShader(ctx, '_renderResult', lib.shaders.basicEffect);
-	  updateObject(ctx, '_result', lib.objects.resultScreen);
-	  return updateSize(ctx);
-	};
-
-	init = function(ctx, data) {
-	  updateSettings(ctx, data.settings);
-	  initShaders(ctx, data.shaders);
-	  initGeometries(ctx, data.geometries);
-	  initObjects(ctx, data.objects);
-	  initLayers(ctx, data.layers);
-	  return updateSize(ctx);
-	};
-
-	initShaders = function(ctx, data) {
-	  var k, v;
-	  if (data) {
-	    for (k in data) {
-	      v = data[k];
-	      updateShader(ctx, k, v);
-	    }
-	  }
-	  return ctx;
-	};
-
-	initLayers = function(ctx, data) {
-	  var k, v;
-	  if (data) {
-	    for (k in data) {
-	      v = data[k];
-	      updateLayer(ctx, k, v);
-	    }
-	  }
-	  return ctx;
-	};
-
-	initGeometries = function(ctx, data) {
-	  var k, v;
-	  if (data) {
-	    for (k in data) {
-	      v = data[k];
-	      updateGeometry(ctx, k, v);
-	    }
-	  }
-	  return ctx;
-	};
-
-	initObjects = function(ctx, data) {
-	  var k, v;
-	  if (data) {
-	    for (k in data) {
-	      v = data[k];
-	      updateObject(ctx, k, v);
-	    }
-	  }
-	  return ctx;
-	};
-
-	updateObject = function(ctx, id, object) {
-	  if (object.uniforms == null) {
-	    object.uniforms = {};
-	  }
-	  ctx.objects[id] = object;
-	  return ctx;
-	};
-
-	updateSettings = function(ctx, data) {
-	  var gl, j, l, len, len1, param, ref, ref1, ref2;
-	  data || (data = {});
-	  gl = ctx.gl;
-	  if (data.clearColor != null) {
-	    ctx.settings.clearColor = data.clearColor;
-	  }
-	  if (data.minFilter != null) {
-	    ctx.settings.minFilter = data.minFilter;
-	  }
-	  if (data.wrap != null) {
-	    ctx.settings.wrap = data.wrap;
-	  }
-	  if (data.clearBuffers != null) {
-	    ctx.settings.clearBits = makeClear(gl, data.clearBuffers);
-	  }
-	  if (data.enable != null) {
-	    ref = ctx.settings.enable;
-	    for (j = 0, len = ref.length; j < len; j++) {
-	      param = ref[j];
-	      gl.disable(gl[param]);
-	    }
-	    ctx.settings.enable = data.enable;
-	    ref1 = ctx.settings.enable;
-	    for (l = 0, len1 = ref1.length; l < len1; l++) {
-	      param = ref1[l];
-	      gl.enable(gl[param]);
-	    }
-	  }
-	  if (data.blend != null) {
-	    ctx.settings.blend = data.blend;
-	  }
-	  if ((ref2 = ctx.settings.blend) != null ? ref2.length : void 0) {
-	    setBlendFunc(gl, ctx.settings.blend);
-	  }
-	  return ctx;
-	};
-
-	updateShader = function(ctx, name, data) {
-	  var attribs, base, fragSource, gl, newProgram, ref, ref1, shader, type, uniforms;
-	  shader = (base = ctx.shaders)[name] != null ? base[name] : base[name] = {};
-	  newProgram = shader.program == null;
-	  gl = ctx.gl;
-	  fragSource = 'precision mediump float;\n' + data.frag;
-	  if (newProgram) {
-	    shader.program = gl.createProgram();
-	  }
-	  if (shader.vert == null) {
-	    shader.vert = gl.createShader(gl.VERTEX_SHADER);
-	  }
-	  if (shader.frag == null) {
-	    shader.frag = gl.createShader(gl.FRAGMENT_SHADER);
-	  }
-	  gl.shaderSource(shader.vert, data.vert);
-	  gl.shaderSource(shader.frag, fragSource);
-	  gl.compileShader(shader.vert);
-	  gl.compileShader(shader.frag);
-	  if (!gl.getShaderParameter(shader.vert, gl.COMPILE_STATUS)) {
-	    console.error('Error Compiling Vertex Shader!\n', gl.getShaderInfoLog(shader.vert), data.vert);
-	  }
-	  if (!gl.getShaderParameter(shader.frag, gl.COMPILE_STATUS)) {
-	    console.error('Error Compiling Fragment Shader!\n', gl.getShaderInfoLog(shader.frag), data.frag);
-	  }
-	  if (newProgram) {
-	    gl.attachShader(shader.program, shader.vert);
-	    gl.attachShader(shader.program, shader.frag);
-	  }
-	  gl.linkProgram(shader.program);
-	  attribs = shader.attribs = {};
-	  ref = data.attribs;
-	  for (name in ref) {
-	    type = ref[name];
-	    attribs[name] = {
-	      index: gl.getAttribLocation(shader.program, name),
-	      type: gl.FLOAT,
-	      itemSize: consts.attribItemSize[type]
-	    };
-	  }
-	  uniforms = shader.uniforms = {};
-	  ref1 = data.uniforms;
-	  for (name in ref1) {
-	    type = ref1[name];
-	    uniforms[name] = {
-	      index: gl.getUniformLocation(shader.program, name),
-	      type: type
-	    };
-	  }
-	  return ctx;
-	};
-
-	updateGeometry = function(ctx, name, data) {
-	  var attribData, attribs, base, base1, buffer, geometry, gl, ref;
-	  gl = ctx.gl;
-	  geometry = (base = ctx.geometries)[name] != null ? base[name] : base[name] = {};
-	  geometry.drawType = gl[data.drawType];
-	  geometry.itemCount = data.itemCount;
-	  attribs = geometry.attribs != null ? geometry.attribs : geometry.attribs = {};
-	  ref = data.attribs;
-	  for (name in ref) {
-	    attribData = ref[name];
-	    if (attribs[name] == null) {
-	      attribs[name] = gl.createBuffer();
-	    }
-	    gl.bindBuffer(gl.ARRAY_BUFFER, attribs[name]);
-	    gl.bufferData(gl.ARRAY_BUFFER, getBufferData(attribData), gl[(attribData.storeType || 'STATIC') + '_DRAW']);
-	  }
-	  if (data.elements) {
-	    if (geometry.elements == null) {
-	      geometry.elements = {};
-	    }
-	    if ((base1 = geometry.elements).buffer == null) {
-	      base1.buffer = gl.createBuffer();
-	    }
-	    buffer = getBufferData(data.elements);
-	    geometry.elements.glType = typedArrayToGLType(buffer, gl);
-	    gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, geometry.elements.buffer);
-	    gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, buffer, gl[(data.elements.storeType || 'STATIC') + '_DRAW']);
-	  } else if (geometry.elements) {
-	    delete geometry.elements;
-	  }
-	  return ctx;
-	};
-
-	updateLayer = function(ctx, name, data) {
-	  var base, base1, id, j, layer, len, ref;
-	  layer = (base = ctx.layers)[name] != null ? base[name] : base[name] = {};
-	  layer.noClear = data.noClear;
-	  layer.clearColor = data.clearColor || ctx.settings.clearColor;
-	  if (data.buffered) {
-	    layer.width = data.width || ctx.settings.width;
-	    layer.height = data.height || ctx.settings.height;
-	    updateRenderTarget(ctx.gl, layer, data);
-	  }
-	  if (data.asset) {
-	    updateStaticLayer(ctx.gl, layer, data);
-	  }
-	  if (data.objects) {
-	    layer.transparents = [];
-	    layer.opaques = [];
-	    ref = data.objects;
-	    for (j = 0, len = ref.length; j < len; j++) {
-	      id = ref[j];
-	      if (ctx.objects[id].blend) {
-	        layer.transparents.push(id);
-	      } else {
-	        layer.opaques.push(id);
-	      }
-	    }
-	  }
-	  if (data.shader) {
-	    layer.object = data;
-	    layer.object.geometry = '_renderQuad';
-	    if ((base1 = layer.object).uniforms == null) {
-	      base1.uniforms = {};
-	    }
-	  }
-	  return ctx;
-	};
-
-	updateStaticLayer = function(gl, layer, data) {
-	  var texture;
-	  texture = layer.texture != null ? layer.texture : layer.texture = gl.createTexture();
-	  gl.bindTexture(gl.TEXTURE_2D, texture);
-	  setTextureParams(gl, data);
-	  gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, data.asset);
-	  gl.generateMipmap(gl.TEXTURE_2D);
-	  gl.bindTexture(gl.TEXTURE_2D, null);
-	};
-
-	updateSize = function(ctx, width, height) {
-	  var gl;
-	  gl = ctx.gl;
-	  if (width != null) {
-	    ctx.settings.width = width;
-	  }
-	  if (height != null) {
-	    ctx.settings.height = height;
-	  }
-	  if (gl.canvas.width !== ctx.settings.width || gl.canvas.height !== ctx.settings.height) {
-	    gl.canvas.height = ctx.settings.height;
-	    gl.canvas.width = ctx.settings.width;
-	  }
-	  updateRenderTarget(ctx.gl, ctx.source, ctx.settings);
-	  updateRenderTarget(ctx.gl, ctx.target, ctx.settings);
-	  return ctx;
-	};
-
-	renderLayers = function(ctx, layerIds) {
-	  var directRender, gl, i, id, j, l, last, layer, layerId, len, len1, len2, m, ref, ref1, renderToTarget, tmp;
-	  gl = ctx.gl;
-	  last = layerIds.length - 1;
-	  for (i = j = 0, len = layerIds.length; j < len; i = ++j) {
-	    layerId = layerIds[i];
-	    layer = ctx.layers[layerId];
-	    directRender = i === last;
-	    renderToTarget = !(directRender || (layer.frameBuffer != null));
-	    if (directRender) {
-	      gl.bindFramebuffer(gl.FRAMEBUFFER, null);
-	      gl.viewport(0, 0, gl.drawingBufferWidth, gl.drawingBufferHeight);
-	    } else if (renderToTarget) {
-	      gl.bindFramebuffer(gl.FRAMEBUFFER, ctx.target.frameBuffer);
-	      gl.viewport(0, 0, gl.drawingBufferWidth, gl.drawingBufferHeight);
-	    } else {
-	      gl.bindFramebuffer(gl.FRAMEBUFFER, layer.frameBuffer);
-	      gl.viewport(0, 0, layer.width, layer.height);
-	    }
-	    if (!layer.noClear) {
-	      gl.clearColor.apply(gl, layer.clearColor || ctx.settings.clearColor);
-	      gl.clear(ctx.settings.clearBits);
-	    }
-	    if (layer.object) {
-	      renderObject(ctx, layer.object);
-	    } else if (layer.opaques) {
-	      ref = layer.opaques;
-	      for (l = 0, len1 = ref.length; l < len1; l++) {
-	        id = ref[l];
-	        renderObject(ctx, ctx.objects[id]);
-	      }
-	      if (layer.transparents.length) {
-	        gl.enable(gl.BLEND);
-	        ref1 = layer.transparents;
-	        for (m = 0, len2 = ref1.length; m < len2; m++) {
-	          id = ref1[m];
-	          renderObject(ctx, ctx.objects[id]);
-	        }
-	        gl.disable(gl.BLEND);
-	      }
-	    }
-	    if (renderToTarget) {
-	      tmp = ctx.source;
-	      ctx.source = ctx.target;
-	      ctx.target = tmp;
-	    }
-	  }
-	};
-
-	renderObject = function(ctx, object) {
-	  var attrib, geometry, gl, index, name, ref, ref1, shader, texture, textureCount, uniform, value;
-	  gl = ctx.gl;
-	  textureCount = 0;
-	  shader = ctx.shaders[object.shader];
-	  geometry = ctx.geometries[object.geometry];
-	  gl.useProgram(shader.program);
-	  ref = shader.attribs;
-	  for (name in ref) {
-	    attrib = ref[name];
-	    gl.bindBuffer(gl.ARRAY_BUFFER, geometry.attribs[name]);
-	    gl.enableVertexAttribArray(attrib.index);
-	    gl.vertexAttribPointer(attrib.index, attrib.itemSize, attrib.type, false, 0, 0);
-	  }
-	  ref1 = shader.uniforms;
-	  for (name in ref1) {
-	    uniform = ref1[name];
-	    index = uniform.index;
-	    value = object.uniforms[name];
-	    switch (uniform.type) {
-	      case 't':
-	        texture = value ? ctx.layers[value].texture : ctx.source.texture;
-	        gl.activeTexture(gl['TEXTURE' + textureCount]);
-	        gl.bindTexture(gl.TEXTURE_2D, texture);
-	        gl.uniform1i(index, textureCount);
-	        textureCount++;
-	        break;
-	      case 'f':
-	      case 'f 1':
-	        gl.uniform1f(index, value);
-	        break;
-	      case 'f 2':
-	        gl.uniform2fv(index, value);
-	        break;
-	      case 'f 3':
-	        gl.uniform3fv(index, value);
-	        break;
-	      case 'f 4':
-	        gl.uniform4fv(index, value);
-	        break;
-	      case 'm 2':
-	        gl.uniformMatrix2fv(index, false, value);
-	        break;
-	      case 'm 3':
-	        gl.uniformMatrix3fv(index, false, value);
-	        break;
-	      case 'm 4':
-	        gl.uniformMatrix4fv(index, false, value);
-	        break;
-	      case 'i':
-	      case 'i 1':
-	        gl.uniform1i(index, value);
-	        break;
-	      case 'i 2':
-	        gl.uniform2iv(index, value);
-	        break;
-	      case 'i 3':
-	        gl.uniform3iv(index, value);
-	        break;
-	      case 'i 4':
-	        gl.uniform4iv(index, value);
-	        break;
-	      default:
-	        console.error('Uniform type ' + uniform.type + ' unknown. uniform ' + name + ' not set!');
-	    }
-	  }
-	  if (geometry.elements) {
-	    gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, geometry.elements.buffer);
-	    gl.drawElements(geometry.drawType, geometry.itemCount, geometry.elements.glType, 0);
-	  } else {
-	    gl.drawArrays(geometry.drawType, 0, geometry.itemCount);
-	  }
-	};
-
-	makeClear = function(gl, clearArray) {
-	  var f;
-	  f = function(res, item) {
-	    return res | gl[item + '_BUFFER_BIT'];
-	  };
-	  return clearArray.reduce(f, 0);
-	};
-
-	setBlendFunc = function(gl, blendOpts) {
-	  return gl.blendFunc.apply(gl, blendOpts.map(function(opt) {
-	    return gl[opt];
-	  }));
-	};
-
-	setTextureParams = function(gl, data) {
-	  gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, !!data.flipY);
-	  if (data.wrap) {
-	    data.wrapS = data.wrapT = data.wrap;
-	  }
-	  if (data.wrapS) {
-	    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl[data.wrapS]);
-	  }
-	  if (data.wrapT) {
-	    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl[data.wrapT]);
-	  }
-	  if (data.magFilter) {
-	    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl[data.magFilter]);
-	  }
-	  if (data.minFilter) {
-	    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl[data.minFilter]);
-	  }
-	};
-
-	updateRenderTarget = function(gl, target, data) {
-	  var err;
-	  if (target.frameBuffer == null) {
-	    target.frameBuffer = gl.createFramebuffer();
-	  }
-	  if (target.texture == null) {
-	    target.texture = target.texture || gl.createTexture();
-	  }
-	  if (target.depthBuffer == null) {
-	    target.depthBuffer = gl.createRenderbuffer();
-	  }
-	  gl.bindTexture(gl.TEXTURE_2D, target.texture);
-	  gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, data.width, data.height, 0, gl.RGBA, gl.UNSIGNED_BYTE, null);
-	  setTextureParams(gl, data);
-	  gl.bindRenderbuffer(gl.RENDERBUFFER, target.depthBuffer);
-	  gl.renderbufferStorage(gl.RENDERBUFFER, gl.DEPTH_COMPONENT16, data.width, data.height);
-	  gl.bindFramebuffer(gl.FRAMEBUFFER, target.frameBuffer);
-	  gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, target.texture, 0);
-	  gl.framebufferRenderbuffer(gl.FRAMEBUFFER, gl.DEPTH_ATTACHMENT, gl.RENDERBUFFER, target.depthBuffer);
-	  err = gl.checkFramebufferStatus(gl.FRAMEBUFFER);
-	  if (err !== gl.FRAMEBUFFER_COMPLETE) {
-	    console.error('framebuffer error', err, data);
-	  }
-	  gl.bindFramebuffer(gl.FRAMEBUFFER, null);
-	  gl.bindTexture(gl.TEXTURE_2D, null);
-	  gl.bindRenderbuffer(gl.RENDERBUFFER, null);
-	};
-
-	getBufferData = function(data) {
-	  if (data.buffer) {
-	    return data.buffer;
-	  } else {
-	    return new window[data.type](data.array);
-	  }
-	};
-
-	typedArrayToGLType = function(array, gl) {
-	  if (array instanceof Uint8Array) {
-	    return gl.UNSIGNED_BYTE;
-	  }
-	  if (array instanceof Uint16Array) {
-	    return gl.UNSIGNED_SHORT;
-	  }
-	  if (array instanceof Uint32Array) {
-	    return gl.UNSIGNED_INT;
-	  }
-	  throw new TypeError('invalid array type');
-	};
-
-	module.exports = {
-	  create: create,
-	  init: init,
-	  updateSettings: updateSettings,
-	  updateObject: updateObject,
-	  updateGeometry: updateGeometry,
-	  updateShader: updateShader,
-	  updateLayer: updateLayer,
-	  updateSize: updateSize,
-	  renderLayers: renderLayers,
-	  lib: lib
-	};
-
-
-/***/ },
-/* 2 */
-/***/ function(module, exports) {
-
-	exports.attribItemSize = {
-	  'f': 1,
-	  'f 1': 1,
-	  'f 2': 2,
-	  'f 3': 3,
-	  'f 4': 4,
-	  'm 2': 4,
-	  'm 3': 9,
-	  'm 4': 16
-	};
-
-
-/***/ },
-/* 3 */
-/***/ function(module, exports) {
-
-	module.exports = {
-	  geometries: {
-	    renderQuad: {
-	      attribs: {
-	        "position": {
-	          buffer: new Float32Array([-1, 1, -1, -1, 1, 1, 1, -1]),
-	          storeType: "STATIC"
-	        },
-	        "uv": {
-	          buffer: new Float32Array([0, 1, 0, 0, 1, 1, 1, 0]),
-	          storeType: "STATIC"
-	        }
-	      },
-	      drawType: "TRIANGLE_STRIP",
-	      itemCount: 4
-	    }
-	  },
-	  shaders: {
-	    basicEffect: {
-	      vert: "attribute vec2 position;\nattribute vec2 uv;\nvarying vec2 vUv;\nvoid main() {\n    vUv = uv;\n    gl_Position = vec4(position, 0.0, 1.0);\n}",
-	      frag: "uniform sampler2D source;\nvarying vec2 vUv;\nvoid main() {\n    gl_FragColor = texture2D(source, vUv);\n}",
-	      attribs: {
-	        "position": "f 2",
-	        "uv": "f 2"
-	      },
-	      uniforms: {
-	        "source": "t"
-	      }
-	    }
-	  },
-	  objects: {
-	    resultScreen: {
-	      shader: 'basicEffect',
-	      geometry: 'renderQuad'
-	    }
-	  }
-	};
-
-
-/***/ }
-/******/ ])
+                  default:
+                    console.error("Uniform type " + o.type + " unknown. uniform " + s + " not set!");
+                }
+            }
+            i.elements ? (a.bindBuffer(a.ELEMENT_ARRAY_BUFFER, i.elements.buffer), a.drawElements(i.drawType, i.itemCount, i.elements.glType, 0)) : a.drawArrays(i.drawType, 0, i.itemCount);
+        }
+        function p(e, r) {
+            return r.reduce(function(r, t) {
+                return r | e[t + "_BUFFER_BIT"];
+            }, 0);
+        }
+        function v(e, r) {
+            e.blendFunc.apply(e, r.map(function(r) {
+                return e[r];
+            }));
+        }
+        function R(e, r) {
+            e.pixelStorei(e.UNPACK_FLIP_Y_WEBGL, r.flipY), r.wrap && (r.wrapS = r.wrapT = r.wrap), 
+            r.wrapS && e.texParameteri(e.TEXTURE_2D, e.TEXTURE_WRAP_S, e[r.wrapS]), r.wrapT && e.texParameteri(e.TEXTURE_2D, e.TEXTURE_WRAP_T, e[r.wrapT]), 
+            r.magFilter && e.texParameteri(e.TEXTURE_2D, e.TEXTURE_MAG_FILTER, e[r.magFilter]), 
+            r.minFilter && e.texParameteri(e.TEXTURE_2D, e.TEXTURE_MIN_FILTER, e[r.minFilter]);
+        }
+        function h(e, r, t) {
+            null == r.frameBuffer && (r.frameBuffer = e.createFramebuffer()), null == r.texture && (r.texture = r.texture || e.createTexture()), 
+            null == r.depthBuffer && (r.depthBuffer = e.createRenderbuffer()), e.bindTexture(e.TEXTURE_2D, r.texture), 
+            e.texImage2D(e.TEXTURE_2D, 0, e.RGBA, t.width, t.height, 0, e.RGBA, e.UNSIGNED_BYTE, null), 
+            R(e, t), e.bindRenderbuffer(e.RENDERBUFFER, r.depthBuffer), e.renderbufferStorage(e.RENDERBUFFER, e.DEPTH_COMPONENT16, t.width, t.height), 
+            e.bindFramebuffer(e.FRAMEBUFFER, r.frameBuffer), e.framebufferTexture2D(e.FRAMEBUFFER, e.COLOR_ATTACHMENT0, e.TEXTURE_2D, r.texture, 0), 
+            e.framebufferRenderbuffer(e.FRAMEBUFFER, e.DEPTH_ATTACHMENT, e.RENDERBUFFER, r.depthBuffer);
+            var a = e.checkFramebufferStatus(e.FRAMEBUFFER);
+            a !== e.FRAMEBUFFER_COMPLETE && console.error("framebuffer error", a, t), e.bindFramebuffer(e.FRAMEBUFFER, null), 
+            e.bindTexture(e.TEXTURE_2D, null), e.bindRenderbuffer(e.RENDERBUFFER, null);
+        }
+        function F(e) {
+            if (A(e)) return e.buffer;
+            var r = window[e.type];
+            return new r(e.array);
+        }
+        function _(e, r) {
+            if (e instanceof Uint8Array) return r.UNSIGNED_BYTE;
+            if (e instanceof Uint16Array) return r.UNSIGNED_SHORT;
+            if (e instanceof Uint32Array) return r.UNSIGNED_INT;
+            throw new TypeError("invalid array type");
+        }
+        function A(e) {
+            return null != e.buffer;
+        }
+        var y = t(1);
+        t(2), r.create = a, r.init = n, r.updateSettings = u, r.updateObject = l, r.updateShader = d, 
+        r.updateGeometry = c, r.updateLayer = g, r.updateSize = E, r.renderLayers = b;
+        var U = {
+            f: 1,
+            "f 1": 1,
+            "f 2": 2,
+            "f 3": 3,
+            "f 4": 4,
+            "m 2": 4,
+            "m 3": 9,
+            "m 4": 16
+        };
+        Object.defineProperty(r, "__esModule", {
+            value: !0
+        }), r["default"] = {
+            create: a,
+            init: n,
+            updateSettings: u,
+            updateObject: l,
+            updateGeometry: c,
+            updateShader: d,
+            updateLayer: g,
+            updateSize: E,
+            renderLayers: b,
+            lib: y["default"]
+        };
+    }, function(e, r, t) {
+        "use strict";
+        t(2), Object.defineProperty(r, "__esModule", {
+            value: !0
+        }), r["default"] = {
+            geometries: {
+                renderQuad: {
+                    attribs: {
+                        position: {
+                            buffer: new Float32Array([ -1, 1, -1, -1, 1, 1, 1, -1 ]),
+                            storeType: "STATIC"
+                        },
+                        uv: {
+                            buffer: new Float32Array([ 0, 1, 0, 0, 1, 1, 1, 0 ]),
+                            storeType: "STATIC"
+                        }
+                    },
+                    drawType: "TRIANGLE_STRIP",
+                    itemCount: 4
+                }
+            },
+            shaders: {
+                basicEffect: {
+                    vert: "\n        attribute vec2 position;\n        attribute vec2 uv;\n        varying vec2 vUv;\n        void main() {\n          vUv = uv;\n          gl_Position = vec4(position, 0.0, 1.0);\n        }",
+                    frag: "\n        uniform sampler2D source;\n        varying vec2 vUv;\n        void main() {\n          gl_FragColor = texture2D(source, vUv);\n        }",
+                    attribs: {
+                        position: "f 2",
+                        uv: "f 2"
+                    },
+                    uniforms: {
+                        source: "t"
+                    }
+                }
+            },
+            objects: {
+                resultScreen: {
+                    shader: "basicEffect",
+                    geometry: "renderQuad"
+                }
+            }
+        };
+    }, function(e, r) {} ]);
 });
-;
