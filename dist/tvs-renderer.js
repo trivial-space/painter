@@ -40,7 +40,7 @@
                 gl: r
             };
             return u(t, t.settings), c(t, "_renderQuad", y["default"].geometries.renderQuad), 
-            d(t, "_renderResult", y["default"].shaders.basicEffect), l(t, "_result", y["default"].objects.resultScreen), 
+            d(t, "_basicEffect", y["default"].shaders.basicEffect), l(t, "_result", y["default"].objects.resultScreen), 
             E(t);
         }
         function n(e, r) {
@@ -195,10 +195,17 @@
                     }
                     break;
 
-                  case "static":                }
+                  case "static":
+                    var E = Object.assign({}, y["default"].objects.resultScreen, {
+                        uniforms: {
+                            source: i
+                        }
+                    });
+                    T(e, E);
+                }
                 if (o) {
-                    var E = e.source;
-                    e.source = e.target, e.target = E;
+                    var b = e.source;
+                    e.source = e.target, e.target = b;
                 }
             }
         }
@@ -375,8 +382,8 @@
             },
             objects: {
                 resultScreen: {
-                    shader: "basicEffect",
-                    geometry: "renderQuad"
+                    shader: "_basicEffect",
+                    geometry: "_renderQuad"
                 }
             }
         };

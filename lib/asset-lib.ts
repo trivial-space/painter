@@ -60,8 +60,8 @@ export default {
   objects: {
 
     resultScreen: {
-      shader: 'basicEffect',
-      geometry: 'renderQuad'
+      shader: '_basicEffect',
+      geometry: '_renderQuad'
     }
   }
 }

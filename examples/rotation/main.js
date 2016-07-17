@@ -10,9 +10,9 @@ let planMat = mat4.fromTranslation(mat4.create(), [0, 0, -1]),
 
 
 function animate () {
-  //rotation += 0.01
   mat4.rotateY(planMat, planMat, rotation)
   renderer.renderLayers(ctx, ['planeLayer', 'effectLayer'])
+  // renderer.renderLayers(ctx, ['textureLayer'])
   requestAnimationFrame(animate)
 }
 

@@ -41,7 +41,7 @@ export function create (canvas?: HTMLCanvasElement): Context{
 
   updateSettings(ctx, ctx.settings)
   updateGeometry(ctx, '_renderQuad', lib.geometries.renderQuad)
-  updateShader(ctx, '_renderResult', lib.shaders.basicEffect)
+  updateShader(ctx, '_basicEffect', lib.shaders.basicEffect)
   updateObject(ctx, '_result', lib.objects.resultScreen)
   return updateSize(ctx)
 }
@@ -393,7 +393,12 @@ export function renderLayers ( ctx: Context, layerIds: ID[] ) {
         break
 
       case "static":
-        // TODO
+        const object = Object.assign({}, lib.objects.resultScreen, {
+          uniforms: {
+            source: layerId
+          }
+        })
+        renderObject(ctx, object)
         break
     }
 
