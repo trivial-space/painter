@@ -1,7 +1,6 @@
 {
     "compilerOptions": {
         "target": "es5",
-        "lib": ["es6", "dom"],
         "moduleResolution": "node",
         "isolatedModules": false,
         "declaration": false,

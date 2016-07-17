@@ -8,7 +8,7 @@ export function create (canvas?: HTMLCanvasElement): Context{
     canvas = document.createElement('canvas')
   }
 
-  const gl : GL = (
+  const gl: GL = (
     canvas.getContext('webgl') || canvas.getContext('experimental-webgl')
   ) as GL
 
@@ -57,44 +57,40 @@ export function init (ctx: Context, data: any): Context {
 }
 
 
-function initShaders (ctx: Context, data: any): Context {
+function initShaders (ctx: Context, data: any) {
   if (data) {
     for (let k in data) {
       let v = data[k]
       updateShader(ctx, k, v)
     }
   }
-  return ctx
 }
 
-function initLayers (ctx: Context, data: any): Context {
+function initLayers (ctx: Context, data: any) {
   if (data) {
     for (let k in data) {
       let v = data[k]
       updateLayer(ctx, k, v)
     }
   }
-  return ctx
 }
 
-function initGeometries (ctx: Context, data: any): Context {
+function initGeometries (ctx: Context, data: any) {
   if (data) {
     for (let k in data) {
       let v = data[k]
       updateGeometry(ctx, k, v)
     }
   }
-  return ctx
 }
 
-function initObjects (ctx: Context, data: any): Context {
+function initObjects (ctx: Context, data: any) {
   if (data) {
     for (let k in data) {
       let v = data[k]
       updateObject(ctx, k, v)
     }
   }
-  return ctx
 }
 
 
@@ -117,6 +113,7 @@ export function updateSettings (ctx: Context, data: any = {}): Context {
   if (data.clearBuffers != null) {
     ctx.settings.clearBits = makeClear(gl, data.clearBuffers)
   }
+
   if (data.enable != null) {
     for (let param of ctx.settings.enable) {
       gl.disable(gl[param])
@@ -126,12 +123,14 @@ export function updateSettings (ctx: Context, data: any = {}): Context {
       gl.enable(gl[param])
     }
   }
+
   if (data.blend !== undefined) {
     ctx.settings.blend = data.blend
   }
   if (ctx.settings.blend) {
     setBlendFunc(gl, ctx.settings.blend)
   }
+
   return ctx
 }
 
@@ -249,6 +248,7 @@ export function updateGeometry (
     gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, geometry.elements.buffer)
     gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, buffer,
                   gl[(data.elements.storeType || 'STATIC') + '_DRAW'])
+
   } else if (geometry.elements) {
     delete geometry.elements
   }
