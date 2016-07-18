@@ -1,7 +1,6 @@
 {
     "compilerOptions": {
         "target": "es5",
-        "lib": ["es6", "dom"],
         "module": "commonjs",
         "moduleResolution": "node",
         "isolatedModules": false,
@@ -9,7 +8,6 @@
         "noImplicitAny": true,
         "noImplicitUseStrict": false,
         "removeComments": true,
-        "noLib": false,
         "preserveConstEnums": true,
         "suppressImplicitAnyIndexErrors": true
     },

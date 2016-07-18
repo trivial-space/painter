@@ -196,12 +196,14 @@
                     break;
 
                   case "static":
-                    var E = Object.assign({}, y["default"].objects.resultScreen, {
-                        uniforms: {
-                            source: i
-                        }
-                    });
-                    T(e, E);
+                    if (f) {
+                        var E = Object.assign({}, y["default"].objects.resultScreen, {
+                            uniforms: {
+                                source: i
+                            }
+                        });
+                        T(e, E);
+                    }
                 }
                 if (o) {
                     var b = e.source;

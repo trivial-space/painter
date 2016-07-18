@@ -375,7 +375,7 @@ export function renderLayers ( ctx: Context, layerIds: ID[] ) {
 
     switch (layer.type) {
       case "shader":
-        renderObject(ctx, (<ContextLayerShader>layer).object)
+        renderObject(ctx, (layer as ContextLayerShader).object)
         break
 
       case "objects":
@@ -393,12 +393,14 @@ export function renderLayers ( ctx: Context, layerIds: ID[] ) {
         break
 
       case "static":
-        const object = Object.assign({}, lib.objects.resultScreen, {
-          uniforms: {
-            source: layerId
-          }
-        })
-        renderObject(ctx, object)
+        if (directRender) {
+          const object = (Object as any).assign({}, lib.objects.resultScreen, {
+            uniforms: {
+              source: layerId
+            }
+          })
+          renderObject(ctx, object)
+        }
         break
     }
 
@@ -492,7 +494,7 @@ function renderObject (ctx: Context, object: ContextObject) {
         break
 
       default:
-        console.error('Uniform type ' + (<any>uniform).type + ' unknown. uniform ' + id + ' not set!')
+        console.error('Uniform type ' + (uniform as any).type + ' unknown. uniform ' + id + ' not set!')
     }
   }
 
@@ -604,7 +606,7 @@ const attribItemSize = {
 
 
 function isGeometryBuffer (b: GeometryBuffer | GeometryArray): b is GeometryBuffer {
-  return ((<GeometryBuffer>b).buffer != null)
+  return ((b as GeometryBuffer).buffer != null)
 }
 
 
