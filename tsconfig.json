@@ -14,6 +14,7 @@
     "exclude": [
         "node_modules",
         "jspm_packages",
+        "examples",
         "typings/browser",
         "typings/browser.d.ts"
     ],

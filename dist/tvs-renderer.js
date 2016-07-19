@@ -25,7 +25,7 @@
                     minFilter: "LINEAR",
                     magFilter: "NEAREST",
                     wrap: "CLAMP_TO_EDGE",
-                    clearBits: p(r, [ "DEPTH", "COLOR" ]),
+                    clearBits: v(r, [ "DEPTH", "COLOR" ]),
                     enable: [ "DEPTH_TEST" ],
                     blend: [ "SRC_ALPHA", "ONE_MINUS_SRC_ALPHA" ],
                     width: e.width,
@@ -39,8 +39,8 @@
                 target: {},
                 gl: r
             };
-            return u(t, t.settings), c(t, "_renderQuad", y["default"].geometries.renderQuad), 
-            d(t, "_basicEffect", y["default"].shaders.basicEffect), l(t, "_result", y["default"].objects.resultScreen), 
+            return u(t, t.settings), c(t, "_renderQuad", A["default"].geometries.renderQuad), 
+            d(t, "_basicEffect", A["default"].shaders.basicEffect), l(t, "_result", A["default"].objects.resultScreen), 
             E(t);
         }
         function n(e, r) {
@@ -76,7 +76,7 @@
             var t = e.gl;
             if (null != r.clearColor && (e.settings.clearColor = r.clearColor), null != r.minFilter && (e.settings.minFilter = r.minFilter), 
             null != r.magFilter && (e.settings.magFilter = r.magFilter), null != r.wrap && (e.settings.wrap = r.wrap), 
-            null != r.clearBuffers && (e.settings.clearBits = p(t, r.clearBuffers)), null != r.enable) {
+            null != r.clearBuffers && (e.settings.clearBits = v(t, r.clearBuffers)), null != r.enable) {
                 for (var a = 0, n = e.settings.enable; a < n.length; a++) {
                     var i = n[a];
                     t.disable(t[i]);
@@ -87,11 +87,18 @@
                     t.enable(t[i]);
                 }
             }
-            return void 0 !== r.blend && (e.settings.blend = r.blend), e.settings.blend && v(t, e.settings.blend), 
+            return void 0 !== r.blend && (e.settings.blend = r.blend), e.settings.blend && T(t, e.settings.blend), 
             e;
         }
         function l(e, r, t) {
-            return null == t.uniforms && (t.uniforms = {}), e.objects[r] = t, e;
+            var a = e.objects[r], n = Object.assign({}, t, {
+                type: "initialized"
+            });
+            if (null == n.uniforms && (n.uniforms = {}), e.objects[r] = n, a && "missing" === a.type) {
+                var i = a;
+                for (var s in i.updateLayers) g(e, s, i.updateLayers[s]);
+            }
+            return e;
         }
         function d(e, r, t) {
             var a = e.shaders[r] || {}, n = null == a.program, i = e.gl, s = "precision mediump float;\n" + t.frag;
@@ -145,18 +152,23 @@
                 var n = a;
                 n.type = "objects", n.transparents = [], n.opaques = [];
                 for (var i = 0, s = t.objects; i < s.length; i++) {
-                    var f = s[i];
-                    e.objects[f].blend ? n.transparents.push(f) : n.opaques.push(f);
+                    var f = s[i], o = e.objects[f];
+                    o && "initialized" === o.type ? o.blend ? n.transparents.push(f) : n.opaques.push(f) : o ? o.updateLayers[r] = t : e.objects[f] = {
+                        type: "missing",
+                        updateLayers: (u = {}, u[r] = t, u)
+                    };
                 }
             } else if (t.shader) {
                 var n = a;
                 n.type = "shader", n.object = {
+                    type: "initialized",
                     shader: t.shader,
                     geometry: "_renderQuad",
                     uniforms: t.uniforms || {}
                 };
             }
             return e.layers[r] = a, e;
+            var u;
         }
         function m(e, r, t) {
             var a = r.texture || e.createTexture();
@@ -177,19 +189,19 @@
                 t.viewport(0, 0, s.renderTarget.width, s.renderTarget.height)), s.noClear || (t.clearColor.apply(t, s.clearColor || e.settings.clearColor), 
                 t.clear(e.settings.clearBits)), s.type) {
                   case "shader":
-                    T(e, s.object);
+                    p(e, s.object);
                     break;
 
                   case "objects":
                     for (var u = s, l = 0, d = u.opaques; l < d.length; l++) {
                         var c = d[l];
-                        T(e, e.objects[c]);
+                        p(e, e.objects[c]);
                     }
                     if (u.transparents.length) {
                         t.enable(t.BLEND);
                         for (var g = 0, m = u.transparents; g < m.length; g++) {
                             var c = m[g];
-                            T(e, e.objects[c]);
+                            p(e, e.objects[c]);
                         }
                         t.disable(t.BLEND);
                     }
@@ -197,12 +209,12 @@
 
                   case "static":
                     if (f) {
-                        var E = Object.assign({}, y["default"].objects.resultScreen, {
+                        var E = Object.assign({}, A["default"].objects.resultScreen, {
                             uniforms: {
                                 source: i
                             }
                         });
-                        T(e, E);
+                        p(e, E);
                     }
                 }
                 if (o) {
@@ -211,7 +223,7 @@
                 }
             }
         }
-        function T(e, r) {
+        function p(e, r) {
             var t = 0, a = e.gl, n = e.shaders[r.shader], i = e.geometries[r.geometry];
             a.useProgram(n.program);
             for (var s in n.attribs) {
@@ -280,20 +292,21 @@
             }
             i.elements ? (a.bindBuffer(a.ELEMENT_ARRAY_BUFFER, i.elements.buffer), a.drawElements(i.drawType, i.itemCount, i.elements.glType, 0)) : a.drawArrays(i.drawType, 0, i.itemCount);
         }
-        function p(e, r) {
+        function v(e, r) {
             return r.reduce(function(r, t) {
                 return r | e[t + "_BUFFER_BIT"];
             }, 0);
         }
-        function v(e, r) {
+        function T(e, r) {
             e.blendFunc.apply(e, r.map(function(r) {
                 return e[r];
             }));
         }
         function R(e, r) {
-            e.pixelStorei(e.UNPACK_FLIP_Y_WEBGL, r.flipY), r.wrap && (r.wrapS = r.wrapT = r.wrap), 
-            r.wrapS && e.texParameteri(e.TEXTURE_2D, e.TEXTURE_WRAP_S, e[r.wrapS]), r.wrapT && e.texParameteri(e.TEXTURE_2D, e.TEXTURE_WRAP_T, e[r.wrapT]), 
-            r.magFilter && e.texParameteri(e.TEXTURE_2D, e.TEXTURE_MAG_FILTER, e[r.magFilter]), 
+            e.pixelStorei(e.UNPACK_FLIP_Y_WEBGL, r.flipY);
+            var t, a;
+            r.wrap ? t = a = r.wrap : (a = r.wrapT, t = r.wrapS), t && e.texParameteri(e.TEXTURE_2D, e.TEXTURE_WRAP_S, e[t]), 
+            a && e.texParameteri(e.TEXTURE_2D, e.TEXTURE_WRAP_T, e[a]), r.magFilter && e.texParameteri(e.TEXTURE_2D, e.TEXTURE_MAG_FILTER, e[r.magFilter]), 
             r.minFilter && e.texParameteri(e.TEXTURE_2D, e.TEXTURE_MIN_FILTER, e[r.minFilter]);
         }
         function h(e, r, t) {
@@ -308,7 +321,7 @@
             e.bindTexture(e.TEXTURE_2D, null), e.bindRenderbuffer(e.RENDERBUFFER, null);
         }
         function F(e) {
-            if (A(e)) return e.buffer;
+            if (y(e)) return e.buffer;
             var r = window[e.type];
             return new r(e.array);
         }
@@ -318,10 +331,10 @@
             if (e instanceof Uint32Array) return r.UNSIGNED_INT;
             throw new TypeError("invalid array type");
         }
-        function A(e) {
+        function y(e) {
             return null != e.buffer;
         }
-        var y = t(1);
+        var A = t(1);
         t(2), r.create = a, r.init = n, r.updateSettings = u, r.updateObject = l, r.updateShader = d, 
         r.updateGeometry = c, r.updateLayer = g, r.updateSize = E, r.renderLayers = b;
         var U = {
@@ -346,7 +359,7 @@
             updateLayer: g,
             updateSize: E,
             renderLayers: b,
-            lib: y["default"]
+            lib: A["default"]
         };
     }, function(e, r, t) {
         "use strict";

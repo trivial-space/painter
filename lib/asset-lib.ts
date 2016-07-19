@@ -1,4 +1,4 @@
-import './renderer-types'
+import './renderer-types.ts'
 
 export default {
 

@@ -103,71 +103,81 @@ interface ContextLayerObjects extends ContextLayerBase {
 
 interface ContextLayerShader extends ContextLayerBase {
   type: "shader"
-  object: ContextObject
+  object: ContextObjectInitialized
 }
 
 type ContextLayer = ContextLayerStatic | ContextLayerObjects | ContextLayerShader
 
 
 interface TextureData {
-  flipY?: boolean
-  wrap?: Wrap
-  wrapT?: Wrap
-  wrapS?: Wrap
-  minFilter?: MinFilter
-  magFilter?: MagFilter
+  readonly flipY?: boolean
+  readonly wrap?: Wrap
+  readonly wrapT?: Wrap
+  readonly wrapS?: Wrap
+  readonly minFilter?: MinFilter
+  readonly magFilter?: MagFilter
 }
 
 interface LayerData extends TextureData {
 
-  buffered?: boolean // get its own RenderTarget
-  width?: number // for own RenderTarget
-  height?: number // for own RenderTarget
-  noClear?: boolean
-  clearColor?: Color
+  readonly buffered?: boolean // get its own RenderTarget
+  readonly width?: number // for own RenderTarget
+  readonly height?: number // for own RenderTarget
+  readonly noClear?: boolean
+  readonly clearColor?: Color
 
-  objects?: ID[] // ObjectLayer specific
-  asset?: Asset // AssetLayer specific
-  shader?: ID // ShaderLayer specific
-  uniforms?: {[id: string]: any} // ShaderLayer specific
+  readonly objects?: ID[] // ObjectLayer specific
+  readonly asset?: Asset // AssetLayer specific
+  readonly shader?: ID // ShaderLayer specific
+  readonly uniforms?: {[id: string]: any} // ShaderLayer specific
 }
 
 
 interface ObjectData {
-  shader: ID
-  geometry: ID
-  uniforms?: {[id: string]: any}
-  blend?: boolean
+  readonly shader: ID
+  readonly geometry: ID
+  readonly uniforms?: {[id: string]: any}
+  readonly blend?: boolean
 }
 
 
-interface ContextObject {
+interface ContextObjectInitialized {
+  type: "initialized"
   shader: ID
   geometry: ID
   uniforms: {[id: string]: any}
   blend?: boolean
 }
 
+interface ContextObjectMissing {
+  type: "missing"
+  updateLayers: {
+    [id: string]: LayerData
+  }
+}
+
+type ContextObject = ContextObjectMissing | ContextObjectInitialized
+
 
 interface GeometryArray {
-  array: number[]
-  type: TypedArrayTypes
+  readonly array: number[]
+  readonly type: TypedArrayTypes
 }
 
 interface GeometryBuffer  {
-  buffer: TypedArray
+  readonly buffer: TypedArray
 }
 
 type GeometryBufferStore = (GeometryBuffer | GeometryArray) & {
-  storeType?: GeometryStoreType
+  readonly storeType?: GeometryStoreType
 }
 
 
 interface GeometryData {
-  drawType: GeometryDrawType
-  itemCount: number
-  attribs: {[id: string]: GeometryBufferStore}
-  elements?: GeometryBufferStore
+  readonly drawType: GeometryDrawType
+  readonly itemCount: number
+  readonly attribs: {[id: string]: GeometryBufferStore}
+  readonly elements?: GeometryBufferStore
 }
 
 
@@ -183,10 +193,10 @@ interface ContextGeometry {
 
 
 interface ShaderData {
-  vert: string
-  frag: string
-  attribs: {[id: string]: ShaderAttribType}
-  uniforms: {[id: string]: ShaderUniformType}
+  readonly vert: string
+  readonly frag: string
+  readonly attribs: {[id: string]: ShaderAttribType}
+  readonly uniforms: {[id: string]: ShaderUniformType}
 }
 
 

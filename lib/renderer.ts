@@ -1,5 +1,5 @@
-import lib from './asset-lib'
-import './renderer-types'
+import lib from './asset-lib.ts'
+import './renderer-types.ts'
 
 
 export function create (canvas?: HTMLCanvasElement): Context{
@@ -141,10 +141,22 @@ export function updateObject (
   object: ObjectData
 ): Context {
 
-  if (object.uniforms == null) {
-    object.uniforms = {}
+  let old = ctx.objects[id]
+  let newO = (Object as any).assign({}, object, {
+    type: "initialized"
+  }) as ContextObjectInitialized
+
+  if (newO.uniforms == null) {
+    newO.uniforms = {}
   }
-  ctx.objects[id] = object as ContextObject
+  ctx.objects[id] = newO
+
+  if (old && old.type === "missing") {
+    let obj = old as ContextObjectMissing
+    for (let layerId in obj.updateLayers) {
+      updateLayer(ctx, layerId, obj.updateLayers[layerId])
+    }
+  }
   return ctx
 }
 
@@ -260,11 +272,11 @@ export function updateGeometry (
 
 export function updateLayer (
   ctx: Context,
-  id: ID,
+  layerId: ID,
   data: LayerData
 ): Context {
 
-  const layer = ctx.layers[id] || {} as ContextLayer
+  const layer = ctx.layers[layerId] || {} as ContextLayer
   layer.noClear = data.noClear
   layer.clearColor = data.clearColor || ctx.settings.clearColor
 
@@ -289,10 +301,22 @@ export function updateLayer (
     l.transparents = []
     l.opaques = []
     for (let id of data.objects) {
-      if (ctx.objects[id].blend) {
-        l.transparents.push(id)
+      let o = ctx.objects[id]
+      if (o && o.type === "initialized") {
+        if ((o as ContextObjectInitialized).blend) {
+          l.transparents.push(id)
+        } else {
+          l.opaques.push(id)
+        }
+      } else if (o) {
+        (o as ContextObjectMissing).updateLayers[layerId] = data
       } else {
-        l.opaques.push(id)
+        ctx.objects[id] = {
+          type: "missing",
+          updateLayers: {
+            [layerId]: data
+          }
+        }
       }
     }
 
@@ -300,13 +324,14 @@ export function updateLayer (
     let l = layer as ContextLayerShader
     l.type = "shader"
     l.object = {
+      type: "initialized",
       shader: data.shader,
       geometry: '_renderQuad',
       uniforms: data.uniforms || {},
     }
   }
 
-  ctx.layers[id] = layer
+  ctx.layers[layerId] = layer
   return ctx
 }
 
@@ -381,12 +406,12 @@ export function renderLayers ( ctx: Context, layerIds: ID[] ) {
       case "objects":
         let l = layer as ContextLayerObjects
         for (let id of l.opaques) {
-          renderObject(ctx, ctx.objects[id])
+          renderObject(ctx, ctx.objects[id] as ContextObjectInitialized)
         }
         if (l.transparents.length) {
           gl.enable(gl.BLEND)
           for (let id of l.transparents) {
-            renderObject(ctx, ctx.objects[id])
+            renderObject(ctx, ctx.objects[id] as ContextObjectInitialized)
           }
           gl.disable(gl.BLEND)
         }
@@ -413,7 +438,7 @@ export function renderLayers ( ctx: Context, layerIds: ID[] ) {
 }
 
 
-function renderObject (ctx: Context, object: ContextObject) {
+function renderObject (ctx: Context, object: ContextObjectInitialized) {
 
   let textureCount = 0
 
@@ -521,14 +546,18 @@ function setBlendFunc (gl: GL, blendOpts: string[]) {
 
 function setTextureParams (gl: GL, data: TextureData) {
   gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, data.flipY as any)
+  let wrapS: Wrap, wrapT: Wrap
   if (data.wrap) {
-    data.wrapS = data.wrapT = data.wrap
+    wrapS = wrapT = data.wrap
+  } else {
+    wrapT = data.wrapT
+    wrapS = data.wrapS
   }
-  if (data.wrapS) {
-    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl[data.wrapS])
+  if (wrapS) {
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl[wrapS])
   }
-  if (data.wrapT) {
-    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl[data.wrapT])
+  if (wrapT) {
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl[wrapT])
   }
   if (data.magFilter) {
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl[data.magFilter])
