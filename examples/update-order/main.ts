@@ -9,15 +9,18 @@ import planeFrag from './plane-material.frag!text'
 import effectFrag from './effect.frag!text'
 
 
-let planMat = mat4.fromTranslation(mat4.create(), [0, 0, -1]),
+let planMat1 = mat4.fromTranslation(mat4.create(), [0, 0, -1]),
+    planMat2 = mat4.fromTranslation(mat4.create(), [0, 0, -1]),
     rotation = 0.01,
     projection = mat4.perspective(mat4.create(), 45, 1, 0.01, 10)
 
+mat4.rotateY(planMat2, planMat2, Math.PI / 2)
 
 // ===== initialize animation =====
 
 function animate () {
-  mat4.rotateY(planMat, planMat, rotation)
+  mat4.rotateY(planMat1, planMat1, rotation)
+  mat4.rotateY(planMat2, planMat2, rotation)
   renderer.renderLayers(ctx, ['planeLayer', 'effectLayer'])
   requestAnimationFrame(animate)
 }
@@ -36,7 +39,7 @@ img.src = '../shared-assets/hepatica_256.png'
 // ===== Setup Render Context =====
 
 renderer.updateLayer(ctx, "planeLayer", {
-  objects: ["plane"],
+  objects: ["plane1", "plane2"],
   clearColor: [0.0, 1.0, 0.0, 1.0]
 })
 
@@ -85,13 +88,23 @@ renderer.updateShader(ctx, "effect", (Object as any).assign({}, renderer.lib.sha
   frag: effectFrag
 }))
 
-renderer.updateObject(ctx, "plane", {
+renderer.updateObject(ctx, "plane1", {
   shader: "planeMaterial",
   geometry: "planeGeometry",
   uniforms: {
     source: "textureLayer",
     projection,
-    object: planMat
+    object: planMat1
+  },
+})
+
+renderer.updateObject(ctx, "plane2", {
+  shader: "planeMaterial",
+  geometry: "planeGeometry",
+  uniforms: {
+    source: "textureLayer",
+    projection,
+    object: planMat2
   },
   blend: true
 })
