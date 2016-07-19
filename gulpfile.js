@@ -17,7 +17,7 @@ gulp.task('server', function() {
 
 
 gulp.task('webpack', function() {
-  return gulp.src('lib/index.js')
+  return gulp.src('lib/renderer.js')
     .pipe(webpack(require('./webpack.config.js')))
     .pipe(gulp.dest('dist/'))
 })

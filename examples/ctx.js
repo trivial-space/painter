@@ -1,4 +1,4 @@
-import * as renderer from '../../dist/tvs-renderer.js'
+import * as renderer from '../dist/tvs-renderer.js'
 
 
 let canvas = document.getElementById('canvas')

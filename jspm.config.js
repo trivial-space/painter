@@ -268,7 +268,8 @@ SystemJS.config({
   ],
   map: {
     "fs": "github:jspm/nodelibs-fs@0.2.0-alpha",
-    "gl-matrix": "npm:gl-matrix@2.3.2"
+    "gl-matrix": "npm:gl-matrix@2.3.2",
+    "text": "github:systemjs/plugin-text@0.0.8"
   },
   packages: {}
 });

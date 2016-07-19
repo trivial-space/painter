@@ -3,6 +3,10 @@ import renderer from '../../dist/tvs-renderer.js'
 import {ctx} from '../ctx.js'
 import {mat4} from 'gl-matrix'
 
+import plainVert from './plain-material.vert!text'
+import plainFrag from './plain-material.frag!text'
+import effectFrag from './effect.frag!text'
+
 
 let planMat = mat4.fromTranslation(mat4.create(), [0, 0, -1]),
     rotation = 0.01,
@@ -24,7 +28,7 @@ img.onload = function() {
   })
   animate()
 }
-img.src = '../hepatica_256.png'
+img.src = '../shared-assets/hepatica_256.png'
 
 
 const scene = {
@@ -55,28 +59,8 @@ const scene = {
 
   shaders: {
     planeMaterial: {
-      vert:
-        `
-          attribute vec3 position;
-          attribute vec2 uv;
-          uniform mat4 projection;
-          uniform mat4 object;
-
-          varying vec2 vUv;
-
-          void main() {
-              vUv = uv;
-              gl_Position = projection * object * vec4(position, 1.0);
-          }
-        `,
-      frag:
-        `
-          uniform sampler2D source;
-          varying vec2 vUv;
-          void main() {
-              gl_FragColor = texture2D(source, vUv);
-          }
-        `,
+      vert: plainVert,
+      frag: plainFrag,
       attribs: {
         "position": "f 3",
         "uv": "f 2"
@@ -90,15 +74,7 @@ const scene = {
     },
     effect: {
       ...renderer.lib.shaders.basicEffect,
-      frag:
-        `
-          uniform sampler2D source;
-          varying vec2 vUv;
-          void main() {
-              vec4 new_color = texture2D(source, vUv);
-              gl_FragColor = vec4(new_color.rgb * 0.5 + 0.3, 1.0);
-          }
-        `
+      frag: effectFrag
     }
   },
 
