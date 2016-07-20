@@ -84,9 +84,11 @@ renderer.updateShader(ctx, "planeMaterial", {
   }
 })
 
-renderer.updateShader(ctx, "effect", (Object as any).assign({}, renderer.lib.shaders.basicEffect, {
-  frag: effectFrag
-}))
+renderer.updateShader(ctx, "effect", (Object as any).assign({},
+  renderer.lib.shaders.basicEffect, {
+    frag: effectFrag
+  }
+))
 
 renderer.updateObject(ctx, "plane1", {
   shader: "planeMaterial",
@@ -95,7 +97,7 @@ renderer.updateObject(ctx, "plane1", {
     source: "textureLayer",
     projection,
     object: planMat1
-  },
+  }
 })
 
 renderer.updateObject(ctx, "plane2", {
