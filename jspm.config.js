@@ -25,7 +25,9 @@ SystemJS.config({
       "string_decoder": "github:jspm/nodelibs-string_decoder@0.2.0-alpha",
       "events": "github:jspm/nodelibs-events@0.2.0-alpha",
       "plugin-babel": "npm:systemjs-plugin-babel@0.0.12",
-      "systemjs-hot-reloader": "github:capaj/systemjs-hot-reloader@0.6.0"
+      "systemjs-hot-reloader": "github:capaj/systemjs-hot-reloader@0.6.0",
+      "gl-matrix": "npm:gl-matrix@2.3.2",
+      "text": "github:systemjs/plugin-text@0.0.8"
     },
     "packages": {
       "github:frankwallis/plugin-typescript@5.0.8": {
@@ -267,9 +269,7 @@ SystemJS.config({
     "npm:*.json"
   ],
   map: {
-    "fs": "github:jspm/nodelibs-fs@0.2.0-alpha",
-    "gl-matrix": "npm:gl-matrix@2.3.2",
-    "text": "github:systemjs/plugin-text@0.0.8"
+    "fs": "github:jspm/nodelibs-fs@0.2.0-alpha"
   },
   packages: {}
 });
