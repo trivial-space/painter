@@ -1,8 +1,8 @@
 {
   "name": "tvs-renderer",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "trivialspace renderer - a webgl rendering engine",
-  "main": "dist/tvs-renderer",
+  "main": "dist/tvs-renderer.js",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/trivial-space/renderer.git"
@@ -32,7 +32,7 @@
   },
   "jspm": {
     "name": "tvs-renderer",
-    "main": "renderer.ts",
+    "main": "dist/tvs-renderer.js",
     "devDependencies": {
       "gl-matrix": "npm:gl-matrix@^2.3.2",
       "text": "github:systemjs/plugin-text@^0.0.8",
