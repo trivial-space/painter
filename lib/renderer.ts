@@ -8,9 +8,7 @@ export function create (canvas?: HTMLCanvasElement): Context{
     canvas = document.createElement('canvas')
   }
 
-  const gl: GL = (
-    canvas.getContext('webgl') || canvas.getContext('experimental-webgl')
-  ) as GL
+  const gl = canvas.getContext('webgl') || canvas.getContext('experimental-webgl')
 
   if (!gl) {
     throw Error('WebGL-Context could not be initialized!')
@@ -142,7 +140,7 @@ export function updateObject (
 ): Context {
 
   let old = ctx.objects[id]
-  let newO = (Object as any).assign({}, object, {
+  let newO = Object.assign({}, object, {
     type: "initialized"
   }) as ContextObjectInitialized
 
@@ -152,9 +150,8 @@ export function updateObject (
   ctx.objects[id] = newO
 
   if (old && old.type === "missing") {
-    let obj = old as ContextObjectMissing
-    for (let layerId in obj.updateLayers) {
-      updateLayer(ctx, layerId, obj.updateLayers[layerId])
+    for (let layerId in old.updateLayers) {
+      updateLayer(ctx, layerId, old.updateLayers[layerId])
     }
   }
   return ctx
@@ -250,7 +247,7 @@ export function updateGeometry (
 
   if (data.elements) {
     if (geometry.elements == null) {
-      geometry.elements = {} as any
+      geometry.elements = { buffer: null, glType: null }
     }
     if (geometry.elements.buffer == null) {
       geometry.elements.buffer = gl.createBuffer()
@@ -283,17 +280,17 @@ export function updateLayer (
   if (data.buffered) {
     layer.renderTarget = {
       width: data.width || ctx.settings.width,
-      height: data.height || ctx.settings.height
-    } as RenderTarget
+      height: data.height || ctx.settings.height,
+      frameBuffer: null, texture: null, depthBuffer: null
+    }
     updateRenderTarget(ctx.gl, layer.renderTarget, data)
   } else {
     delete layer.renderTarget
   }
 
   if (data.asset) {
-    let l = layer as ContextLayerStatic
-    l.type = "static"
-    updateStaticLayer(ctx.gl, l, data)
+    layer.type = "static"
+    updateStaticLayer(ctx.gl, layer as ContextLayerStatic, data)
 
   } else if (data.objects) {
     let l = layer as ContextLayerObjects
@@ -302,14 +299,16 @@ export function updateLayer (
     l.opaques = []
     for (let id of data.objects) {
       let o = ctx.objects[id]
-      if (o && o.type === "initialized") {
-        if ((o as ContextObjectInitialized).blend) {
-          l.transparents.push(id)
+      if (o) {
+        if (o.type === "initialized") {
+          if (o.blend) {
+            l.transparents.push(id)
+          } else {
+            l.opaques.push(id)
+          }
         } else {
-          l.opaques.push(id)
+          o.updateLayers[layerId] = data
         }
-      } else if (o) {
-        (o as ContextObjectMissing).updateLayers[layerId] = data
       } else {
         ctx.objects[id] = {
           type: "missing",
@@ -338,8 +337,8 @@ export function updateLayer (
 function updateStaticLayer (gl: GL, layer: ContextLayerStatic, data: LayerData) {
   const texture = layer.texture || gl.createTexture()
   gl.bindTexture(gl.TEXTURE_2D, texture)
-  setTextureParams(gl, data as TextureData)
-  gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, data.asset as any)
+  setTextureParams(gl, data)
+  gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, data.asset)
   gl.generateMipmap(gl.TEXTURE_2D)
   gl.bindTexture(gl.TEXTURE_2D, null)
   layer.texture = texture
@@ -400,17 +399,16 @@ export function renderLayers ( ctx: Context, layerIds: ID[] ) {
 
     switch (layer.type) {
       case "shader":
-        renderObject(ctx, (layer as ContextLayerShader).object)
+        renderObject(ctx, layer.object)
         break
 
       case "objects":
-        let l = layer as ContextLayerObjects
-        for (let id of l.opaques) {
+        for (let id of layer.opaques) {
           renderObject(ctx, ctx.objects[id] as ContextObjectInitialized)
         }
-        if (l.transparents.length) {
+        if (layer.transparents.length) {
           gl.enable(gl.BLEND)
-          for (let id of l.transparents) {
+          for (let id of layer.transparents) {
             renderObject(ctx, ctx.objects[id] as ContextObjectInitialized)
           }
           gl.disable(gl.BLEND)
@@ -419,11 +417,13 @@ export function renderLayers ( ctx: Context, layerIds: ID[] ) {
 
       case "static":
         if (directRender) {
-          const object = (Object as any).assign({}, lib.objects.resultScreen, {
-            uniforms: {
-              source: layerId
-            }
-          })
+          const object = Object.assign({},
+            ctx.objects['_result'] as ContextObjectInitialized,
+            {
+              uniforms: {
+                source: layerId
+              }
+            })
           renderObject(ctx, object)
         }
         break
@@ -580,7 +580,7 @@ function updateRenderTarget (gl: GL, target: RenderTarget, data: LayerData) {
   }
   gl.bindTexture(gl.TEXTURE_2D, target.texture)
   gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, data.width, data.height, 0, gl.RGBA, gl.UNSIGNED_BYTE, null)
-  setTextureParams(gl, data as TextureData)
+  setTextureParams(gl, data)
   gl.bindRenderbuffer(gl.RENDERBUFFER, target.depthBuffer)
   gl.renderbufferStorage(gl.RENDERBUFFER, gl.DEPTH_COMPONENT16, data.width, data.height)
   gl.bindFramebuffer(gl.FRAMEBUFFER, target.frameBuffer)
@@ -602,13 +602,13 @@ function getBufferData (data: GeometryBuffer | GeometryArray): TypedArray {
   if (isGeometryBuffer(data)) {
     return data.buffer
   } else {
-    let TypedArray = window[data.type] as any
+    let TypedArray = window[data.type] as TypedArrayConstructor
     return new TypedArray(data.array)
   }
 }
 
 
-function typedArrayToGLType (array: any, gl: GL) {
+function typedArrayToGLType (array: TypedArray, gl: GL) {
   if (array instanceof Uint8Array) {
     return gl.UNSIGNED_BYTE
   }

@@ -12,6 +12,15 @@ type TypedArray = Uint8Array |
                   Float32Array |
                   Float64Array
 
+type TypedArrayConstructor = Uint8ArrayConstructor |
+                             Uint16ArrayConstructor |
+                             Uint32ArrayConstructor |
+                             Int8ArrayConstructor |
+                             Int16ArrayConstructor |
+                             Int32ArrayConstructor |
+                             Float32ArrayConstructor |
+                             Float64ArrayConstructor
+
 type TypedArrayTypes = "Uint8Array" |
                        "Uint16Array" |
                        "Uint32Array" |
@@ -31,7 +40,7 @@ type MinFilter = MagFilter |
 
 type Wrap = "CLAMP_TO_EDGE" | "REPEAT" | "MIRRORED_REPEAT"
 
-type Asset = HTMLCanvasElement | HTMLImageElement | HTMLVideoElement
+type Asset = ImageData | HTMLCanvasElement | HTMLImageElement | HTMLVideoElement
 
 type GeometryDrawType = "TRIANGLES" |
                         "TRIANGLE_STRIP" |
