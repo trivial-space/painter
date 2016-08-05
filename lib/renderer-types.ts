@@ -72,8 +72,9 @@ interface Settings {
   magFilter: MagFilter
   wrap: Wrap
   clearBits: number
-  enable: string[]
-  blend: [string, string]
+  clearBuffers: string[] // default ["COLOR", "DEPTH"]
+  enable: string[] // GL Properties to be enabled: ["DEPTH_TEST", "CULL_FACE"]  default 'DEPTH_TEST'
+  blend: [string, string] // like ["SRC_ALPHA", "ONE_MINUS_SRC_ALPHA"]
   width: number
   height: number
 }

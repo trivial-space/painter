@@ -21,7 +21,8 @@ export function create (canvas?: HTMLCanvasElement): Context{
       minFilter: 'LINEAR',
       magFilter: 'NEAREST',
       wrap: 'CLAMP_TO_EDGE',
-      clearBits: makeClear(gl, ['DEPTH', 'COLOR']),
+      clearBuffers: ['DEPTH', 'COLOR'],
+      clearBits: 0,
       enable: ['DEPTH_TEST'],
       blend: ["SRC_ALPHA", "ONE_MINUS_SRC_ALPHA"],
       width: canvas.width,
@@ -109,6 +110,7 @@ export function updateSettings (ctx: Context, data: any = {}): Context {
     ctx.settings.wrap = data.wrap
   }
   if (data.clearBuffers != null) {
+    ctx.settings.clearBuffers = data.clearBuffers
     ctx.settings.clearBits = makeClear(gl, data.clearBuffers)
   }
 
@@ -201,11 +203,15 @@ export function updateShader (
   shader.attribs = {}
   for (let id in data.attribs) {
     let type = data.attribs[id]
-    shader.attribs[id] = {
+    let attrib = {
       index: gl.getAttribLocation(shader.program, id),
       type: gl.FLOAT,
       itemSize: attribItemSize[type]
     }
+    if (attrib.index < 0) {
+      console.error('attribute "' + id + '" could not be found in shader', data.vert)
+    }
+    shader.attribs[id] = attrib
   }
 
   shader.uniforms = {}
