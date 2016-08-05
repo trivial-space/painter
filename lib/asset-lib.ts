@@ -1,3 +1,4 @@
+import * as constants from './contants.ts'
 import './renderer-types.ts'
 
 export default {
@@ -6,7 +7,7 @@ export default {
 
     renderQuad: {
       attribs: {
-        "position": {
+        [constants.GEOMETRY_PROP_POSITION]: {
           buffer: new Float32Array([
             -1, 1,
             -1, -1,
@@ -15,7 +16,7 @@ export default {
           ]),
           storeType: "STATIC" as GeometryStoreType
         },
-        "uv": {
+        [constants.GEOMETRY_PROP_UV]: {
           buffer: new Float32Array([
             0, 1,
             0, 0,
@@ -34,25 +35,25 @@ export default {
 
     basicEffect: {
       vert: `
-        attribute vec2 position;
-        attribute vec2 uv;
+        attribute vec2 ${constants.GEOMETRY_PROP_POSITION};
+        attribute vec2 ${constants.GEOMETRY_PROP_UV};
         varying vec2 vUv;
         void main() {
-          vUv = uv;
-          gl_Position = vec4(position, 0.0, 1.0);
+          vUv = ${constants.GEOMETRY_PROP_UV};
+          gl_Position = vec4(${constants.GEOMETRY_PROP_POSITION}, 0.0, 1.0);
         }`,
       frag: `
-        uniform sampler2D source;
+        uniform sampler2D ${constants.UNIFORM_SOURCE_TEXTURE};
         varying vec2 vUv;
         void main() {
-          gl_FragColor = texture2D(source, vUv);
+          gl_FragColor = texture2D(${constants.UNIFORM_SOURCE_TEXTURE}, vUv);
         }`,
       attribs: {
-        "position": "f 2" as ShaderAttribType,
-        "uv": "f 2" as ShaderAttribType
+        [constants.GEOMETRY_PROP_POSITION]: "f 2" as ShaderAttribType,
+        [constants.GEOMETRY_PROP_UV]: "f 2" as ShaderAttribType
       },
       uniforms: {
-        "source": "t" as ShaderUniformType
+        [constants.UNIFORM_SOURCE_TEXTURE]: "t" as ShaderUniformType
       }
     }
   },
