@@ -269,7 +269,8 @@ SystemJS.config({
     "npm:*.json"
   ],
   map: {
-    "fs": "github:jspm/nodelibs-fs@0.2.0-alpha"
+    "fs": "github:jspm/nodelibs-fs@0.2.0-alpha",
+    "primitive-cube": "npm:primitive-cube@2.0.0"
   },
   packages: {}
 });

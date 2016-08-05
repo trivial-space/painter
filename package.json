@@ -33,6 +33,9 @@
   "jspm": {
     "name": "tvs-renderer",
     "main": "dist/tvs-renderer.js",
+    "dependencies": {
+      "primitive-cube": "npm:primitive-cube@^2.0.0"
+    },
     "devDependencies": {
       "gl-matrix": "npm:gl-matrix@^2.3.2",
       "text": "github:systemjs/plugin-text@^0.0.8",
@@ -92,5 +95,8 @@
         }
       }
     }
+  },
+  "dependencies": {
+    "lodash.flatten": "^4.3.0"
   }
 }
