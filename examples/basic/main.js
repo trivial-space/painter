@@ -9,8 +9,8 @@ const scene = {
       attribs: {
         position: {
           buffer: new Float32Array([
-            -0.5, 0.5,
-            -0.5, -0.7,
+            -0.7, 0.7,
+            -0.5, -0.4,
             0.6, 0.5,
             0.5, -0.5
           ])

@@ -69,7 +69,6 @@ const scene = {
         "source": "t",
         "object": "m 4",
         "projection": "m 4"
-
       }
     },
     effect: {
@@ -104,3 +103,5 @@ const scene = {
 
 
 renderer.init(ctx, scene)
+window.ctx = ctx
+window.renderer = renderer

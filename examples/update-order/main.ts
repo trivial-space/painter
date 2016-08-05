@@ -1,4 +1,3 @@
-
 import 'systemjs-hot-reloader/default-listener.js'
 import renderer from '../../lib/renderer.ts'
 import {ctx} from '../ctx.ts'
@@ -15,6 +14,7 @@ let planMat1 = mat4.fromTranslation(mat4.create(), [0, 0, -1]),
     projection = mat4.perspective(mat4.create(), 45, 1, 0.01, 10)
 
 mat4.rotateY(planMat2, planMat2, Math.PI / 2)
+
 
 // ===== initialize animation =====
 

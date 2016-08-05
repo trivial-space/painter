@@ -1,27 +1,25 @@
 {
-    "compilerOptions": {
-        "target": "es5",
-        "lib": ["es6", "dom"],
-        "module": "commonjs",
-        "moduleResolution": "node",
-        "isolatedModules": false,
-        "declaration": false,
-        "noImplicitAny": true,
-        "noImplicitUseStrict": false,
-        "removeComments": true,
-        "preserveConstEnums": true,
-        "suppressImplicitAnyIndexErrors": true
-    },
-    "exclude": [
-        "node_modules",
-        "jspm_packages",
-        "examples",
-        "typings/browser",
-        "typings/browser.d.ts"
-    ],
-    "compileOnSave": false,
-    "buildOnSave": false,
-    "atom": {
-        "rewriteTsconfig": false
-    }
+  "compilerOptions": {
+    "target": "es5",
+    "lib": ["es6", "dom"],
+    "module": "commonjs",
+    "moduleResolution": "node",
+    "isolatedModules": false,
+    "declaration": false,
+    "noImplicitAny": true,
+    "noImplicitUseStrict": false,
+    "removeComments": true,
+    "preserveConstEnums": true,
+    "suppressImplicitAnyIndexErrors": true
+  },
+  "exclude": [
+    "node_modules",
+    "jspm_packages",
+    "examples"
+  ],
+  "compileOnSave": false,
+  "buildOnSave": false,
+  "atom": {
+    "rewriteTsconfig": false
+  }
 }
