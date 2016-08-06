@@ -1,0 +1,25 @@
+{
+  "extend": "eslint:recommended",
+  "parserOptions": {
+    "ecmascript": 7,
+    "sourceType": "module",
+    "ecmaFeatures": {
+      "impliedStrict": true,
+      "experimentalObjectRestSpread": true
+    }
+  },
+  "env": {
+    "browser": true,
+    "node": true
+  },
+  "globals": {
+    "System": true,
+    "SystemJS": true
+  },
+  "rules": {
+    "no-unused-vars": 1,
+    "no-undef": 2,
+    "no-const-assign": 2,
+    "no-class-assign": 2
+  }
+}

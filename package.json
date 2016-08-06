@@ -96,7 +96,5 @@
       }
     }
   },
-  "dependencies": {
-    "lodash.flatten": "^4.3.0"
-  }
+  "dependencies": { }
 }

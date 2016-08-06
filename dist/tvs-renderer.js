@@ -15,6 +15,17 @@
         return r.m = e, r.c = t, r.p = "", r(0);
     }([ function(e, r, t) {
         "use strict";
+        var a = t(1), n = t(5), i = t(6);
+        r.renderUtils = {
+            geometry: {
+                plane: n.plane
+            },
+            stackgl: i
+        }, r.renderer = a["default"], Object.defineProperty(r, "__esModule", {
+            value: !0
+        }), r["default"] = a["default"];
+    }, function(e, r, t) {
+        "use strict";
         function a(e) {
             null == e && (e = document.createElement("canvas"));
             var r = e.getContext("webgl") || e.getContext("experimental-webgl");
@@ -40,21 +51,15 @@
                 target: {},
                 gl: r
             };
-            return o(t, t.settings), c(t, "_renderQuad", y["default"].geometries.renderQuad), 
-            d(t, "_basicEffect", y["default"].shaders.basicEffect), l(t, "_result", y["default"].objects.resultScreen), 
-            m(t);
+            return u(t, t.settings), d(t, "_renderQuad", F["default"].geometries.renderQuad), 
+            E(t, "_basicEffect", F["default"].shaders.basicEffect), l(t, "_result", F["default"].objects.resultScreen), 
+            R(t);
         }
         function n(e, r) {
-            return o(e, r.settings), i(e, r.shaders), f(e, r.geometries), u(e, r.objects), s(e, r.layers), 
-            m(e);
+            return u(e, r.settings), i(e, r.shaders), s(e, r.geometries), o(e, r.objects), f(e, r.layers), 
+            R(e);
         }
         function i(e, r) {
-            if (r) for (var t in r) {
-                var a = r[t];
-                d(e, t, a);
-            }
-        }
-        function s(e, r) {
             if (r) for (var t in r) {
                 var a = r[t];
                 E(e, t, a);
@@ -66,55 +71,61 @@
                 c(e, t, a);
             }
         }
-        function u(e, r) {
+        function s(e, r) {
+            if (r) for (var t in r) {
+                var a = r[t];
+                d(e, t, a);
+            }
+        }
+        function o(e, r) {
             if (r) for (var t in r) {
                 var a = r[t];
                 l(e, t, a);
             }
         }
-        function o(e, r) {
+        function u(e, r) {
             void 0 === r && (r = {});
             var t = e.gl;
             if (null != r.clearColor && (e.settings.clearColor = r.clearColor), null != r.minFilter && (e.settings.minFilter = r.minFilter), 
             null != r.magFilter && (e.settings.magFilter = r.magFilter), null != r.wrap && (e.settings.wrap = r.wrap), 
-            null != r.clearBuffers && (e.settings.clearBuffers = r.clearBuffers, e.settings.clearBits = R(t, r.clearBuffers)), 
+            null != r.clearBuffers && (e.settings.clearBuffers = r.clearBuffers, e.settings.clearBits = b(t, r.clearBuffers)), 
             null != r.enable) {
                 for (var a = 0, n = e.settings.enable; a < n.length; a++) {
                     var i = n[a];
                     t.disable(t[i]);
                 }
                 e.settings.enable = r.enable;
-                for (var s = 0, f = e.settings.enable; s < f.length; s++) {
-                    var i = f[s];
+                for (var f = 0, s = e.settings.enable; f < s.length; f++) {
+                    var i = s[f];
                     t.enable(t[i]);
                 }
             }
-            return void 0 !== r.blend && (e.settings.blend = r.blend), e.settings.blend && p(t, e.settings.blend), 
+            return void 0 !== r.blend && (e.settings.blend = r.blend), e.settings.blend && _(t, e.settings.blend), 
             e;
         }
         function l(e, r, t) {
             var a = e.objects[r], n = Object.assign({}, t, {
                 type: "initialized"
             });
-            if (null == n.uniforms && (n.uniforms = {}), e.objects[r] = n, a && "missing" === a.type) for (var i in a.updateLayers) E(e, i, a.updateLayers[i]);
+            if (null == n.uniforms && (n.uniforms = {}), e.objects[r] = n, a && "missing" === a.type) for (var i in a.updateLayers) c(e, i, a.updateLayers[i]);
             return e;
         }
-        function d(e, r, t) {
-            var a = e.shaders[r] || {}, n = null == a.program, i = e.gl, s = "precision mediump float;\n" + t.frag;
+        function E(e, r, t) {
+            var a = e.shaders[r] || {}, n = null == a.program, i = e.gl, f = "precision mediump float;\n" + t.frag;
             n && (a.program = i.createProgram()), null == a.vert && (a.vert = i.createShader(i.VERTEX_SHADER)), 
             null == a.frag && (a.frag = i.createShader(i.FRAGMENT_SHADER)), i.shaderSource(a.vert, t.vert), 
-            i.shaderSource(a.frag, s), i.compileShader(a.vert), i.compileShader(a.frag), i.getShaderParameter(a.vert, i.COMPILE_STATUS) || console.error("Error Compiling Vertex Shader!\n", i.getShaderInfoLog(a.vert), t.vert), 
+            i.shaderSource(a.frag, f), i.compileShader(a.vert), i.compileShader(a.frag), i.getShaderParameter(a.vert, i.COMPILE_STATUS) || console.error("Error Compiling Vertex Shader!\n", i.getShaderInfoLog(a.vert), t.vert), 
             i.getShaderParameter(a.frag, i.COMPILE_STATUS) || console.error("Error Compiling Fragment Shader!\n", i.getShaderInfoLog(a.frag), t.frag), 
             n && (i.attachShader(a.program, a.vert), i.attachShader(a.program, a.frag)), i.linkProgram(a.program), 
             a.attribs = {};
-            for (var f in t.attribs) {
-                var u = t.attribs[f], o = {
-                    index: i.getAttribLocation(a.program, f),
+            for (var s in t.attribs) {
+                var o = t.attribs[s], u = {
+                    index: i.getAttribLocation(a.program, s),
                     type: i.FLOAT,
-                    itemSize: A[u]
+                    itemSize: y[o]
                 };
-                o.index < 0 && console.error('attribute "' + f + '" could not be found in shader', t.vert), 
-                a.attribs[f] = o;
+                u.index < 0 && console.error('attribute "' + s + '" could not be found in shader', t.vert), 
+                a.attribs[s] = u;
             }
             a.uniforms = {};
             for (var l in t.uniforms) a.uniforms[l] = {
@@ -123,26 +134,26 @@
             };
             return e.shaders[r] = a, e;
         }
-        function c(e, r, t) {
+        function d(e, r, t) {
             var a = e.gl, n = e.geometries[r] || {};
             n.drawType = a[t.drawType], n.itemCount = t.itemCount;
             var i = n.attribs || {};
-            for (var s in t.attribs) {
-                var f = t.attribs[s];
-                null == i[s] && (i[s] = a.createBuffer()), a.bindBuffer(a.ARRAY_BUFFER, i[s]), a.bufferData(a.ARRAY_BUFFER, h(f), a[(f.storeType || "STATIC") + "_DRAW"]);
+            for (var f in t.attribs) {
+                var s = t.attribs[f];
+                null == i[f] && (i[f] = a.createBuffer()), a.bindBuffer(a.ARRAY_BUFFER, i[f]), a.bufferData(a.ARRAY_BUFFER, h(s), a[(s.storeType || "STATIC") + "_DRAW"]);
             }
             if (n.attribs = i, t.elements) {
                 null == n.elements && (n.elements = {
                     buffer: null,
                     glType: null
                 }), null == n.elements.buffer && (n.elements.buffer = a.createBuffer());
-                var u = h(t.elements);
-                n.elements.glType = F(u, a), a.bindBuffer(a.ELEMENT_ARRAY_BUFFER, n.elements.buffer), 
-                a.bufferData(a.ELEMENT_ARRAY_BUFFER, u, a[(t.elements.storeType || "STATIC") + "_DRAW"]);
+                var o = h(t.elements);
+                n.elements.glType = O(o, a), a.bindBuffer(a.ELEMENT_ARRAY_BUFFER, n.elements.buffer), 
+                a.bufferData(a.ELEMENT_ARRAY_BUFFER, o, a[(t.elements.storeType || "STATIC") + "_DRAW"]);
             } else n.elements && delete n.elements;
             return e.geometries[r] = n, e;
         }
-        function E(e, r, t) {
+        function c(e, r, t) {
             var a = e.layers[r] || {};
             if (a.noClear = t.noClear, a.clearColor = t.clearColor || e.settings.clearColor, 
             t.buffered ? (a.renderTarget = {
@@ -151,15 +162,15 @@
                 frameBuffer: null,
                 texture: null,
                 depthBuffer: null
-            }, _(e.gl, a.renderTarget, t)) : delete a.renderTarget, t.asset) a.type = "static", 
-            g(e.gl, a, t); else if (t.objects) {
+            }, p(e.gl, a.renderTarget, t)) : delete a.renderTarget, t.asset) a.type = "static", 
+            T(e.gl, a, t); else if (t.objects) {
                 var n = a;
                 n.type = "objects", n.transparents = [], n.opaques = [];
-                for (var i = 0, s = t.objects; i < s.length; i++) {
-                    var f = s[i], u = e.objects[f];
-                    u ? "initialized" === u.type ? u.blend ? n.transparents.push(f) : n.opaques.push(f) : u.updateLayers[r] = t : e.objects[f] = {
+                for (var i = 0, f = t.objects; i < f.length; i++) {
+                    var s = f[i], o = e.objects[s];
+                    o ? "initialized" === o.type ? o.blend ? n.transparents.push(s) : n.opaques.push(s) : o.updateLayers[r] = t : e.objects[s] = {
                         type: "missing",
-                        updateLayers: (o = {}, o[r] = t, o)
+                        updateLayers: (u = {}, u[r] = t, u)
                     };
                 }
             } else if (t.shader) {
@@ -172,136 +183,136 @@
                 };
             }
             return e.layers[r] = a, e;
-            var o;
+            var u;
         }
-        function g(e, r, t) {
+        function T(e, r, t) {
             var a = r.texture || e.createTexture();
             e.bindTexture(e.TEXTURE_2D, a), v(e, t), e.texImage2D(e.TEXTURE_2D, 0, e.RGBA, e.RGBA, e.UNSIGNED_BYTE, t.asset), 
             e.generateMipmap(e.TEXTURE_2D), e.bindTexture(e.TEXTURE_2D, null), r.texture = a;
         }
-        function m(e, r, t) {
+        function R(e, r, t) {
             var a = e.gl;
             return r && (e.settings.width = r), t && (e.settings.height = t), a.canvas.width === e.settings.width && a.canvas.height === e.settings.height || (a.canvas.height = e.settings.height, 
-            a.canvas.width = e.settings.width), _(e.gl, e.source, e.settings), _(e.gl, e.target, e.settings), 
+            a.canvas.width = e.settings.width), p(e.gl, e.source, e.settings), p(e.gl, e.target, e.settings), 
             e;
         }
-        function T(e, r) {
+        function g(e, r) {
             for (var t = e.gl, a = r.length - 1, n = 0; n < r.length; n++) {
-                var i = r[n], s = e.layers[i], f = n === a, u = !f && null == s.renderTarget;
-                switch (f ? (t.bindFramebuffer(t.FRAMEBUFFER, null), t.viewport(0, 0, t.drawingBufferWidth, t.drawingBufferHeight)) : u ? (t.bindFramebuffer(t.FRAMEBUFFER, e.target.frameBuffer), 
-                t.viewport(0, 0, t.drawingBufferWidth, t.drawingBufferHeight)) : (t.bindFramebuffer(t.FRAMEBUFFER, s.renderTarget.frameBuffer), 
-                t.viewport(0, 0, s.renderTarget.width, s.renderTarget.height)), s.noClear || (t.clearColor.apply(t, s.clearColor || e.settings.clearColor), 
-                t.clear(e.settings.clearBits)), s.type) {
+                var i = r[n], f = e.layers[i], s = n === a, o = !s && null == f.renderTarget;
+                switch (s ? (t.bindFramebuffer(t.FRAMEBUFFER, null), t.viewport(0, 0, t.drawingBufferWidth, t.drawingBufferHeight)) : o ? (t.bindFramebuffer(t.FRAMEBUFFER, e.target.frameBuffer), 
+                t.viewport(0, 0, t.drawingBufferWidth, t.drawingBufferHeight)) : (t.bindFramebuffer(t.FRAMEBUFFER, f.renderTarget.frameBuffer), 
+                t.viewport(0, 0, f.renderTarget.width, f.renderTarget.height)), f.noClear || (t.clearColor.apply(t, f.clearColor || e.settings.clearColor), 
+                t.clear(e.settings.clearBits)), f.type) {
                   case "shader":
-                    b(e, s.object);
+                    m(e, f.object);
                     break;
 
                   case "objects":
-                    for (var o = 0, l = s.opaques; o < l.length; o++) {
-                        var d = l[o];
-                        b(e, e.objects[d]);
+                    for (var u = 0, l = f.opaques; u < l.length; u++) {
+                        var E = l[u];
+                        m(e, e.objects[E]);
                     }
-                    if (s.transparents.length) {
+                    if (f.transparents.length) {
                         t.enable(t.BLEND);
-                        for (var c = 0, E = s.transparents; c < E.length; c++) {
-                            var d = E[c];
-                            b(e, e.objects[d]);
+                        for (var d = 0, c = f.transparents; d < c.length; d++) {
+                            var E = c[d];
+                            m(e, e.objects[E]);
                         }
                         t.disable(t.BLEND);
                     }
                     break;
 
                   case "static":
-                    if (f) {
-                        var g = Object.assign({}, e.objects._result, {
+                    if (s) {
+                        var T = Object.assign({}, e.objects._result, {
                             uniforms: {
                                 source: i
                             }
                         });
-                        b(e, g);
+                        m(e, T);
                     }
                 }
-                if (u) {
-                    var m = e.source;
-                    e.source = e.target, e.target = m;
+                if (o) {
+                    var R = e.source;
+                    e.source = e.target, e.target = R;
                 }
             }
         }
-        function b(e, r) {
+        function m(e, r) {
             var t = 0, a = e.gl, n = e.shaders[r.shader], i = e.geometries[r.geometry];
             a.useProgram(n.program);
-            for (var s in n.attribs) {
-                var f = n.attribs[s];
-                a.bindBuffer(a.ARRAY_BUFFER, i.attribs[s]), a.enableVertexAttribArray(f.index), 
-                a.vertexAttribPointer(f.index, f.itemSize, f.type, !1, 0, 0);
+            for (var f in n.attribs) {
+                var s = n.attribs[f];
+                a.bindBuffer(a.ARRAY_BUFFER, i.attribs[f]), a.enableVertexAttribArray(s.index), 
+                a.vertexAttribPointer(s.index, s.itemSize, s.type, !1, 0, 0);
             }
-            for (var s in n.uniforms) {
-                var u = n.uniforms[s], o = u.index, l = r.uniforms[s];
-                switch (u.type) {
+            for (var f in n.uniforms) {
+                var o = n.uniforms[f], u = o.index, l = r.uniforms[f];
+                switch (o.type) {
                   case "t":
-                    var d = l ? e.layers[l].texture : e.source.texture;
-                    a.activeTexture(a["TEXTURE" + t]), a.bindTexture(a.TEXTURE_2D, d), a.uniform1i(o, t), 
+                    var E = l ? e.layers[l].texture : e.source.texture;
+                    a.activeTexture(a["TEXTURE" + t]), a.bindTexture(a.TEXTURE_2D, E), a.uniform1i(u, t), 
                     t++;
                     break;
 
                   case "f":
                   case "f 1":
-                    a.uniform1f(o, l);
+                    a.uniform1f(u, l);
                     break;
 
                   case "f 2":
-                    a.uniform2fv(o, l);
+                    a.uniform2fv(u, l);
                     break;
 
                   case "f 3":
-                    a.uniform3fv(o, l);
+                    a.uniform3fv(u, l);
                     break;
 
                   case "f 4":
-                    a.uniform4fv(o, l);
+                    a.uniform4fv(u, l);
                     break;
 
                   case "m 2":
-                    a.uniformMatrix2fv(o, !1, l);
+                    a.uniformMatrix2fv(u, !1, l);
                     break;
 
                   case "m 3":
-                    a.uniformMatrix3fv(o, !1, l);
+                    a.uniformMatrix3fv(u, !1, l);
                     break;
 
                   case "m 4":
-                    a.uniformMatrix4fv(o, !1, l);
+                    a.uniformMatrix4fv(u, !1, l);
                     break;
 
                   case "i":
                   case "i 1":
-                    a.uniform1i(o, l);
+                    a.uniform1i(u, l);
                     break;
 
                   case "i 2":
-                    a.uniform2iv(o, l);
+                    a.uniform2iv(u, l);
                     break;
 
                   case "i 3":
-                    a.uniform3iv(o, l);
+                    a.uniform3iv(u, l);
                     break;
 
                   case "i 4":
-                    a.uniform4iv(o, l);
+                    a.uniform4iv(u, l);
                     break;
 
                   default:
-                    console.error("Uniform type " + u.type + " unknown. uniform " + s + " not set!");
+                    console.error("Uniform type " + o.type + " unknown. uniform " + f + " not set!");
                 }
             }
             i.elements ? (a.bindBuffer(a.ELEMENT_ARRAY_BUFFER, i.elements.buffer), a.drawElements(i.drawType, i.itemCount, i.elements.glType, 0)) : a.drawArrays(i.drawType, 0, i.itemCount);
         }
-        function R(e, r) {
+        function b(e, r) {
             return r.reduce(function(r, t) {
                 return r | e[t + "_BUFFER_BIT"];
             }, 0);
         }
-        function p(e, r) {
+        function _(e, r) {
             e.blendFunc.apply(e, r.map(function(r) {
                 return e[r];
             }));
@@ -313,7 +324,7 @@
             a && e.texParameteri(e.TEXTURE_2D, e.TEXTURE_WRAP_T, e[a]), r.magFilter && e.texParameteri(e.TEXTURE_2D, e.TEXTURE_MAG_FILTER, e[r.magFilter]), 
             r.minFilter && e.texParameteri(e.TEXTURE_2D, e.TEXTURE_MIN_FILTER, e[r.minFilter]);
         }
-        function _(e, r, t) {
+        function p(e, r, t) {
             null == r.frameBuffer && (r.frameBuffer = e.createFramebuffer()), null == r.texture && (r.texture = r.texture || e.createTexture()), 
             null == r.depthBuffer && (r.depthBuffer = e.createRenderbuffer()), e.bindTexture(e.TEXTURE_2D, r.texture), 
             e.texImage2D(e.TEXTURE_2D, 0, e.RGBA, t.width, t.height, 0, e.RGBA, e.UNSIGNED_BYTE, null), 
@@ -325,23 +336,23 @@
             e.bindTexture(e.TEXTURE_2D, null), e.bindRenderbuffer(e.RENDERBUFFER, null);
         }
         function h(e) {
-            if (U(e)) return e.buffer;
+            if (A(e)) return e.buffer;
             var r = window[e.type];
             return new r(e.array);
         }
-        function F(e, r) {
+        function O(e, r) {
             if (e instanceof Uint8Array) return r.UNSIGNED_BYTE;
             if (e instanceof Uint16Array) return r.UNSIGNED_SHORT;
             if (e instanceof Uint32Array) return r.UNSIGNED_INT;
             throw new TypeError("invalid array type");
         }
-        function U(e) {
+        function A(e) {
             return null != e.buffer;
         }
-        var y = t(1);
-        t(3), r.create = a, r.init = n, r.updateSettings = o, r.updateObject = l, r.updateShader = d, 
-        r.updateGeometry = c, r.updateLayer = E, r.updateSize = m, r.renderLayers = T;
-        var A = {
+        var F = t(2);
+        t(4), r.create = a, r.init = n, r.updateSettings = u, r.updateObject = l, r.updateShader = E, 
+        r.updateGeometry = d, r.updateLayer = c, r.updateSize = R, r.renderLayers = g;
+        var y = {
             f: 1,
             "f 1": 1,
             "f 2": 2,
@@ -356,19 +367,19 @@
         }), r["default"] = {
             create: a,
             init: n,
-            updateSettings: o,
+            updateSettings: u,
             updateObject: l,
-            updateGeometry: c,
-            updateShader: d,
-            updateLayer: E,
-            updateSize: m,
-            renderLayers: T,
-            lib: y["default"]
+            updateGeometry: d,
+            updateShader: E,
+            updateLayer: c,
+            updateSize: R,
+            renderLayers: g,
+            lib: F["default"]
         };
     }, function(e, r, t) {
         "use strict";
-        var a = t(2);
-        t(3), Object.defineProperty(r, "__esModule", {
+        var a = t(3);
+        t(4), Object.defineProperty(r, "__esModule", {
             value: !0
         }), r["default"] = {
             geometries: {
@@ -390,7 +401,7 @@
                     frag: "\n        uniform sampler2D " + a.UNIFORM_SOURCE_TEXTURE + ";\n        varying vec2 vUv;\n        void main() {\n          gl_FragColor = texture2D(" + a.UNIFORM_SOURCE_TEXTURE + ", vUv);\n        }",
                     attribs: (i = {}, i[a.GEOMETRY_PROP_POSITION] = "f 2", i[a.GEOMETRY_PROP_UV] = "f 2", 
                     i),
-                    uniforms: (s = {}, s[a.UNIFORM_SOURCE_TEXTURE] = "t", s)
+                    uniforms: (f = {}, f[a.UNIFORM_SOURCE_TEXTURE] = "t", f)
                 }
             },
             objects: {
@@ -400,10 +411,86 @@
                 }
             }
         };
-        var n, i, s;
+        var n, i, f;
     }, function(e, r) {
         "use strict";
         r.GEOMETRY_PROP_POSITION = "position", r.GEOMETRY_PROP_NORMAL = "normal", r.GEOMETRY_PROP_UV = "uv", 
         r.UNIFORM_SOURCE_TEXTURE = "source";
-    }, function(e, r) {} ]);
+    }, function(e, r) {}, function(e, r) {
+        "use strict";
+        function t(e, r, t, a) {
+            var n, i, f = e / 2, s = r / 2, o = t || 1, u = a || 1, l = o + 1, E = u + 1, d = e / o, c = r / u, T = new Float32Array(l * E * 3), R = new Float32Array(l * E * 3), g = new Float32Array(l * E * 2), m = 0, b = 0;
+            for (n = 0; n < E; n++) {
+                var _ = n * c - s;
+                for (i = 0; i < l; i++) {
+                    var v = i * d - f;
+                    T[m] = v, T[m + 1] = -_, R[m + 2] = 1, g[b] = i / o, g[b + 1] = 1 - n / u, m += 3, 
+                    b += 2;
+                }
+            }
+            m = 0;
+            var p = new (T.length / 3 > 65535 ? Uint32Array : Uint16Array)(o * u * 6);
+            for (n = 0; n < u; n++) for (i = 0; i < o; i++) {
+                var h = i + l * n, O = i + l * (n + 1), A = i + 1 + l * (n + 1), F = i + 1 + l * n;
+                p[m] = h, p[m + 1] = O, p[m + 2] = F, p[m + 3] = O, p[m + 4] = A, p[m + 5] = F, 
+                m += 6;
+            }
+            return {
+                attribs: {
+                    position: {
+                        buffer: T,
+                        storeType: "STATIC"
+                    },
+                    normal: {
+                        buffer: R,
+                        storeType: "STATIC"
+                    },
+                    uv: {
+                        buffer: g,
+                        storeType: "STATIC"
+                    }
+                },
+                elements: {
+                    buffer: p
+                },
+                drawType: "TRIANGLES",
+                itemCount: p.length
+            };
+        }
+        r.plane = t;
+    }, function(e, r, t) {
+        "use strict";
+        function a(e) {
+            for (var r = [], t = 0; t < e.length; t++) for (var a = e[t], n = 0; n < a.length; n++) r.push(a[n]);
+            return r;
+        }
+        function n(e) {
+            var t = {
+                drawType: "TRIANGLES",
+                attribs: {},
+                elements: {
+                    buffer: null
+                },
+                itemCount: 0
+            };
+            for (var n in e) {
+                var f = e[n];
+                n === r.STACK_GL_GEOMETRY_PROP_ELEMENTS ? (t.elements.buffer = new (f.length > 65535 ? Uint32Array : Uint16Array)(a(f)), 
+                t.itemCount = t.elements.buffer.length) : n === r.STACK_GL_GEOMETRY_PROP_POSITION ? t.attribs[i.GEOMETRY_PROP_POSITION] = {
+                    buffer: new Float32Array(a(f))
+                } : n === r.STACK_GL_GEOMETRY_PROP_NORMAL ? t.attribs[i.GEOMETRY_PROP_NORMAL] = {
+                    buffer: new Float32Array(a(f))
+                } : n === r.STACK_GL_GEOMETRY_PROP_UV ? t.attribs[i.GEOMETRY_PROP_UV] = {
+                    buffer: new Float32Array(a(f))
+                } : t.attribs[n] = {
+                    buffer: new Float32Array(a(f))
+                };
+            }
+            return t;
+        }
+        var i = t(3);
+        r.STACK_GL_GEOMETRY_PROP_POSITION = "positions", r.STACK_GL_GEOMETRY_PROP_NORMAL = "normals", 
+        r.STACK_GL_GEOMETRY_PROP_UV = "normals", r.STACK_GL_GEOMETRY_PROP_ELEMENTS = "cells", 
+        r.fromGLStackGeometry = n;
+    } ]);
 });
