@@ -15,13 +15,13 @@
         return r.m = e, r.c = t, r.p = "", r(0);
     }([ function(e, r, t) {
         "use strict";
-        var a = t(1), n = t(5), i = t(6);
+        var a = t(1), n = t(3), i = t(5), f = t(6);
         r.renderUtils = {
             geometry: {
-                plane: n.plane
+                plane: i.plane
             },
-            stackgl: i
-        }, r.renderer = a["default"], Object.defineProperty(r, "__esModule", {
+            stackgl: f
+        }, r.constants = n, r.renderer = a["default"], Object.defineProperty(r, "__esModule", {
             value: !0
         }), r["default"] = a["default"];
     }, function(e, r, t) {
@@ -491,6 +491,6 @@
         var i = t(3);
         r.STACK_GL_GEOMETRY_PROP_POSITION = "positions", r.STACK_GL_GEOMETRY_PROP_NORMAL = "normals", 
         r.STACK_GL_GEOMETRY_PROP_UV = "normals", r.STACK_GL_GEOMETRY_PROP_ELEMENTS = "cells", 
-        r.fromGLStackGeometry = n;
+        r.convertStackGLGeometry = n;
     } ]);
 });

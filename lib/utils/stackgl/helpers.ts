@@ -19,7 +19,7 @@ function _flatten( array: number[][] ): number[] {
 }
 
 
-export function fromGLStackGeometry(
+export function convertStackGLGeometry(
   stackglGeometry: {[id: string]: number[][]}
 ): GeometryData {
 

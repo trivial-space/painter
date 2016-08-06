@@ -4,8 +4,13 @@ import {ctx} from '../ctx.js'
 import {mat4} from 'gl-matrix'
 import createCube from 'primitive-cube'
 
-const cubeStackgl = createCube(1)
+const cubeStackgl = createCube(1),
+      cubeGeometry = renderUtils.stackgl.convertStackGLGeometry(cubeStackgl)
+
 console.log(cubeStackgl)
+console.log(cubeGeometry)
+
+// cubeGeometry.drawType = "LINE_LOOP"
 
 
 let cubeMat = mat4.fromTranslation(mat4.create(), [0, 0, -3]),
@@ -15,7 +20,7 @@ let cubeMat = mat4.fromTranslation(mat4.create(), [0, 0, -3]),
 
 const scene = {
   geometries: {
-    cubeGeometry: renderUtils.stackgl.fromGLStackGeometry(cubeStackgl)
+    cubeGeometry
   },
 
   shaders: {
@@ -70,8 +75,6 @@ const scene = {
     }
   }
 }
-
-console.log(scene)
 
 renderer.init(ctx, scene)
 
