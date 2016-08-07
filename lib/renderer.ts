@@ -345,7 +345,9 @@ function updateStaticLayer (gl: GL, layer: ContextLayerStatic, data: LayerData) 
   gl.bindTexture(gl.TEXTURE_2D, texture)
   setTextureParams(gl, data)
   gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, data.asset)
-  gl.generateMipmap(gl.TEXTURE_2D)
+  if (data.minFilter && data.minFilter.indexOf("MIPMAP") > 0) {
+    gl.generateMipmap(gl.TEXTURE_2D)
+  }
   gl.bindTexture(gl.TEXTURE_2D, null)
   layer.texture = texture
 }

@@ -188,7 +188,8 @@
         function T(e, r, t) {
             var a = r.texture || e.createTexture();
             e.bindTexture(e.TEXTURE_2D, a), v(e, t), e.texImage2D(e.TEXTURE_2D, 0, e.RGBA, e.RGBA, e.UNSIGNED_BYTE, t.asset), 
-            e.generateMipmap(e.TEXTURE_2D), e.bindTexture(e.TEXTURE_2D, null), r.texture = a;
+            t.minFilter && t.minFilter.indexOf("MIPMAP") > 0 && e.generateMipmap(e.TEXTURE_2D), 
+            e.bindTexture(e.TEXTURE_2D, null), r.texture = a;
         }
         function R(e, r, t) {
             var a = e.gl;
@@ -420,9 +421,9 @@
         "use strict";
         function t(e, r, t, a) {
             var n, i, f = e / 2, s = r / 2, o = t || 1, u = a || 1, l = o + 1, E = u + 1, d = e / o, c = r / u, T = new Float32Array(l * E * 3), R = new Float32Array(l * E * 3), g = new Float32Array(l * E * 2), m = 0, b = 0;
-            for (n = 0; n < E; n++) {
+            for (n = 0; E > n; n++) {
                 var _ = n * c - s;
-                for (i = 0; i < l; i++) {
+                for (i = 0; l > i; i++) {
                     var v = i * d - f;
                     T[m] = v, T[m + 1] = -_, R[m + 2] = 1, g[b] = i / o, g[b + 1] = 1 - n / u, m += 3, 
                     b += 2;
@@ -430,7 +431,7 @@
             }
             m = 0;
             var p = new (T.length / 3 > 65535 ? Uint32Array : Uint16Array)(o * u * 6);
-            for (n = 0; n < u; n++) for (i = 0; i < o; i++) {
+            for (n = 0; u > n; n++) for (i = 0; o > i; i++) {
                 var h = i + l * n, O = i + l * (n + 1), A = i + 1 + l * (n + 1), F = i + 1 + l * n;
                 p[m] = h, p[m + 1] = O, p[m + 2] = F, p[m + 3] = O, p[m + 4] = A, p[m + 5] = F, 
                 m += 6;
