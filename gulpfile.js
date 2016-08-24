@@ -6,13 +6,15 @@ const gulp = require('gulp'),
 
 
 const paths = {
-  livereload: ['**/*.html'],
+  livereload: ['**/*.html', 'dist/**/*'],
   webpack: ['lib/**/*']
 }
 
 
 gulp.task('server', function() {
-  connect.server()
+  connect.server({
+    port: 8081
+  })
 })
 
 

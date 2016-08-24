@@ -1,6 +1,6 @@
 import 'systemjs-hot-reloader/default-listener.js'
 import renderer from '../../lib/renderer.ts'
-import {ctx} from '../ctx.ts'
+import {ctx} from '../ctx.js'
 import {mat4} from 'gl-matrix'
 
 import planeVert from './plane-material.vert!text'
@@ -22,6 +22,7 @@ function animate () {
   mat4.rotateY(planMat1, planMat1, rotation)
   mat4.rotateY(planMat2, planMat2, rotation)
   renderer.renderLayers(ctx, ['planeLayer', 'effectLayer'])
+  // renderer.renderLayers(ctx, ['textureLayer'])
   requestAnimationFrame(animate)
 }
 
@@ -78,23 +79,21 @@ renderer.updateShader(ctx, "planeMaterial", {
     "uv": "f 2"
   },
   uniforms: {
-    "source": "t",
+    "texture": "t",
     "object": "m 4",
     "projection": "m 4"
   }
 })
 
-renderer.updateShader(ctx, "effect", (Object as any).assign({},
-  renderer.lib.shaders.basicEffect, {
-    frag: effectFrag
-  }
-))
+renderer.updateShader(ctx, "effect", Object.assign({}, renderer.lib.shaders.basicEffect, {
+  frag: effectFrag
+}))
 
 renderer.updateObject(ctx, "plane1", {
   shader: "planeMaterial",
   geometry: "planeGeometry",
   uniforms: {
-    source: "textureLayer",
+    texture: "textureLayer",
     projection,
     object: planMat1
   }
@@ -104,7 +103,7 @@ renderer.updateObject(ctx, "plane2", {
   shader: "planeMaterial",
   geometry: "planeGeometry",
   uniforms: {
-    source: "textureLayer",
+    texture: "textureLayer",
     projection,
     object: planMat2
   },

@@ -353,25 +353,19 @@ function updateStaticLayer (gl: GL, layer: ContextLayerStatic, data: LayerData) 
 }
 
 
-export function updateSize (
-  ctx: Context,
-  width?: number,
-  height?: number
-): Context {
+export function updateSize ( ctx: Context ): Context {
 
   const gl = ctx.gl
-  if (width) {
-    ctx.settings.width = width
-  }
-  if (height) {
-    ctx.settings.height = height
-  }
+  ctx.settings.width = gl.canvas.clientWidth
+  ctx.settings.height = gl.canvas.clientHeight
+
   if (gl.canvas.width !== ctx.settings.width || gl.canvas.height !== ctx.settings.height) {
     gl.canvas.height = ctx.settings.height
     gl.canvas.width = ctx.settings.width
+    updateRenderTarget(ctx.gl, ctx.source, ctx.settings)
+    updateRenderTarget(ctx.gl, ctx.target, ctx.settings)
   }
-  updateRenderTarget(ctx.gl, ctx.source, ctx.settings)
-  updateRenderTarget(ctx.gl, ctx.target, ctx.settings)
+
   return ctx
 }
 
@@ -553,7 +547,9 @@ function setBlendFunc (gl: GL, blendOpts: string[]) {
 
 
 function setTextureParams (gl: GL, data: TextureData) {
+
   gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, data.flipY as any)
+
   let wrapS: Wrap, wrapT: Wrap
   if (data.wrap) {
     wrapS = wrapT = data.wrap
@@ -561,18 +557,12 @@ function setTextureParams (gl: GL, data: TextureData) {
     wrapT = data.wrapT
     wrapS = data.wrapS
   }
-  if (wrapS) {
-    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl[wrapS])
-  }
-  if (wrapT) {
-    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl[wrapT])
-  }
-  if (data.magFilter) {
-    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl[data.magFilter])
-  }
-  if (data.minFilter) {
-    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl[data.minFilter])
-  }
+
+  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl[wrapS || "CLAMP_TO_EDGE"])
+  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl[wrapT || "CLAMP_TO_EDGE"])
+
+  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl[data.magFilter || "LINEAR"])
+  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl[data.minFilter || "LINEAR"])
 }
 
 

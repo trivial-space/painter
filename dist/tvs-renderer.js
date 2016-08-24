@@ -148,7 +148,7 @@
                     glType: null
                 }), null == n.elements.buffer && (n.elements.buffer = a.createBuffer());
                 var o = h(t.elements);
-                n.elements.glType = O(o, a), a.bindBuffer(a.ELEMENT_ARRAY_BUFFER, n.elements.buffer), 
+                n.elements.glType = A(o, a), a.bindBuffer(a.ELEMENT_ARRAY_BUFFER, n.elements.buffer), 
                 a.bufferData(a.ELEMENT_ARRAY_BUFFER, o, a[(t.elements.storeType || "STATIC") + "_DRAW"]);
             } else n.elements && delete n.elements;
             return e.geometries[r] = n, e;
@@ -191,10 +191,11 @@
             t.minFilter && t.minFilter.indexOf("MIPMAP") > 0 && e.generateMipmap(e.TEXTURE_2D), 
             e.bindTexture(e.TEXTURE_2D, null), r.texture = a;
         }
-        function R(e, r, t) {
-            var a = e.gl;
-            return r && (e.settings.width = r), t && (e.settings.height = t), a.canvas.width === e.settings.width && a.canvas.height === e.settings.height || (a.canvas.height = e.settings.height, 
-            a.canvas.width = e.settings.width), p(e.gl, e.source, e.settings), p(e.gl, e.target, e.settings), 
+        function R(e) {
+            var r = e.gl;
+            return e.settings.width = r.canvas.clientWidth, e.settings.height = r.canvas.clientHeight, 
+            r.canvas.width === e.settings.width && r.canvas.height === e.settings.height || (r.canvas.height = e.settings.height, 
+            r.canvas.width = e.settings.width, p(e.gl, e.source, e.settings), p(e.gl, e.target, e.settings)), 
             e;
         }
         function g(e, r) {
@@ -321,9 +322,9 @@
         function v(e, r) {
             e.pixelStorei(e.UNPACK_FLIP_Y_WEBGL, r.flipY);
             var t, a;
-            r.wrap ? t = a = r.wrap : (a = r.wrapT, t = r.wrapS), t && e.texParameteri(e.TEXTURE_2D, e.TEXTURE_WRAP_S, e[t]), 
-            a && e.texParameteri(e.TEXTURE_2D, e.TEXTURE_WRAP_T, e[a]), r.magFilter && e.texParameteri(e.TEXTURE_2D, e.TEXTURE_MAG_FILTER, e[r.magFilter]), 
-            r.minFilter && e.texParameteri(e.TEXTURE_2D, e.TEXTURE_MIN_FILTER, e[r.minFilter]);
+            r.wrap ? t = a = r.wrap : (a = r.wrapT, t = r.wrapS), e.texParameteri(e.TEXTURE_2D, e.TEXTURE_WRAP_S, e[t || "CLAMP_TO_EDGE"]), 
+            e.texParameteri(e.TEXTURE_2D, e.TEXTURE_WRAP_T, e[a || "CLAMP_TO_EDGE"]), e.texParameteri(e.TEXTURE_2D, e.TEXTURE_MAG_FILTER, e[r.magFilter || "LINEAR"]), 
+            e.texParameteri(e.TEXTURE_2D, e.TEXTURE_MIN_FILTER, e[r.minFilter || "LINEAR"]);
         }
         function p(e, r, t) {
             null == r.frameBuffer && (r.frameBuffer = e.createFramebuffer()), null == r.texture && (r.texture = r.texture || e.createTexture()), 
@@ -337,17 +338,17 @@
             e.bindTexture(e.TEXTURE_2D, null), e.bindRenderbuffer(e.RENDERBUFFER, null);
         }
         function h(e) {
-            if (A(e)) return e.buffer;
+            if (O(e)) return e.buffer;
             var r = window[e.type];
             return new r(e.array);
         }
-        function O(e, r) {
+        function A(e, r) {
             if (e instanceof Uint8Array) return r.UNSIGNED_BYTE;
             if (e instanceof Uint16Array) return r.UNSIGNED_SHORT;
             if (e instanceof Uint32Array) return r.UNSIGNED_INT;
             throw new TypeError("invalid array type");
         }
-        function A(e) {
+        function O(e) {
             return null != e.buffer;
         }
         var F = t(2);
@@ -432,8 +433,8 @@
             m = 0;
             var p = new (T.length / 3 > 65535 ? Uint32Array : Uint16Array)(o * u * 6);
             for (n = 0; u > n; n++) for (i = 0; o > i; i++) {
-                var h = i + l * n, O = i + l * (n + 1), A = i + 1 + l * (n + 1), F = i + 1 + l * n;
-                p[m] = h, p[m + 1] = O, p[m + 2] = F, p[m + 3] = O, p[m + 4] = A, p[m + 5] = F, 
+                var h = i + l * n, A = i + l * (n + 1), O = i + 1 + l * (n + 1), F = i + 1 + l * n;
+                p[m] = h, p[m + 1] = A, p[m + 2] = F, p[m + 3] = A, p[m + 4] = O, p[m + 5] = F, 
                 m += 6;
             }
             return {
