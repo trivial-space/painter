@@ -1,6 +1,6 @@
 {
   "name": "tvs-renderer",
-  "version": "0.1.4",
+  "version": "0.1.5",
   "description": "trivialspace renderer - a webgl rendering engine",
   "main": "dist/tvs-renderer.js",
   "typings": "lib/index.ts",
