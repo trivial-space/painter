@@ -51,7 +51,7 @@
                 target: {},
                 gl: r
             };
-            return u(t, t.settings), d(t, "_renderQuad", F["default"].geometries.renderQuad), 
+            return u(t, t.settings), c(t, "_renderQuad", F["default"].geometries.renderQuad), 
             E(t, "_basicEffect", F["default"].shaders.basicEffect), l(t, "_result", F["default"].objects.resultScreen), 
             R(t);
         }
@@ -68,13 +68,13 @@
         function f(e, r) {
             if (r) for (var t in r) {
                 var a = r[t];
-                c(e, t, a);
+                d(e, t, a);
             }
         }
         function s(e, r) {
             if (r) for (var t in r) {
                 var a = r[t];
-                d(e, t, a);
+                c(e, t, a);
             }
         }
         function o(e, r) {
@@ -107,7 +107,7 @@
             var a = e.objects[r], n = Object.assign({}, t, {
                 type: "initialized"
             });
-            if (null == n.uniforms && (n.uniforms = {}), e.objects[r] = n, a && "missing" === a.type) for (var i in a.updateLayers) c(e, i, a.updateLayers[i]);
+            if (null == n.uniforms && (n.uniforms = {}), e.objects[r] = n, a && "missing" === a.type) for (var i in a.updateLayers) d(e, i, a.updateLayers[i]);
             return e;
         }
         function E(e, r, t) {
@@ -134,7 +134,7 @@
             };
             return e.shaders[r] = a, e;
         }
-        function d(e, r, t) {
+        function c(e, r, t) {
             var a = e.gl, n = e.geometries[r] || {};
             n.drawType = a[t.drawType], n.itemCount = t.itemCount;
             var i = n.attribs || {};
@@ -153,7 +153,7 @@
             } else n.elements && delete n.elements;
             return e.geometries[r] = n, e;
         }
-        function c(e, r, t) {
+        function d(e, r, t) {
             var a = e.layers[r] || {};
             if (a.noClear = t.noClear, a.clearColor = t.clearColor || e.settings.clearColor, 
             t.buffered ? (a.renderTarget = {
@@ -192,10 +192,9 @@
             e.bindTexture(e.TEXTURE_2D, null), r.texture = a;
         }
         function R(e) {
-            var r = e.gl;
-            return e.settings.width = r.canvas.clientWidth, e.settings.height = r.canvas.clientHeight, 
-            r.canvas.width === e.settings.width && r.canvas.height === e.settings.height || (r.canvas.height = e.settings.height, 
-            r.canvas.width = e.settings.width, p(e.gl, e.source, e.settings), p(e.gl, e.target, e.settings)), 
+            var r = e.gl, t = r.canvas.clientWidth || r.canvas.width, a = r.canvas.clientHeight || r.canvas.height;
+            return t === e.settings.width && a === e.settings.height || (r.canvas.height = e.settings.height = a, 
+            r.canvas.width = e.settings.width = t, p(e.gl, e.source, e.settings), p(e.gl, e.target, e.settings)), 
             e;
         }
         function g(e, r) {
@@ -216,8 +215,8 @@
                     }
                     if (f.transparents.length) {
                         t.enable(t.BLEND);
-                        for (var d = 0, c = f.transparents; d < c.length; d++) {
-                            var E = c[d];
+                        for (var c = 0, d = f.transparents; c < d.length; c++) {
+                            var E = d[c];
                             m(e, e.objects[E]);
                         }
                         t.disable(t.BLEND);
@@ -353,7 +352,7 @@
         }
         var F = t(2);
         t(4), r.create = a, r.init = n, r.updateSettings = u, r.updateObject = l, r.updateShader = E, 
-        r.updateGeometry = d, r.updateLayer = c, r.updateSize = R, r.renderLayers = g;
+        r.updateGeometry = c, r.updateLayer = d, r.updateSize = R, r.renderLayers = g;
         var y = {
             f: 1,
             "f 1": 1,
@@ -371,9 +370,9 @@
             init: n,
             updateSettings: u,
             updateObject: l,
-            updateGeometry: d,
+            updateGeometry: c,
             updateShader: E,
-            updateLayer: c,
+            updateLayer: d,
             updateSize: R,
             renderLayers: g,
             lib: F["default"]
@@ -421,11 +420,11 @@
     }, function(e, r) {}, function(e, r) {
         "use strict";
         function t(e, r, t, a) {
-            var n, i, f = e / 2, s = r / 2, o = t || 1, u = a || 1, l = o + 1, E = u + 1, d = e / o, c = r / u, T = new Float32Array(l * E * 3), R = new Float32Array(l * E * 3), g = new Float32Array(l * E * 2), m = 0, b = 0;
+            var n, i, f = e / 2, s = r / 2, o = t || 1, u = a || 1, l = o + 1, E = u + 1, c = e / o, d = r / u, T = new Float32Array(l * E * 3), R = new Float32Array(l * E * 3), g = new Float32Array(l * E * 2), m = 0, b = 0;
             for (n = 0; E > n; n++) {
-                var _ = n * c - s;
+                var _ = n * d - s;
                 for (i = 0; l > i; i++) {
-                    var v = i * d - f;
+                    var v = i * c - f;
                     T[m] = v, T[m + 1] = -_, R[m + 2] = 1, g[b] = i / o, g[b + 1] = 1 - n / u, m += 3, 
                     b += 2;
                 }

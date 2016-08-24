@@ -356,12 +356,12 @@ function updateStaticLayer (gl: GL, layer: ContextLayerStatic, data: LayerData) 
 export function updateSize ( ctx: Context ): Context {
 
   const gl = ctx.gl
-  ctx.settings.width = gl.canvas.clientWidth
-  ctx.settings.height = gl.canvas.clientHeight
+  const width = gl.canvas.clientWidth || gl.canvas.width
+  const height = gl.canvas.clientHeight || gl.canvas.height
 
-  if (gl.canvas.width !== ctx.settings.width || gl.canvas.height !== ctx.settings.height) {
-    gl.canvas.height = ctx.settings.height
-    gl.canvas.width = ctx.settings.width
+  if (width !== ctx.settings.width || height !== ctx.settings.height) {
+    gl.canvas.height = ctx.settings.height = height
+    gl.canvas.width = ctx.settings.width = width
     updateRenderTarget(ctx.gl, ctx.source, ctx.settings)
     updateRenderTarget(ctx.gl, ctx.target, ctx.settings)
   }
