@@ -417,9 +417,9 @@
         "use strict";
         r.GEOMETRY_PROP_POSITION = "position", r.GEOMETRY_PROP_NORMAL = "normal", r.GEOMETRY_PROP_UV = "uv", 
         r.UNIFORM_SOURCE_TEXTURE = "source";
-    }, function(e, r) {}, function(e, r) {
+    }, function(e, r) {}, function(e, r, t) {
         "use strict";
-        function t(e, r, t, a) {
+        function a(e, r, t, a) {
             var n, i, f = e / 2, s = r / 2, o = t || 1, u = a || 1, l = o + 1, E = u + 1, c = e / o, d = r / u, T = new Float32Array(l * E * 3), R = new Float32Array(l * E * 3), g = new Float32Array(l * E * 2), m = 0, b = 0;
             for (n = 0; E > n; n++) {
                 var _ = n * d - s;
@@ -458,7 +458,7 @@
                 itemCount: p.length
             };
         }
-        r.plane = t;
+        t(4), r.plane = a;
     }, function(e, r, t) {
         "use strict";
         function a(e) {

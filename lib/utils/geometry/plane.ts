@@ -1,9 +1,11 @@
+import '../../renderer-types.ts'
+
 export function plane (
   width: number,
   height: number,
   widthSegments: number,
   heightSegments: number
-) {
+): GeometryData {
 
   const widthHalf = width / 2
   const heightHalf = height / 2

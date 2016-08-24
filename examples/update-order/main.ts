@@ -1,5 +1,5 @@
 import 'systemjs-hot-reloader/default-listener.js'
-import renderer from '../../lib/renderer.ts'
+import {renderer, renderUtils} from '../../lib/index.ts'
 import {ctx} from '../ctx.js'
 import {mat4} from 'gl-matrix'
 
@@ -8,8 +8,8 @@ import planeFrag from './plane-material.frag!text'
 import effectFrag from './effect.frag!text'
 
 
-let planMat1 = mat4.fromTranslation(mat4.create(), [0, 0, -1]),
-    planMat2 = mat4.fromTranslation(mat4.create(), [0, 0, -1]),
+let planMat1 = mat4.fromTranslation(mat4.create(), [0, 0, -3]),
+    planMat2 = mat4.fromTranslation(mat4.create(), [0, 0, -3]),
     rotation = 0.01,
     projection = mat4.perspective(mat4.create(), 45, 1, 0.01, 10)
 
@@ -48,28 +48,7 @@ renderer.updateLayer(ctx, "effectLayer", {
   shader: "effect",
 })
 
-renderer.updateGeometry(ctx, "planeGeometry", {
-  attribs: {
-    position: {
-      buffer: new Float32Array([
-        -0.5, 0.5, 0.0,
-        -0.5, -0.7, 0.0,
-        0.6, 0.5, 0.0,
-        0.5, -0.5, 0.0
-      ])
-    },
-    uv: {
-      buffer: new Float32Array([
-        0, 1,
-        0, 0,
-        1, 1,
-        1, 0
-      ])
-    }
-  },
-  drawType: "TRIANGLE_STRIP",
-  itemCount: 4
-})
+renderer.updateGeometry(ctx, "planeGeometry", renderUtils.geometry.plane(2, 2))
 
 renderer.updateShader(ctx, "planeMaterial", {
   vert: planeVert,
