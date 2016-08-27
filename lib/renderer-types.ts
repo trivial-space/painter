@@ -107,6 +107,7 @@ interface ContextLayerStatic extends ContextLayerBase {
 
 interface ContextLayerObjects extends ContextLayerBase {
   type: "objects"
+  uniforms: {[id: string]: any}
   opaques: ID[]
   transparents: ID[]
 }

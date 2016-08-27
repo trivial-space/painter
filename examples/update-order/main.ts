@@ -41,7 +41,11 @@ img.src = '../shared-assets/hepatica_256.png'
 
 renderer.updateLayer(ctx, "planeLayer", {
   objects: ["plane1", "plane2"],
-  clearColor: [0.0, 1.0, 0.0, 1.0]
+  clearColor: [0.0, 1.0, 0.0, 1.0],
+  uniforms: {
+    texture: "textureLayer",
+    projection
+  }
 })
 
 renderer.updateLayer(ctx, "effectLayer", {
@@ -72,8 +76,6 @@ renderer.updateObject(ctx, "plane1", {
   shader: "planeMaterial",
   geometry: "planeGeometry",
   uniforms: {
-    texture: "textureLayer",
-    projection,
     object: planMat1
   }
 })
@@ -82,8 +84,6 @@ renderer.updateObject(ctx, "plane2", {
   shader: "planeMaterial",
   geometry: "planeGeometry",
   uniforms: {
-    texture: "textureLayer",
-    projection,
     object: planMat2
   },
   blend: true

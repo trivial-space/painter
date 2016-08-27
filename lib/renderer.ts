@@ -303,6 +303,7 @@ export function updateLayer (
     l.type = "objects"
     l.transparents = []
     l.opaques = []
+    l.uniforms = data.uniforms || {}
     for (let id of data.objects) {
       let o = ctx.objects[id]
       if (o) {
@@ -406,12 +407,12 @@ export function renderLayers ( ctx: Context, layerIds: ID[] ) {
 
       case "objects":
         for (let id of layer.opaques) {
-          renderObject(ctx, ctx.objects[id] as ContextObjectInitialized)
+          renderObject(ctx, ctx.objects[id] as ContextObjectInitialized, layer.uniforms)
         }
         if (layer.transparents.length) {
           gl.enable(gl.BLEND)
           for (let id of layer.transparents) {
-            renderObject(ctx, ctx.objects[id] as ContextObjectInitialized)
+            renderObject(ctx, ctx.objects[id] as ContextObjectInitialized, layer.uniforms)
           }
           gl.disable(gl.BLEND)
         }
@@ -419,14 +420,8 @@ export function renderLayers ( ctx: Context, layerIds: ID[] ) {
 
       case "static":
         if (directRender) {
-          const object = Object.assign({},
-            ctx.objects['_result'] as ContextObjectInitialized,
-            {
-              uniforms: {
-                source: layerId
-              }
-            })
-          renderObject(ctx, object)
+          const object = ctx.objects['_result'] as ContextObjectInitialized
+          renderObject(ctx, object, {source: layerId})
         }
         break
     }
@@ -440,7 +435,11 @@ export function renderLayers ( ctx: Context, layerIds: ID[] ) {
 }
 
 
-function renderObject (ctx: Context, object: ContextObjectInitialized) {
+function renderObject (
+  ctx: Context,
+  object: ContextObjectInitialized,
+  globalUniforms?: {[id: string]: any}
+): void {
 
   let textureCount = 0
 
@@ -460,7 +459,7 @@ function renderObject (ctx: Context, object: ContextObjectInitialized) {
   for (let id in shader.uniforms) {
     const uniform = shader.uniforms[id]
     const index = uniform.index
-    const value = object.uniforms[id]
+    const value = object.uniforms[id] || (globalUniforms && globalUniforms[id])
 
     switch (uniform.type) {
 

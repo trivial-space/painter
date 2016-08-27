@@ -51,7 +51,7 @@
                 target: {},
                 gl: r
             };
-            return u(t, t.settings), c(t, "_renderQuad", F["default"].geometries.renderQuad), 
+            return u(t, t.settings), d(t, "_renderQuad", F["default"].geometries.renderQuad), 
             E(t, "_basicEffect", F["default"].shaders.basicEffect), l(t, "_result", F["default"].objects.resultScreen), 
             R(t);
         }
@@ -68,13 +68,13 @@
         function f(e, r) {
             if (r) for (var t in r) {
                 var a = r[t];
-                d(e, t, a);
+                c(e, t, a);
             }
         }
         function s(e, r) {
             if (r) for (var t in r) {
                 var a = r[t];
-                c(e, t, a);
+                d(e, t, a);
             }
         }
         function o(e, r) {
@@ -107,7 +107,7 @@
             var a = e.objects[r], n = Object.assign({}, t, {
                 type: "initialized"
             });
-            if (null == n.uniforms && (n.uniforms = {}), e.objects[r] = n, a && "missing" === a.type) for (var i in a.updateLayers) d(e, i, a.updateLayers[i]);
+            if (null == n.uniforms && (n.uniforms = {}), e.objects[r] = n, a && "missing" === a.type) for (var i in a.updateLayers) c(e, i, a.updateLayers[i]);
             return e;
         }
         function E(e, r, t) {
@@ -134,7 +134,7 @@
             };
             return e.shaders[r] = a, e;
         }
-        function c(e, r, t) {
+        function d(e, r, t) {
             var a = e.gl, n = e.geometries[r] || {};
             n.drawType = a[t.drawType], n.itemCount = t.itemCount;
             var i = n.attribs || {};
@@ -153,7 +153,7 @@
             } else n.elements && delete n.elements;
             return e.geometries[r] = n, e;
         }
-        function d(e, r, t) {
+        function c(e, r, t) {
             var a = e.layers[r] || {};
             if (a.noClear = t.noClear, a.clearColor = t.clearColor || e.settings.clearColor, 
             t.buffered ? (a.renderTarget = {
@@ -165,7 +165,7 @@
             }, p(e.gl, a.renderTarget, t)) : delete a.renderTarget, t.asset) a.type = "static", 
             T(e.gl, a, t); else if (t.objects) {
                 var n = a;
-                n.type = "objects", n.transparents = [], n.opaques = [];
+                n.type = "objects", n.transparents = [], n.opaques = [], n.uniforms = t.uniforms || {};
                 for (var i = 0, f = t.objects; i < f.length; i++) {
                     var s = f[i], o = e.objects[s];
                     o ? "initialized" === o.type ? o.blend ? n.transparents.push(s) : n.opaques.push(s) : o.updateLayers[r] = t : e.objects[s] = {
@@ -197,7 +197,7 @@
             r.canvas.width = e.settings.width = t, p(e.gl, e.source, e.settings), p(e.gl, e.target, e.settings)), 
             e;
         }
-        function g(e, r) {
+        function m(e, r) {
             for (var t = e.gl, a = r.length - 1, n = 0; n < r.length; n++) {
                 var i = r[n], f = e.layers[i], s = n === a, o = !s && null == f.renderTarget;
                 switch (s ? (t.bindFramebuffer(t.FRAMEBUFFER, null), t.viewport(0, 0, t.drawingBufferWidth, t.drawingBufferHeight)) : o ? (t.bindFramebuffer(t.FRAMEBUFFER, e.target.frameBuffer), 
@@ -205,19 +205,19 @@
                 t.viewport(0, 0, f.renderTarget.width, f.renderTarget.height)), f.noClear || (t.clearColor.apply(t, f.clearColor || e.settings.clearColor), 
                 t.clear(e.settings.clearBits)), f.type) {
                   case "shader":
-                    m(e, f.object);
+                    g(e, f.object);
                     break;
 
                   case "objects":
                     for (var u = 0, l = f.opaques; u < l.length; u++) {
                         var E = l[u];
-                        m(e, e.objects[E]);
+                        g(e, e.objects[E], f.uniforms);
                     }
                     if (f.transparents.length) {
                         t.enable(t.BLEND);
-                        for (var c = 0, d = f.transparents; c < d.length; c++) {
-                            var E = d[c];
-                            m(e, e.objects[E]);
+                        for (var d = 0, c = f.transparents; d < c.length; d++) {
+                            var E = c[d];
+                            g(e, e.objects[E], f.uniforms);
                         }
                         t.disable(t.BLEND);
                     }
@@ -225,12 +225,10 @@
 
                   case "static":
                     if (s) {
-                        var T = Object.assign({}, e.objects._result, {
-                            uniforms: {
-                                source: i
-                            }
+                        var T = e.objects._result;
+                        g(e, T, {
+                            source: i
                         });
-                        m(e, T);
                     }
                 }
                 if (o) {
@@ -239,74 +237,74 @@
                 }
             }
         }
-        function m(e, r) {
-            var t = 0, a = e.gl, n = e.shaders[r.shader], i = e.geometries[r.geometry];
-            a.useProgram(n.program);
-            for (var f in n.attribs) {
-                var s = n.attribs[f];
-                a.bindBuffer(a.ARRAY_BUFFER, i.attribs[f]), a.enableVertexAttribArray(s.index), 
-                a.vertexAttribPointer(s.index, s.itemSize, s.type, !1, 0, 0);
+        function g(e, r, t) {
+            var a = 0, n = e.gl, i = e.shaders[r.shader], f = e.geometries[r.geometry];
+            n.useProgram(i.program);
+            for (var s in i.attribs) {
+                var o = i.attribs[s];
+                n.bindBuffer(n.ARRAY_BUFFER, f.attribs[s]), n.enableVertexAttribArray(o.index), 
+                n.vertexAttribPointer(o.index, o.itemSize, o.type, !1, 0, 0);
             }
-            for (var f in n.uniforms) {
-                var o = n.uniforms[f], u = o.index, l = r.uniforms[f];
-                switch (o.type) {
+            for (var s in i.uniforms) {
+                var u = i.uniforms[s], l = u.index, E = r.uniforms[s] || t && t[s];
+                switch (u.type) {
                   case "t":
-                    var E = l ? e.layers[l].texture : e.source.texture;
-                    a.activeTexture(a["TEXTURE" + t]), a.bindTexture(a.TEXTURE_2D, E), a.uniform1i(u, t), 
-                    t++;
+                    var d = E ? e.layers[E].texture : e.source.texture;
+                    n.activeTexture(n["TEXTURE" + a]), n.bindTexture(n.TEXTURE_2D, d), n.uniform1i(l, a), 
+                    a++;
                     break;
 
                   case "f":
                   case "f 1":
-                    a.uniform1f(u, l);
+                    n.uniform1f(l, E);
                     break;
 
                   case "f 2":
-                    a.uniform2fv(u, l);
+                    n.uniform2fv(l, E);
                     break;
 
                   case "f 3":
-                    a.uniform3fv(u, l);
+                    n.uniform3fv(l, E);
                     break;
 
                   case "f 4":
-                    a.uniform4fv(u, l);
+                    n.uniform4fv(l, E);
                     break;
 
                   case "m 2":
-                    a.uniformMatrix2fv(u, !1, l);
+                    n.uniformMatrix2fv(l, !1, E);
                     break;
 
                   case "m 3":
-                    a.uniformMatrix3fv(u, !1, l);
+                    n.uniformMatrix3fv(l, !1, E);
                     break;
 
                   case "m 4":
-                    a.uniformMatrix4fv(u, !1, l);
+                    n.uniformMatrix4fv(l, !1, E);
                     break;
 
                   case "i":
                   case "i 1":
-                    a.uniform1i(u, l);
+                    n.uniform1i(l, E);
                     break;
 
                   case "i 2":
-                    a.uniform2iv(u, l);
+                    n.uniform2iv(l, E);
                     break;
 
                   case "i 3":
-                    a.uniform3iv(u, l);
+                    n.uniform3iv(l, E);
                     break;
 
                   case "i 4":
-                    a.uniform4iv(u, l);
+                    n.uniform4iv(l, E);
                     break;
 
                   default:
-                    console.error("Uniform type " + o.type + " unknown. uniform " + f + " not set!");
+                    console.error("Uniform type " + u.type + " unknown. uniform " + s + " not set!");
                 }
             }
-            i.elements ? (a.bindBuffer(a.ELEMENT_ARRAY_BUFFER, i.elements.buffer), a.drawElements(i.drawType, i.itemCount, i.elements.glType, 0)) : a.drawArrays(i.drawType, 0, i.itemCount);
+            f.elements ? (n.bindBuffer(n.ELEMENT_ARRAY_BUFFER, f.elements.buffer), n.drawElements(f.drawType, f.itemCount, f.elements.glType, 0)) : n.drawArrays(f.drawType, 0, f.itemCount);
         }
         function b(e, r) {
             return r.reduce(function(r, t) {
@@ -352,7 +350,7 @@
         }
         var F = t(2);
         t(4), r.create = a, r.init = n, r.updateSettings = u, r.updateObject = l, r.updateShader = E, 
-        r.updateGeometry = c, r.updateLayer = d, r.updateSize = R, r.renderLayers = g;
+        r.updateGeometry = d, r.updateLayer = c, r.updateSize = R, r.renderLayers = m;
         var y = {
             f: 1,
             "f 1": 1,
@@ -370,11 +368,11 @@
             init: n,
             updateSettings: u,
             updateObject: l,
-            updateGeometry: c,
+            updateGeometry: d,
             updateShader: E,
-            updateLayer: d,
+            updateLayer: c,
             updateSize: R,
-            renderLayers: g,
+            renderLayers: m,
             lib: F["default"]
         };
     }, function(e, r, t) {
@@ -420,21 +418,21 @@
     }, function(e, r) {}, function(e, r, t) {
         "use strict";
         function a(e, r, t, a) {
-            var n, i, f = e / 2, s = r / 2, o = t || 1, u = a || 1, l = o + 1, E = u + 1, c = e / o, d = r / u, T = new Float32Array(l * E * 3), R = new Float32Array(l * E * 3), g = new Float32Array(l * E * 2), m = 0, b = 0;
-            for (n = 0; E > n; n++) {
-                var _ = n * d - s;
-                for (i = 0; l > i; i++) {
-                    var v = i * c - f;
-                    T[m] = v, T[m + 1] = -_, R[m + 2] = 1, g[b] = i / o, g[b + 1] = 1 - n / u, m += 3, 
+            var n, i, f = e / 2, s = r / 2, o = t || 1, u = a || 1, l = o + 1, E = u + 1, d = e / o, c = r / u, T = new Float32Array(l * E * 3), R = new Float32Array(l * E * 3), m = new Float32Array(l * E * 2), g = 0, b = 0;
+            for (n = 0; n < E; n++) {
+                var _ = n * c - s;
+                for (i = 0; i < l; i++) {
+                    var v = i * d - f;
+                    T[g] = v, T[g + 1] = -_, R[g + 2] = 1, m[b] = i / o, m[b + 1] = 1 - n / u, g += 3, 
                     b += 2;
                 }
             }
-            m = 0;
+            g = 0;
             var p = new (T.length / 3 > 65535 ? Uint32Array : Uint16Array)(o * u * 6);
-            for (n = 0; u > n; n++) for (i = 0; o > i; i++) {
+            for (n = 0; n < u; n++) for (i = 0; i < o; i++) {
                 var h = i + l * n, A = i + l * (n + 1), O = i + 1 + l * (n + 1), F = i + 1 + l * n;
-                p[m] = h, p[m + 1] = A, p[m + 2] = F, p[m + 3] = A, p[m + 4] = O, p[m + 5] = F, 
-                m += 6;
+                p[g] = h, p[g + 1] = A, p[g + 2] = F, p[g + 3] = A, p[g + 4] = O, p[g + 5] = F, 
+                g += 6;
             }
             return {
                 attribs: {
@@ -447,7 +445,7 @@
                         storeType: "STATIC"
                     },
                     uv: {
-                        buffer: g,
+                        buffer: m,
                         storeType: "STATIC"
                     }
                 },
