@@ -14,8 +14,7 @@
   },
   "exclude": [
     "node_modules",
-    "jspm_packages",
-    "examples"
+    "jspm_packages"
   ],
   "compileOnSave": false,
   "buildOnSave": false,

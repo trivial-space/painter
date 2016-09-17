@@ -1,6 +1,6 @@
 {
   "name": "tvs-renderer",
-  "version": "0.1.7",
+  "version": "0.1.8",
   "description": "trivialspace renderer - a webgl rendering engine",
   "main": "dist/tvs-renderer.js",
   "typings": "lib/index.ts",
@@ -19,7 +19,6 @@
   },
   "homepage": "https://github.com/trivial-space/renderer#readme",
   "devDependencies": {
-    "@types/gl-matrix": "^2.2.27",
     "chokidar-socket-emitter": "^0.5.2",
     "gulp": "^3.9.1",
     "gulp-connect": "^4.0.0",
