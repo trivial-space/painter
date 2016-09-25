@@ -1,4 +1,6 @@
 import * as constants from '../../contants.ts'
+import {GeometryData, GeometryDrawType} from '../../renderer-types'
+
 
 export const STACK_GL_GEOMETRY_PROP_POSITION = "positions"
 export const STACK_GL_GEOMETRY_PROP_NORMAL = "normals"

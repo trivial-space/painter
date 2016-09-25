@@ -1,5 +1,5 @@
 import * as constants from './contants.ts'
-import './renderer-types.ts'
+import {GeometryStoreType, GeometryDrawType, ShaderAttribType, ShaderUniformType} from './renderer-types.ts'
 
 export default {
 

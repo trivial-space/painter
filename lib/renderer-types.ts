@@ -1,9 +1,9 @@
-type GL = WebGLRenderingContext
+export type GL = WebGLRenderingContext
 
-type ID = string
-type Color = [number, number, number, number]
+export type ID = string
+export type Color = [number, number, number, number]
 
-type TypedArray = Uint8Array |
+export type TypedArray = Uint8Array |
                   Uint16Array |
                   Uint32Array |
                   Int8Array |
@@ -12,7 +12,7 @@ type TypedArray = Uint8Array |
                   Float32Array |
                   Float64Array
 
-type TypedArrayConstructor = Uint8ArrayConstructor |
+export type TypedArrayConstructor = Uint8ArrayConstructor |
                              Uint16ArrayConstructor |
                              Uint32ArrayConstructor |
                              Int8ArrayConstructor |
@@ -21,7 +21,7 @@ type TypedArrayConstructor = Uint8ArrayConstructor |
                              Float32ArrayConstructor |
                              Float64ArrayConstructor
 
-type TypedArrayTypes = "Uint8Array" |
+export type TypedArrayTypes = "Uint8Array" |
                        "Uint16Array" |
                        "Uint32Array" |
                        "Int8Array" |
@@ -30,19 +30,19 @@ type TypedArrayTypes = "Uint8Array" |
                        "Float32Array" |
                        "Float64Array"
 
-type MagFilter = "LINEAR" | "NEAREST"
+export type MagFilter = "LINEAR" | "NEAREST"
 
-type MinFilter = MagFilter |
+export type MinFilter = MagFilter |
                  "LINEAR_MIPMAP_LINEAR" |
                  "LINEAR_MIPMAP_NEAREST" |
                  "NEAREST_MIPMAP_LINEAR" |
                  "NEAREST_MIPMAP_NEAREST"
 
-type Wrap = "CLAMP_TO_EDGE" | "REPEAT" | "MIRRORED_REPEAT"
+export type Wrap = "CLAMP_TO_EDGE" | "REPEAT" | "MIRRORED_REPEAT"
 
-type Asset = ImageData | HTMLCanvasElement | HTMLImageElement | HTMLVideoElement
+export type Asset = ImageData | HTMLCanvasElement | HTMLImageElement | HTMLVideoElement
 
-type GeometryDrawType = "TRIANGLES" |
+export type GeometryDrawType = "TRIANGLES" |
                         "TRIANGLE_STRIP" |
                         "TRIANGLE_FAN" |
                         "POINTS" |
@@ -50,14 +50,14 @@ type GeometryDrawType = "TRIANGLES" |
                         "LINE_LOOP" |
                         "LINE_STRIP"
 
-type GeometryStoreType = "DYNAMIC" | "STATIC"
+export type GeometryStoreType = "DYNAMIC" | "STATIC"
 
-type ShaderAttribType = "f" | "f 1" | "f 2" | "f 3" | "f 4" | "m 2" | "m 3" | "m 4"
+export type ShaderAttribType = "f" | "f 1" | "f 2" | "f 3" | "f 4" | "m 2" | "m 3" | "m 4"
 
-type ShaderUniformType = ShaderAttribType | "i" | "i 1" | "i 2" | "i 3" | "i 4" | "t"
+export type ShaderUniformType = ShaderAttribType | "i" | "i 1" | "i 2" | "i 3" | "i 4" | "t"
 
 
-interface RenderTarget {
+export interface RenderTarget {
   frameBuffer: WebGLFramebuffer | null
   texture: WebGLTexture | null
   depthBuffer: WebGLRenderbuffer | null
@@ -66,7 +66,7 @@ interface RenderTarget {
 }
 
 
-interface Settings {
+export interface Settings {
   clearColor: Color
   minFilter: MinFilter
   magFilter: MagFilter
@@ -80,7 +80,7 @@ interface Settings {
 }
 
 
-interface Context {
+export interface Context {
   settings: Settings
 
   shaders: {[id: string]: ContextShader}
@@ -94,33 +94,33 @@ interface Context {
 }
 
 
-interface ContextLayerBase {
+export interface ContextLayerBase {
   noClear: boolean
   clearColor: Color
   renderTarget?: RenderTarget
 }
 
-interface ContextLayerStatic extends ContextLayerBase {
+export interface ContextLayerStatic extends ContextLayerBase {
   type: "static"
   texture: WebGLTexture | null
 }
 
-interface ContextLayerObjects extends ContextLayerBase {
+export interface ContextLayerObjects extends ContextLayerBase {
   type: "objects"
   uniforms: {[id: string]: any}
   opaques: ID[]
   transparents: ID[]
 }
 
-interface ContextLayerShader extends ContextLayerBase {
+export interface ContextLayerShader extends ContextLayerBase {
   type: "shader"
   object: ContextObjectInitialized
 }
 
-type ContextLayer = ContextLayerStatic | ContextLayerObjects | ContextLayerShader
+export type ContextLayer = ContextLayerStatic | ContextLayerObjects | ContextLayerShader
 
 
-interface TextureData {
+export interface TextureData {
   readonly flipY?: boolean
   readonly wrap?: Wrap
   readonly wrapT?: Wrap
@@ -129,7 +129,7 @@ interface TextureData {
   readonly magFilter?: MagFilter
 }
 
-interface LayerData extends TextureData {
+export interface LayerData extends TextureData {
 
   readonly buffered?: boolean // get its own RenderTarget
   readonly width?: number // for own RenderTarget
@@ -144,7 +144,7 @@ interface LayerData extends TextureData {
 }
 
 
-interface ObjectData {
+export interface ObjectData {
   readonly shader: ID
   readonly geometry: ID
   readonly uniforms?: {[id: string]: any}
@@ -152,7 +152,7 @@ interface ObjectData {
 }
 
 
-interface ContextObjectInitialized {
+export interface ContextObjectInitialized {
   type: "initialized"
   shader: ID
   geometry: ID
@@ -160,31 +160,31 @@ interface ContextObjectInitialized {
   blend?: boolean
 }
 
-interface ContextObjectMissing {
+export interface ContextObjectMissing {
   type: "missing"
   updateLayers: {
     [id: string]: LayerData
   }
 }
 
-type ContextObject = ContextObjectMissing | ContextObjectInitialized
+export type ContextObject = ContextObjectMissing | ContextObjectInitialized
 
 
-interface GeometryArray {
+export interface GeometryArray {
   readonly array: number[]
   readonly type: TypedArrayTypes
 }
 
-interface GeometryBuffer  {
+export interface GeometryBuffer  {
   readonly buffer: TypedArray
 }
 
-type GeometryBufferStore = (GeometryBuffer | GeometryArray) & {
+export type GeometryBufferStore = (GeometryBuffer | GeometryArray) & {
   readonly storeType?: GeometryStoreType
 }
 
 
-interface GeometryData {
+export interface GeometryData {
   readonly drawType: GeometryDrawType
   readonly itemCount: number
   readonly attribs: {[id: string]: GeometryBufferStore}
@@ -192,7 +192,7 @@ interface GeometryData {
 }
 
 
-interface ContextGeometry {
+export interface ContextGeometry {
   drawType: number
   itemCount: number
   attribs: {[id: string]: WebGLBuffer | null}
@@ -203,7 +203,7 @@ interface ContextGeometry {
 }
 
 
-interface ShaderData {
+export interface ShaderData {
   readonly vert: string
   readonly frag: string
   readonly attribs: {[id: string]: ShaderAttribType}
@@ -211,20 +211,20 @@ interface ShaderData {
 }
 
 
-interface ContextShaderAttribute {
+export interface ContextShaderAttribute {
   index: number
   type: number
   itemSize: number
 }
 
 
-interface ContextShaderUniform {
+export interface ContextShaderUniform {
   index: WebGLUniformLocation | null
   type: ShaderUniformType
 }
 
 
-interface ContextShader {
+export interface ContextShader {
   program: WebGLProgram | null
   vert: WebGLShader | null
   frag: WebGLShader | null

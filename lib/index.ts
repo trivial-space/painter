@@ -4,6 +4,9 @@ import {plane} from './utils/geometry/plane.ts'
 import * as stackgl from './utils/stackgl/helpers.ts'
 
 
+export * from './renderer-types.ts'
+
+
 export const renderUtils = {
   geometry: {
     plane

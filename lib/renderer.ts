@@ -1,5 +1,27 @@
 import lib from './asset-lib.ts'
-import './renderer-types.ts'
+import {
+  Context,
+  RenderTarget,
+  ID,
+  GL,
+  Wrap,
+  ObjectData,
+  ShaderData,
+  GeometryData,
+  LayerData,
+  TextureData,
+  ContextObjectInitialized,
+  ContextLayerObjects,
+  ContextLayerStatic,
+  ContextLayerShader,
+  ContextLayer,
+  ContextShader,
+  ContextGeometry,
+  GeometryBuffer,
+  GeometryArray,
+  TypedArray,
+  TypedArrayConstructor
+} from './renderer-types.ts'
 
 
 export function create (canvas?: HTMLCanvasElement): Context{
