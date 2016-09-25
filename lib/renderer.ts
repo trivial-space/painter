@@ -280,7 +280,7 @@ export function updateLayer (
 ): Context {
 
   const layer = ctx.layers[layerId] || {} as ContextLayer
-  data.noClear != null && (layer.noClear = data.noClear)
+  layer.noClear = !!data.noClear
   layer.clearColor = data.clearColor || ctx.settings.clearColor
 
   if (data.buffered) {
@@ -461,7 +461,7 @@ function renderObject (
     const index = uniform.index
     const value = object.uniforms[id] || (globalUniforms && globalUniforms[id])
 
-    if (index != null) switch (uniform.type) {
+    switch (uniform.type) {
 
       case 't':
         let texture = value ?
@@ -479,27 +479,27 @@ function renderObject (
         break
 
       case 'f 2':
-        gl.uniform2fv(index, value)
+        gl.uniform2fv(index as WebGLUniformLocation, value)
         break
 
       case 'f 3':
-        gl.uniform3fv(index, value)
+        gl.uniform3fv(index as WebGLUniformLocation, value)
         break
 
       case 'f 4':
-        gl.uniform4fv(index, value)
+        gl.uniform4fv(index as WebGLUniformLocation, value)
         break
 
       case 'm 2':
-        gl.uniformMatrix2fv(index, false, value)
+        gl.uniformMatrix2fv(index as WebGLUniformLocation, false, value)
         break
 
       case 'm 3':
-        gl.uniformMatrix3fv(index, false, value)
+        gl.uniformMatrix3fv(index as WebGLUniformLocation, false, value)
         break
 
       case 'm 4':
-        gl.uniformMatrix4fv(index, false, value)
+        gl.uniformMatrix4fv(index as WebGLUniformLocation, false, value)
         break
 
       case 'i':
@@ -508,15 +508,15 @@ function renderObject (
         break
 
       case 'i 2':
-        gl.uniform2iv(index, value)
+        gl.uniform2iv(index as WebGLUniformLocation, value)
         break
 
       case 'i 3':
-        gl.uniform3iv(index, value)
+        gl.uniform3iv(index as WebGLUniformLocation, value)
         break
 
       case 'i 4':
-        gl.uniform4iv(index, value)
+        gl.uniform4iv(index as WebGLUniformLocation, value)
         break
 
       default:

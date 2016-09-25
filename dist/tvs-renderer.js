@@ -155,7 +155,7 @@
         }
         function c(e, r, t) {
             var a = e.layers[r] || {};
-            if (null != t.noClear && (a.noClear = t.noClear), a.clearColor = t.clearColor || e.settings.clearColor, 
+            if (a.noClear = !!t.noClear, a.clearColor = t.clearColor || e.settings.clearColor, 
             t.buffered ? (a.renderTarget = {
                 width: t.width || e.settings.width,
                 height: t.height || e.settings.height,
@@ -247,7 +247,7 @@
             }
             for (var s in i.uniforms) {
                 var u = i.uniforms[s], l = u.index, E = r.uniforms[s] || t && t[s];
-                if (null != l) switch (u.type) {
+                switch (u.type) {
                   case "t":
                     var d = E ? e.layers[E].texture : e.source.texture;
                     n.activeTexture(n["TEXTURE" + a]), n.bindTexture(n.TEXTURE_2D, d), n.uniform1i(l, a), 
