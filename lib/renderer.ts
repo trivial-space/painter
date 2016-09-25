@@ -572,7 +572,7 @@ function updateRenderTarget (gl: GL, target: RenderTarget, data: LayerData) {
     target.frameBuffer = gl.createFramebuffer()
   }
   if (target.texture == null) {
-    target.texture = target.texture || gl.createTexture()
+    target.texture = gl.createTexture()
   }
   if (target.depthBuffer == null) {
     target.depthBuffer = gl.createRenderbuffer()
