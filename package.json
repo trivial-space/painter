@@ -24,9 +24,8 @@
     "gulp-connect": "^4.0.0",
     "gulp-livereload": "^3.8.1",
     "jspm": "^0.17.0-beta.22",
-    "object-assign": "^3.0.0",
     "ts-loader": "^0.8.2",
-    "typescript": "^2.0.0",
+    "typescript": "^2.0.3",
     "webpack": "^1.13.1",
     "webpack-stream": "^3.2.0"
   },
