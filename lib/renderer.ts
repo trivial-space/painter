@@ -280,7 +280,7 @@ export function updateLayer (
 ): Context {
 
   const layer = ctx.layers[layerId] || {} as ContextLayer
-  layer.noClear = data.noClear
+  data.noClear != null && (layer.noClear = data.noClear)
   layer.clearColor = data.clearColor || ctx.settings.clearColor
 
   if (data.buffered) {
@@ -390,7 +390,7 @@ export function renderLayers ( ctx: Context, layerIds: ID[] ) {
       gl.bindFramebuffer(gl.FRAMEBUFFER, ctx.target.frameBuffer)
       gl.viewport(0, 0, gl.drawingBufferWidth, gl.drawingBufferHeight)
 
-    } else {
+    } else if (layer.renderTarget) {
       gl.bindFramebuffer(gl.FRAMEBUFFER, layer.renderTarget.frameBuffer)
       gl.viewport(0, 0, layer.renderTarget.width, layer.renderTarget.height)
     }
@@ -461,7 +461,7 @@ function renderObject (
     const index = uniform.index
     const value = object.uniforms[id] || (globalUniforms && globalUniforms[id])
 
-    switch (uniform.type) {
+    if (index != null) switch (uniform.type) {
 
       case 't':
         let texture = value ?
@@ -524,7 +524,7 @@ function renderObject (
     }
   }
 
-  if (geometry.elements) {
+  if (geometry.elements && geometry.elements.glType != null) {
     gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, geometry.elements.buffer)
     gl.drawElements(geometry.drawType, geometry.itemCount, geometry.elements.glType, 0)
   } else {
@@ -549,7 +549,8 @@ function setTextureParams (gl: GL, data: TextureData) {
 
   gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, data.flipY as any)
 
-  let wrapS: Wrap, wrapT: Wrap
+  let wrapS: Wrap | undefined,
+      wrapT: Wrap | undefined
   if (data.wrap) {
     wrapS = wrapT = data.wrap
   } else {
@@ -566,6 +567,7 @@ function setTextureParams (gl: GL, data: TextureData) {
 
 
 function updateRenderTarget (gl: GL, target: RenderTarget, data: LayerData) {
+  if (data.width == null || data.height == null) return;
   if (target.frameBuffer == null) {
     target.frameBuffer = gl.createFramebuffer()
   }
@@ -576,7 +578,7 @@ function updateRenderTarget (gl: GL, target: RenderTarget, data: LayerData) {
     target.depthBuffer = gl.createRenderbuffer()
   }
   gl.bindTexture(gl.TEXTURE_2D, target.texture)
-  gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, data.width, data.height, 0, gl.RGBA, gl.UNSIGNED_BYTE, null)
+  gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, data.width, data.height, 0, gl.RGBA, gl.UNSIGNED_BYTE, undefined)
   setTextureParams(gl, data)
   gl.bindRenderbuffer(gl.RENDERBUFFER, target.depthBuffer)
   gl.renderbufferStorage(gl.RENDERBUFFER, gl.DEPTH_COMPONENT16, data.width, data.height)

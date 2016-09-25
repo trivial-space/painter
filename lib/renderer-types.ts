@@ -58,9 +58,9 @@ type ShaderUniformType = ShaderAttribType | "i" | "i 1" | "i 2" | "i 3" | "i 4" 
 
 
 interface RenderTarget {
-  frameBuffer: WebGLFramebuffer
-  texture: WebGLTexture
-  depthBuffer: WebGLRenderbuffer
+  frameBuffer: WebGLFramebuffer | null
+  texture: WebGLTexture | null
+  depthBuffer: WebGLRenderbuffer | null
   width: number
   height: number
 }
@@ -102,7 +102,7 @@ interface ContextLayerBase {
 
 interface ContextLayerStatic extends ContextLayerBase {
   type: "static"
-  texture: WebGLTexture
+  texture: WebGLTexture | null
 }
 
 interface ContextLayerObjects extends ContextLayerBase {
@@ -195,10 +195,10 @@ interface GeometryData {
 interface ContextGeometry {
   drawType: number
   itemCount: number
-  attribs: {[id: string]: WebGLBuffer}
+  attribs: {[id: string]: WebGLBuffer | null}
   elements?: {
-    buffer: WebGLBuffer
-    glType: number
+    buffer: WebGLBuffer | null
+    glType: number | null
   }
 }
 
@@ -219,15 +219,15 @@ interface ContextShaderAttribute {
 
 
 interface ContextShaderUniform {
-  index: WebGLUniformLocation
+  index: WebGLUniformLocation | null
   type: ShaderUniformType
 }
 
 
 interface ContextShader {
-  program: WebGLProgram
-  vert: WebGLShader
-  frag: WebGLShader
+  program: WebGLProgram | null
+  vert: WebGLShader | null
+  frag: WebGLShader | null
   attribs: {[name: string]: ContextShaderAttribute}
   uniforms: {[name: string]: ContextShaderUniform}
 }
