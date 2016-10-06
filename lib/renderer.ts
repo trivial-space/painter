@@ -303,7 +303,7 @@ export function updateLayer (
 
   const layer = ctx.layers[layerId] || {} as ContextLayer
   layer.noClear = !!data.noClear
-  layer.clearColor = data.clearColor || ctx.settings.clearColor
+  layer.clearColor = data.clearColor
 
   if (data.buffered) {
     layer.renderTarget = {
