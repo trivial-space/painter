@@ -1,6 +1,6 @@
 import 'systemjs-hot-reloader/default-listener.js'
-import {renderer, renderUtils} from '../../lib/index.ts'
-import {ctx} from '../ctx.ts'
+import {renderer, renderUtils} from '../../lib/index'
+import {ctx} from '../ctx'
 import {mat4} from 'gl-matrix'
 
 import planeVert from './plane-material.vert!text'

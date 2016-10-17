@@ -1,10 +1,10 @@
-import render from './renderer.ts'
-import * as consts from './contants.ts'
-import {plane} from './utils/geometry/plane.ts'
-import * as stackgl from './utils/stackgl/helpers.ts'
+import render from './renderer'
+import * as consts from './contants'
+import {plane} from './utils/geometry/plane'
+import * as stackgl from './utils/stackgl/helpers'
 
 
-export * from './renderer-types.ts'
+export * from './renderer-types'
 
 
 export const renderUtils = {

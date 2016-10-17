@@ -1,4 +1,4 @@
-import * as constants from '../../contants.ts'
+import * as constants from '../../contants'
 import {GeometryData, GeometryDrawType} from '../../renderer-types'
 
 

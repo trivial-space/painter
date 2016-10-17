@@ -1,4 +1,4 @@
-import lib from './asset-lib.ts'
+import lib from './asset-lib'
 import {
   Context,
   RenderTarget,
@@ -21,7 +21,7 @@ import {
   GeometryArray,
   TypedArray,
   TypedArrayConstructor
-} from './renderer-types.ts'
+} from './renderer-types'
 
 
 export function create (canvas?: HTMLCanvasElement): Context{
@@ -303,7 +303,7 @@ export function updateLayer (
 
   const layer = ctx.layers[layerId] || {} as ContextLayer
   layer.noClear = !!data.noClear
-  layer.clearColor = data.clearColor
+  layer.clearColor = data.clearColor || ctx.settings.clearColor
 
   if (data.buffered) {
     layer.renderTarget = {

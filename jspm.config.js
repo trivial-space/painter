@@ -252,10 +252,11 @@ SystemJS.config({
   transpiler: "plugin-babel",
   packages: {
     "tvs-renderer": {
-      "main": "renderer.ts",
-      "meta": {
+      main: "index.ts",
+      defaultExtension: 'ts',
+      meta: {
         "*.ts": {
-          "loader": "plugin-typescript"
+          loader: "plugin-typescript"
         }
       }
     }

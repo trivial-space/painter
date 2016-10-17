@@ -1,4 +1,4 @@
-import {GeometryData} from '../../renderer-types.ts'
+import {GeometryData} from '../../renderer-types'
 
 export function plane (
   width: number,

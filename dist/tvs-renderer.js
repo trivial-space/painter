@@ -155,7 +155,8 @@
         }
         function c(e, r, t) {
             var a = e.layers[r] || {};
-            if (a.noClear = !!t.noClear, a.clearColor = t.clearColor, t.buffered ? (a.renderTarget = {
+            if (a.noClear = !!t.noClear, a.clearColor = t.clearColor || e.settings.clearColor, 
+            t.buffered ? (a.renderTarget = {
                 width: t.width || e.settings.width,
                 height: t.height || e.settings.height,
                 frameBuffer: null,

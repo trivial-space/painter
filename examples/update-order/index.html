@@ -21,9 +21,14 @@
     <script src="../../jspm.config.js"></script>
     <script type="text/javascript">
       System.config({
-        transpiler: "plugin-typescript"
+        transpiler: "plugin-typescript",
+        packages: {
+          '': {
+            defaultExtension: 'ts'
+          }
+        }
       })
-      System.import('./main.ts')
+      System.import('./main')
     </script>
   </body>
 </html>
