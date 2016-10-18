@@ -231,7 +231,7 @@ export function updateShader (
       itemSize: attribItemSize[type]
     }
     if (attrib.index < 0) {
-      console.error('attribute "' + id + '" could not be found in shader', data.vert)
+      console.warn('attribute "' + id + '" could not be found in shader', data.vert)
     }
     shader.attribs[id] = attrib
   }
