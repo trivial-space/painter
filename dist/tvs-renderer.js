@@ -124,7 +124,7 @@
                     type: i.FLOAT,
                     itemSize: y[o]
                 };
-                u.index < 0 && console.error('attribute "' + s + '" could not be found in shader', t.vert), 
+                u.index < 0 && console.warn('attribute "' + s + '" could not be found in shader ' + r, t.vert), 
                 a.attribs[s] = u;
             }
             a.uniforms = {};

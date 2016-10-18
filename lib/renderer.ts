@@ -223,24 +223,24 @@ export function updateShader (
   gl.linkProgram(shader.program)
 
   shader.attribs = {}
-  for (let id in data.attribs) {
-    let type = data.attribs[id]
+  for (let aid in data.attribs) {
+    let type = data.attribs[aid]
     let attrib = {
-      index: gl.getAttribLocation(shader.program, id),
+      index: gl.getAttribLocation(shader.program, aid),
       type: gl.FLOAT,
       itemSize: attribItemSize[type]
     }
     if (attrib.index < 0) {
-      console.warn('attribute "' + id + '" could not be found in shader', data.vert)
+      console.warn('attribute "' + aid + '" could not be found in shader ' + id, data.vert)
     }
-    shader.attribs[id] = attrib
+    shader.attribs[aid] = attrib
   }
 
   shader.uniforms = {}
-  for (let id in data.uniforms) {
-    shader.uniforms[id] = {
-      index: gl.getUniformLocation(shader.program, id),
-      type: data.uniforms[id]
+  for (let uid in data.uniforms) {
+    shader.uniforms[uid] = {
+      index: gl.getUniformLocation(shader.program, uid),
+      type: data.uniforms[uid]
     }
   }
 
