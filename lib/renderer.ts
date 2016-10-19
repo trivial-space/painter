@@ -487,7 +487,7 @@ function renderObject (
 
       case 't':
         let texture = value ?
-          (<ContextLayerStatic> ctx.layers[value]).texture :
+          (ctx.layers[value] as ContextLayerStatic).texture :
           ctx.source.texture
         gl.activeTexture(gl['TEXTURE' + textureCount])
         gl.bindTexture(gl.TEXTURE_2D, texture)
