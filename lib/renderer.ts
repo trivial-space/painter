@@ -571,8 +571,8 @@ function setTextureParams (gl: GL, data: TextureData) {
 
   gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, data.flipY as any)
 
-  let wrapS: Wrap | undefined,
-      wrapT: Wrap | undefined
+  let wrapS: Wrap | undefined, wrapT: Wrap | undefined
+
   if (data.wrap) {
     wrapS = wrapT = data.wrap
   } else {
