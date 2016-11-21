@@ -833,7 +833,7 @@ export interface vec3 {
    * @param {quat} q quaternion to transform with
    * @returns {vec3} out
    */
-  transformQuat(out: GLVec, a: GLVec, q: quat): GLVec;
+  transformQuat(out: GLVec, a: GLVec, q: GLVec): GLVec;
 
   /**
    * Rotate a 3D vector around the x-axis
@@ -1248,7 +1248,7 @@ export interface vec4 {
    * @param {quat} q quaternion to transform with
    * @returns {vec4} out
    */
-  transformQuat(out: GLVec, a: GLVec, q: quat): GLVec;
+  transformQuat(out: GLVec, a: GLVec, q: GLVec): GLVec;
 
   /**
    * Perform some operation over an array of vec4s.
@@ -2043,7 +2043,7 @@ export interface mat3 {
   *
   * @returns {mat3} out
   */
-  fromQuat(out: GLMat, q: quat): GLMat;
+  fromQuat(out: GLMat, q: GLVec): GLMat;
 
   /**
   * Calculates a 3x3 normal matrix (transpose inverse) from the 4x4 matrix
@@ -2428,7 +2428,7 @@ export interface mat4 {
    * @param {vec3} v Translation vector
    * @returns {mat4} out
    */
-  fromRotationTranslation(out: GLMat, q: quat, v: GLVec): GLMat;
+  fromRotationTranslation(out: GLMat, q: GLVec, v: GLVec): GLMat;
 
   /**
    * Returns the translation vector component of a transformation
@@ -2450,7 +2450,7 @@ export interface mat4 {
    * @param {mat4} GLMat Matrix to be decomposed (input)
    * @return {quat} out
    */
-  getRotation(out: quat, GLMat: GLMat): quat;
+  getRotation(out: GLVec, GLMat: GLMat): GLVec;
 
   /**
    * Creates a matrix from a quaternion rotation, vector translation and vector scale
@@ -2469,7 +2469,7 @@ export interface mat4 {
    * @param {vec3} s Scaling vector
    * @returns {mat4} out
    */
-  fromRotationTranslationScale(out: GLMat, q: quat, v: GLVec, s: GLVec): GLMat;
+  fromRotationTranslationScale(out: GLMat, q: GLVec, v: GLVec, s: GLVec): GLMat;
 
   /**
    * Creates a matrix from a quaternion rotation, vector translation and vector scale, rotating and scaling around the given origin
@@ -2491,7 +2491,7 @@ export interface mat4 {
    * @param {vec3} o The origin vector around which to scale and rotate
    * @returns {mat4} out
    */
-  fromRotationTranslationScaleOrigin(out: GLMat, q: quat, v: GLVec, s: GLVec, o: GLVec): GLMat;
+  fromRotationTranslationScaleOrigin(out: GLMat, q: GLVec, v: GLVec, s: GLVec, o: GLVec): GLMat;
 
   /**
    * Calculates a 4x4 matrix from the given quaternion
@@ -2501,7 +2501,7 @@ export interface mat4 {
    *
    * @returns {mat4} out
    */
-  fromQuat(out: GLMat, q: quat): GLMat;
+  fromQuat(out: GLMat, q: GLVec): GLMat;
 
   /**
    * Generates a frustum matrix with the given bounds
@@ -2665,7 +2665,7 @@ export interface quat {
    *
    * @returns {quat} a new quaternion
    */
-  create(): quat;
+  create(): GLVec;
 
   /**
    * Sets a quaternion to represent the shortest rotation from one
@@ -2678,7 +2678,7 @@ export interface quat {
    * @param {vec3} b the destination vector
    * @returns {quat} out
    */
-  rotationTo(out: quat, a: GLVec, b: GLVec): quat;
+  rotationTo(out: GLVec, a: GLVec, b: GLVec): GLVec;
 
   /**
    * Sets the specified quaternion with values corresponding to the given
@@ -2690,7 +2690,7 @@ export interface quat {
    * @param {vec3} up    the vector representing the local "up" direction
    * @returns {quat} out
    */
-  setAxes(out: GLVec, view: GLVec, right: GLVec, up: quat): quat;
+  setAxes(out: GLVec, view: GLVec, right: GLVec, up: GLVec): GLVec;
 
   /**
    * Creates a new quat initialized with values from an existing quaternion
@@ -2699,7 +2699,7 @@ export interface quat {
    * @returns {quat} a new quaternion
    * @function
    */
-  clone(a: quat): quat;
+  clone(a: GLVec): GLVec;
 
   /**
    * Creates a new quat initialized with the given values
@@ -2711,7 +2711,7 @@ export interface quat {
    * @returns {quat} a new quaternion
    * @function
    */
-  fromValues(x: number, y: number, z: number, w: number): quat;
+  fromValues(x: number, y: number, z: number, w: number): GLVec;
 
   /**
    * Copy the values from one quat to another
@@ -2721,7 +2721,7 @@ export interface quat {
    * @returns {quat} out
    * @function
    */
-  copy(out: quat, a: quat): quat;
+  copy(out: GLVec, a: GLVec): GLVec;
 
   /**
    * Set the components of a quat to the given values
@@ -2734,7 +2734,7 @@ export interface quat {
    * @returns {quat} out
    * @function
    */
-  // set(out: quat, x: number, y: number, z: number, w: number): quat; // not Float32Array compatible
+  // set(out: GLVec, x: number, y: number, z: number, w: number): GLVec; // not Float32Array compatible
 
   /**
    * Set a quat to the identity quaternion
@@ -2742,7 +2742,7 @@ export interface quat {
    * @param {quat} out the receiving quaternion
    * @returns {quat} out
    */
-  identity(out: quat): quat;
+  identity(out: GLVec): GLVec;
 
   /**
    * Sets a quat from the given angle and rotation axis,
@@ -2753,7 +2753,7 @@ export interface quat {
    * @param {Number} rad the angle in radians
    * @returns {quat} out
    **/
-  setAxisAngle(out: quat, axis: GLVec, rad: number): quat;
+  setAxisAngle(out: GLVec, axis: GLVec, rad: number): GLVec;
 
   /**
    * Gets the rotation axis and angle for a given
@@ -2768,7 +2768,7 @@ export interface quat {
    * @param  {quat} q     Quaternion to be decomposed
    * @return {Number}     Angle, in radians, of the rotation
    */
-  getAxisAngle(out_axis: GLVec, q: quat): number;
+  getAxisAngle(out_axis: GLVec, q: GLVec): number;
 
   /**
    * Adds two quat's
@@ -2779,7 +2779,7 @@ export interface quat {
    * @returns {quat} out
    * @function
    */
-  add(out: quat, a: quat, b: quat): quat;
+  add(out: GLVec, a: GLVec, b: GLVec): GLVec;
 
   /**
    * Multiplies two quat's
@@ -2789,7 +2789,7 @@ export interface quat {
    * @param {quat} b the second operand
    * @returns {quat} out
    */
-  multiply(out: quat, a: quat, b: quat): quat;
+  multiply(out: GLVec, a: GLVec, b: GLVec): GLVec;
 
   /**
    * Multiplies two quat's
@@ -2799,7 +2799,7 @@ export interface quat {
    * @param {quat} b the second operand
    * @returns {quat} out
    */
-  mul(out: quat, a: quat, b: quat): quat;
+  mul(out: GLVec, a: GLVec, b: GLVec): GLVec;
 
   /**
    * Scales a quat by a scalar number
@@ -2810,7 +2810,7 @@ export interface quat {
    * @returns {quat} out
    * @function
    */
-  scale(out: quat, a: quat, b: number): quat;
+  scale(out: GLVec, a: GLVec, b: number): GLVec;
 
   /**
    * Rotates a quaternion by the given angle about the X axis
@@ -2820,7 +2820,7 @@ export interface quat {
    * @param {number} rad angle (in radians) to rotate
    * @returns {quat} out
    */
-  rotateX(out: quat, a: quat, rad: number): quat;
+  rotateX(out: GLVec, a: GLVec, rad: number): GLVec;
 
   /**
    * Rotates a quaternion by the given angle about the Y axis
@@ -2830,7 +2830,7 @@ export interface quat {
    * @param {number} rad angle (in radians) to rotate
    * @returns {quat} out
    */
-  rotateY(out: quat, a: quat, rad: number): quat;
+  rotateY(out: GLVec, a: GLVec, rad: number): GLVec;
 
   /**
    * Rotates a quaternion by the given angle about the Z axis
@@ -2840,7 +2840,7 @@ export interface quat {
    * @param {number} rad angle (in radians) to rotate
    * @returns {quat} out
    */
-  rotateZ(out: quat, a: quat, rad: number): quat;
+  rotateZ(out: GLVec, a: GLVec, rad: number): GLVec;
 
   /**
    * Calculates the W component of a quat from the X, Y, and Z components.
@@ -2851,7 +2851,7 @@ export interface quat {
    * @param {quat} a quat to calculate W component of
    * @returns {quat} out
    */
-  calculateW(out: quat, a: quat): quat;
+  calculateW(out: GLVec, a: GLVec): GLVec;
 
   /**
    * Calculates the dot product of two quat's
@@ -2861,7 +2861,7 @@ export interface quat {
    * @returns {Number} dot product of a and b
    * @function
    */
-  dot(a: quat, b: quat): number;
+  dot(a: GLVec, b: GLVec): number;
 
   /**
    * Performs a linear interpolation between two quat's
@@ -2873,7 +2873,7 @@ export interface quat {
    * @returns {quat} out
    * @function
    */
-  lerp(out: quat, a: quat, b: quat, t: number): quat;
+  lerp(out: GLVec, a: GLVec, b: GLVec, t: number): GLVec;
 
   /**
    * Performs a spherical linear interpolation between two quat
@@ -2884,7 +2884,7 @@ export interface quat {
    * @param {Number} t interpolation amount between the two inputs
    * @returns {quat} out
    */
-  slerp(out: quat, a: quat, b: quat, t: number): quat;
+  slerp(out: GLVec, a: GLVec, b: GLVec, t: number): GLVec;
 
   /**
    * Performs a spherical linear interpolation with two control points
@@ -2897,7 +2897,7 @@ export interface quat {
    * @param {Number} t interpolation amount
    * @returns {quat} out
    */
-  sqlerp(out: quat, a: quat, b: quat, c: quat, d: quat, t: number): quat;
+  sqlerp(out: GLVec, a: GLVec, b: GLVec, c: GLVec, d: GLVec, t: number): GLVec;
 
   /**
    * Calculates the inverse of a quat
@@ -2906,7 +2906,7 @@ export interface quat {
    * @param {quat} a quat to calculate inverse of
    * @returns {quat} out
    */
-  invert(out: quat, a: quat): quat;
+  invert(out: GLVec, a: GLVec): GLVec;
 
   /**
    * Calculates the conjugate of a quat
@@ -2916,7 +2916,7 @@ export interface quat {
    * @param {quat} a quat to calculate conjugate of
    * @returns {quat} out
    */
-  conjugate(out: quat, a: quat): quat;
+  conjugate(out: GLVec, a: GLVec): GLVec;
 
   /**
    * Calculates the length of a quat
@@ -2925,7 +2925,7 @@ export interface quat {
    * @returns {Number} length of a
    * @function
    */
-  // length(a: quat): number; // not Float32Array compatible
+  // length(a: GLVec): number; // not Float32Array compatible
 
   /**
    * Calculates the length of a quat
@@ -2934,7 +2934,7 @@ export interface quat {
    * @returns {Number} length of a
    * @function
    */
-  len(a: quat): number;
+  len(a: GLVec): number;
 
   /**
    * Calculates the squared length of a quat
@@ -2943,7 +2943,7 @@ export interface quat {
    * @returns {Number} squared length of a
    * @function
    */
-  squaredLength(a: quat): number;
+  squaredLength(a: GLVec): number;
 
   /**
    * Calculates the squared length of a quat
@@ -2952,7 +2952,7 @@ export interface quat {
    * @returns {Number} squared length of a
    * @function
    */
-  sqrLen(a: quat): number;
+  sqrLen(a: GLVec): number;
 
   /**
    * Normalize a quat
@@ -2962,7 +2962,7 @@ export interface quat {
    * @returns {quat} out
    * @function
    */
-  normalize(out: quat, a: quat): quat;
+  normalize(out: GLVec, a: GLVec): GLVec;
 
   /**
    * Creates a quaternion from the given 3x3 rotation matrix.
@@ -2975,7 +2975,7 @@ export interface quat {
    * @returns {quat} out
    * @function
    */
-  fromMat3(out: quat, m: GLMat): quat;
+  fromMat3(out: GLVec, m: GLMat): GLVec;
 
   /**
    * Returns a string representation of a quatenion
@@ -2983,7 +2983,7 @@ export interface quat {
    * @param {quat} GLVec vector to represent as a string
    * @returns {String} string representation of the vector
    */
-  str(a: quat): string;
+  str(a: GLVec): string;
 
   /**
    * Returns whether or not the quaternions have exactly the same elements in the same position (when compared with ===)
@@ -2992,7 +2992,7 @@ export interface quat {
    * @param {quat} b The second quaternion.
    * @returns {Boolean} True if the vectors are equal, false otherwise.
    */
-  exactEquals(a: quat, b: quat): boolean;
+  exactEquals(a: GLVec, b: GLVec): boolean;
 
   /**
    * Returns whether or not the quaternions have approximately the same elements in the same position.
@@ -3001,7 +3001,7 @@ export interface quat {
    * @param {quat} b The second vector.
    * @returns {Boolean} True if the vectors are equal, false otherwise.
    */
-  equals(a: quat, b: quat): boolean;
+  equals(a: GLVec, b: GLVec): boolean;
 }
 export var quat: quat;
 

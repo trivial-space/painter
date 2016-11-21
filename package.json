@@ -19,13 +19,14 @@
   },
   "homepage": "https://github.com/trivial-space/renderer#readme",
   "devDependencies": {
+    "babel-core": "^6.18.2",
     "chokidar-socket-emitter": "^0.5.2",
     "gulp": "^3.9.1",
     "gulp-connect": "^4.0.0",
     "gulp-livereload": "^3.8.1",
     "jspm": "^0.17.0-beta.29",
     "ts-loader": "^0.8.2",
-    "typescript": "^2.0.3",
+    "typescript": "^2.1.1",
     "webpack": "^1.13.1",
     "webpack-stream": "^3.2.0"
   },
@@ -33,30 +34,33 @@
     "name": "tvs-renderer",
     "main": "dist/tvs-renderer.js",
     "dependencies": {
-      "primitive-cube": "npm:primitive-cube@^2.0.0"
+      "primitive-cube": "npm:primitive-cube@^2.0.0",
+      "source-map-support": "npm:source-map-support@^0.4.6"
     },
     "devDependencies": {
       "gl-matrix": "npm:gl-matrix@^2.3.2",
+      "net": "npm:jspm-nodelibs-net@^0.2.0",
       "text": "github:systemjs/plugin-text@^0.0.8",
-      "assert": "github:jspm/nodelibs-assert@^0.2.0-alpha",
-      "buffer": "github:jspm/nodelibs-buffer@^0.2.0-alpha",
-      "child_process": "github:jspm/nodelibs-child_process@^0.2.0-alpha",
-      "constants": "github:jspm/nodelibs-constants@^0.2.0-alpha",
-      "crypto": "github:jspm/nodelibs-crypto@^0.2.0-alpha",
-      "events": "github:jspm/nodelibs-events@^0.2.0-alpha",
-      "os": "github:jspm/nodelibs-os@^0.2.0-alpha",
-      "path": "github:jspm/nodelibs-path@^0.2.0-alpha",
       "plugin-babel": "npm:systemjs-plugin-babel@^0.0.12",
       "plugin-typescript": "github:frankwallis/plugin-typescript@^5.0.8",
-      "process": "github:jspm/nodelibs-process@^0.2.0-alpha",
-      "stream": "github:jspm/nodelibs-stream@^0.2.0-alpha",
-      "string_decoder": "github:jspm/nodelibs-string_decoder@^0.2.0-alpha",
-      "systemjs-hot-reloader": "github:capaj/systemjs-hot-reloader@^0.6.0",
-      "util": "github:jspm/nodelibs-util@^0.2.0-alpha",
-      "vm": "github:jspm/nodelibs-vm@^0.2.0-alpha"
+      "systemjs-hot-reloader": "github:capaj/systemjs-hot-reloader@^0.6.0"
     },
     "peerDependencies": {
-      "fs": "github:jspm/nodelibs-fs@^0.2.0-alpha"
+      "assert": "npm:jspm-nodelibs-assert@^0.2.0",
+      "buffer": "npm:jspm-nodelibs-buffer@^0.2.0",
+      "child_process": "npm:jspm-nodelibs-child_process@^0.2.0",
+      "constants": "npm:jspm-nodelibs-constants@^0.2.0",
+      "crypto": "npm:jspm-nodelibs-crypto@^0.2.0",
+      "events": "npm:jspm-nodelibs-events@^0.2.0",
+      "fs": "npm:jspm-nodelibs-fs@^0.2.0",
+      "module": "npm:jspm-nodelibs-module@^0.2.0",
+      "os": "npm:jspm-nodelibs-os@^0.2.0",
+      "path": "npm:jspm-nodelibs-path@^0.2.0",
+      "process": "npm:jspm-nodelibs-process@^0.2.0",
+      "stream": "npm:jspm-nodelibs-stream@^0.2.0",
+      "string_decoder": "npm:jspm-nodelibs-string_decoder@^0.2.0",
+      "util": "npm:jspm-nodelibs-util@^0.2.0",
+      "vm": "npm:jspm-nodelibs-vm@^0.2.0"
     },
     "overrides": {
       "npm:debug@2.2.0": {
@@ -73,7 +77,7 @@
           "util": "@node/util"
         }
       },
-      "npm:inherits@2.0.1": {
+      "npm:inherits@2.0.3": {
         "ignore": [
           "test.js"
         ]
@@ -82,7 +86,7 @@
         "jspmNodeConversion": false,
         "format": "cjs"
       },
-      "npm:typescript@2.0.0": {
+      "npm:typescript@2.1.1": {
         "browser": {},
         "map": {
           "buffer": "@empty",

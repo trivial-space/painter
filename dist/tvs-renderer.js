@@ -21,9 +21,9 @@
                 plane: i.plane
             },
             stackgl: f
-        }, r.constants = n, r.renderer = a["default"], Object.defineProperty(r, "__esModule", {
+        }, r.constants = n, r.renderer = a.default, Object.defineProperty(r, "__esModule", {
             value: !0
-        }), r["default"] = a["default"];
+        }), r.default = a.default;
     }, function(e, r, t) {
         "use strict";
         function a(e) {
@@ -51,9 +51,8 @@
                 target: {},
                 gl: r
             };
-            return u(t, t.settings), d(t, "_renderQuad", F["default"].geometries.renderQuad), 
-            E(t, "_basicEffect", F["default"].shaders.basicEffect), l(t, "_result", F["default"].objects.resultScreen), 
-            R(t);
+            return u(t, t.settings), d(t, "_renderQuad", F.default.geometries.renderQuad), E(t, "_basicEffect", F.default.shaders.basicEffect), 
+            l(t, "_result", F.default.objects.resultScreen), R(t);
         }
         function n(e, r) {
             return u(e, r.settings), i(e, r.shaders), s(e, r.geometries), o(e, r.objects), f(e, r.layers), 
@@ -366,7 +365,7 @@
         };
         Object.defineProperty(r, "__esModule", {
             value: !0
-        }), r["default"] = {
+        }), r.default = {
             create: a,
             init: n,
             updateSettings: u,
@@ -376,14 +375,14 @@
             updateLayer: c,
             updateSize: R,
             renderLayers: g,
-            lib: F["default"]
+            lib: F.default
         };
     }, function(e, r, t) {
         "use strict";
         var a = t(3);
         Object.defineProperty(r, "__esModule", {
             value: !0
-        }), r["default"] = {
+        }), r.default = {
             geometries: {
                 renderQuad: {
                     attribs: (n = {}, n[a.GEOMETRY_PROP_POSITION] = {
@@ -422,9 +421,9 @@
         "use strict";
         function t(e, r, t, a) {
             var n, i, f = e / 2, s = r / 2, o = t || 1, u = a || 1, l = o + 1, E = u + 1, d = e / o, c = r / u, T = new Float32Array(l * E * 3), R = new Float32Array(l * E * 3), g = new Float32Array(l * E * 2), m = 0, b = 0;
-            for (n = 0; E > n; n++) {
+            for (n = 0; n < E; n++) {
                 var _ = n * c - s;
-                for (i = 0; l > i; i++) {
+                for (i = 0; i < l; i++) {
                     var v = i * d - f;
                     T[m] = v, T[m + 1] = -_, R[m + 2] = 1, g[b] = i / o, g[b + 1] = 1 - n / u, m += 3, 
                     b += 2;
@@ -432,7 +431,7 @@
             }
             m = 0;
             var p = new (T.length / 3 > 65535 ? Uint32Array : Uint16Array)(o * u * 6);
-            for (n = 0; u > n; n++) for (i = 0; o > i; i++) {
+            for (n = 0; n < u; n++) for (i = 0; i < o; i++) {
                 var h = i + l * n, A = i + l * (n + 1), O = i + 1 + l * (n + 1), F = i + 1 + l * n;
                 p[m] = h, p[m + 1] = A, p[m + 2] = F, p[m + 3] = A, p[m + 4] = O, p[m + 5] = F, 
                 m += 6;
