@@ -2,6 +2,19 @@ import * as constants from './contants'
 import {GeometryStoreType, GeometryDrawType, ShaderAttribType, ShaderUniformType} from './renderer-types'
 
 export default {
+  
+  defaultSettings: {
+      clearColor: [0.0, 0.0, 0.0, 1.0],
+      minFilter: 'LINEAR',
+      magFilter: 'NEAREST',
+      wrap: 'CLAMP_TO_EDGE',
+      clearBuffers: ['DEPTH', 'COLOR'],
+      clearBits: 0,
+      enable: ['DEPTH_TEST'],
+      blend: ["SRC_ALPHA", "ONE_MINUS_SRC_ALPHA"],
+      width: 0,
+      height: 0
+  },
 
   geometries: {
 

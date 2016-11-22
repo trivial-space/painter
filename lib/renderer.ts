@@ -2,6 +2,7 @@ import lib from './asset-lib'
 import {
   Context,
   RenderTarget,
+  Settings,
   ID,
   GL,
   Wrap,
@@ -38,18 +39,10 @@ export function create (canvas?: HTMLCanvasElement): Context{
 
   const ctx: Context = {
 
-    settings: {
-      clearColor: [0.0, 0.0, 0.0, 1.0],
-      minFilter: 'LINEAR',
-      magFilter: 'NEAREST',
-      wrap: 'CLAMP_TO_EDGE',
-      clearBuffers: ['DEPTH', 'COLOR'],
-      clearBits: 0,
-      enable: ['DEPTH_TEST'],
-      blend: ["SRC_ALPHA", "ONE_MINUS_SRC_ALPHA"],
-      width: canvas.width,
-      height: canvas.height
-    },
+    settings: Object.assign({}, lib.defaultSettings, {
+      width: canvas.clientWidth,
+      height: canvas.clientHeight
+    }) as Settings,
 
     shaders: {},
     geometries: {},
