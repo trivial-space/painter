@@ -31,18 +31,10 @@
             var r = e.getContext("webgl") || e.getContext("experimental-webgl");
             if (!r) throw Error("WebGL-Context could not be initialized!");
             var t = {
-                settings: {
-                    clearColor: [ 0, 0, 0, 1 ],
-                    minFilter: "LINEAR",
-                    magFilter: "NEAREST",
-                    wrap: "CLAMP_TO_EDGE",
-                    clearBuffers: [ "DEPTH", "COLOR" ],
-                    clearBits: 0,
-                    enable: [ "DEPTH_TEST" ],
-                    blend: [ "SRC_ALPHA", "ONE_MINUS_SRC_ALPHA" ],
-                    width: e.width,
-                    height: e.height
-                },
+                settings: Object.assign({}, F.default.defaultSettings, {
+                    width: e.clientWidth,
+                    height: e.clientHeight
+                }),
                 shaders: {},
                 geometries: {},
                 layers: {},
@@ -52,11 +44,11 @@
                 gl: r
             };
             return u(t, t.settings), d(t, "_renderQuad", F.default.geometries.renderQuad), E(t, "_basicEffect", F.default.shaders.basicEffect), 
-            l(t, "_result", F.default.objects.resultScreen), R(t);
+            l(t, "_result", F.default.objects.resultScreen), g(t);
         }
         function n(e, r) {
             return u(e, r.settings), i(e, r.shaders), s(e, r.geometries), o(e, r.objects), f(e, r.layers), 
-            R(e);
+            g(e);
         }
         function i(e, r) {
             if (r) for (var t in r) {
@@ -190,13 +182,13 @@
             t.minFilter && t.minFilter.indexOf("MIPMAP") > 0 && e.generateMipmap(e.TEXTURE_2D), 
             e.bindTexture(e.TEXTURE_2D, null), r.texture = a;
         }
-        function R(e) {
+        function g(e) {
             var r = e.gl, t = r.canvas.clientWidth || r.canvas.width, a = r.canvas.clientHeight || r.canvas.height;
             return t === e.settings.width && a === e.settings.height || (r.canvas.height = e.settings.height = a, 
             r.canvas.width = e.settings.width = t, p(e.gl, e.source, e.settings), p(e.gl, e.target, e.settings)), 
             e;
         }
-        function g(e, r) {
+        function R(e, r) {
             for (var t = e.gl, a = r.length - 1, n = 0; n < r.length; n++) {
                 var i = r[n], f = e.layers[i], s = n === a, o = !s && null == f.renderTarget;
                 switch (s ? (t.bindFramebuffer(t.FRAMEBUFFER, null), t.viewport(0, 0, t.drawingBufferWidth, t.drawingBufferHeight)) : o ? (t.bindFramebuffer(t.FRAMEBUFFER, e.target.frameBuffer), 
@@ -231,8 +223,8 @@
                     }
                 }
                 if (o) {
-                    var R = e.source;
-                    e.source = e.target, e.target = R;
+                    var g = e.source;
+                    e.source = e.target, e.target = g;
                 }
             }
         }
@@ -352,7 +344,7 @@
         }
         var F = t(2);
         r.create = a, r.init = n, r.updateSettings = u, r.updateObject = l, r.updateShader = E, 
-        r.updateGeometry = d, r.updateLayer = c, r.updateSize = R, r.renderLayers = g;
+        r.updateGeometry = d, r.updateLayer = c, r.updateSize = g, r.renderLayers = R;
         var y = {
             f: 1,
             "f 1": 1,
@@ -373,8 +365,8 @@
             updateGeometry: d,
             updateShader: E,
             updateLayer: c,
-            updateSize: R,
-            renderLayers: g,
+            updateSize: g,
+            renderLayers: R,
             lib: F.default
         };
     }, function(e, r, t) {
@@ -383,6 +375,18 @@
         Object.defineProperty(r, "__esModule", {
             value: !0
         }), r.default = {
+            defaultSettings: {
+                clearColor: [ 0, 0, 0, 1 ],
+                minFilter: "LINEAR",
+                magFilter: "NEAREST",
+                wrap: "CLAMP_TO_EDGE",
+                clearBuffers: [ "DEPTH", "COLOR" ],
+                clearBits: 0,
+                enable: [ "DEPTH_TEST" ],
+                blend: [ "SRC_ALPHA", "ONE_MINUS_SRC_ALPHA" ],
+                width: 0,
+                height: 0
+            },
             geometries: {
                 renderQuad: {
                     attribs: (n = {}, n[a.GEOMETRY_PROP_POSITION] = {
@@ -420,12 +424,12 @@
     }, function(e, r) {
         "use strict";
         function t(e, r, t, a) {
-            var n, i, f = e / 2, s = r / 2, o = t || 1, u = a || 1, l = o + 1, E = u + 1, d = e / o, c = r / u, T = new Float32Array(l * E * 3), R = new Float32Array(l * E * 3), g = new Float32Array(l * E * 2), m = 0, b = 0;
+            var n, i, f = e / 2, s = r / 2, o = t || 1, u = a || 1, l = o + 1, E = u + 1, d = e / o, c = r / u, T = new Float32Array(l * E * 3), g = new Float32Array(l * E * 3), R = new Float32Array(l * E * 2), m = 0, b = 0;
             for (n = 0; n < E; n++) {
                 var _ = n * c - s;
                 for (i = 0; i < l; i++) {
                     var v = i * d - f;
-                    T[m] = v, T[m + 1] = -_, R[m + 2] = 1, g[b] = i / o, g[b + 1] = 1 - n / u, m += 3, 
+                    T[m] = v, T[m + 1] = -_, g[m + 2] = 1, R[b] = i / o, R[b + 1] = 1 - n / u, m += 3, 
                     b += 2;
                 }
             }
@@ -443,11 +447,11 @@
                         storeType: "STATIC"
                     },
                     normal: {
-                        buffer: R,
+                        buffer: g,
                         storeType: "STATIC"
                     },
                     uv: {
-                        buffer: g,
+                        buffer: R,
                         storeType: "STATIC"
                     }
                 },
