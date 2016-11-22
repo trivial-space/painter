@@ -56,6 +56,7 @@ export type ShaderAttribType = "f" | "f 1" | "f 2" | "f 3" | "f 4" | "m 2" | "m 
 
 export type ShaderUniformType = ShaderAttribType | "i" | "i 1" | "i 2" | "i 3" | "i 4" | "t"
 
+export type Cull = "FRONT" | "BACK" | "FRONT_AND_BACK"
 
 export interface RenderTarget {
   frameBuffer: WebGLFramebuffer | null
@@ -77,6 +78,7 @@ export interface Settings {
   blend: [string, string] // like ["SRC_ALPHA", "ONE_MINUS_SRC_ALPHA"]
   width: number
   height: number
+  cull?: Cull
 }
 
 
@@ -110,6 +112,7 @@ export interface ContextLayerObjects extends ContextLayerBase {
   uniforms: {[id: string]: any}
   opaques: ID[]
   transparents: ID[]
+  cull?: Cull
 }
 
 export interface ContextLayerShader extends ContextLayerBase {
@@ -141,6 +144,7 @@ export interface LayerData extends TextureData {
   readonly asset?: Asset // AssetLayer specific
   readonly shader?: ID // ShaderLayer specific
   readonly uniforms?: {[id: string]: any} // ShaderLayer specific
+  readonly cull?: Cull
 }
 
 
@@ -149,6 +153,7 @@ export interface ObjectData {
   readonly geometry: ID
   readonly uniforms?: {[id: string]: any}
   readonly blend?: boolean
+  readonly cull?: Cull
 }
 
 
@@ -158,6 +163,7 @@ export interface ContextObjectInitialized {
   geometry: ID
   uniforms: {[id: string]: any}
   blend?: boolean
+  cull?: Cull
 }
 
 export interface ContextObjectMissing {
