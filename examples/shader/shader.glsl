@@ -8,7 +8,7 @@ void main(void)
     col = 1.0 - col;
     col = max(0.0, col);
     col = col * col;
-    
+
     x = vUv.x - 1.0;
     y = vUv.y - 0.5;
     float col2 = x * x * 2.0 + y * y * 2.0;

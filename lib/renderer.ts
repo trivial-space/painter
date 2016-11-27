@@ -39,10 +39,7 @@ export function create (canvas?: HTMLCanvasElement): Context{
 
   const ctx: Context = {
 
-    settings: Object.assign({}, lib.defaultSettings, {
-      width: canvas.clientWidth,
-      height: canvas.clientHeight
-    }) as Settings,
+    settings: Object.assign({}, lib.defaultSettings) as Settings,
 
     shaders: {},
     geometries: {},

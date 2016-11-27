@@ -7,7 +7,7 @@ const gulp = require('gulp'),
 
 const paths = {
   livereload: ['**/*.html', 'dist/**/*'],
-  webpack: ['lib/**/*']
+  webpack: ['lib/**/*.js']
 }
 
 

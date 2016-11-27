@@ -1,14 +1,14 @@
 {
   "compilerOptions": {
-    "target": "es5",
+    "target": "es6",
     "lib": ["es6", "dom"],
-    "module": "commonjs",
+    "module": "es6",
     "moduleResolution": "node",
     "strictNullChecks": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
+    "declaration": true,
     "isolatedModules": false,
-    "declaration": false,
     "noImplicitAny": true,
     "noImplicitUseStrict": false,
     "removeComments": true,
@@ -19,6 +19,14 @@
   "exclude": [
     "node_modules",
     "jspm_packages"
+  ],
+  "files": [
+    "lib/index.ts"
+  ],
+  "filesGlob": [
+    "**/*.ts",
+    "!node_modules/**",
+    "!jspm_packages/**"
   ],
   "compileOnSave": false,
   "buildOnSave": false,

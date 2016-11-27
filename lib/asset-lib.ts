@@ -2,7 +2,7 @@ import * as constants from './contants'
 import {GeometryStoreType, GeometryDrawType, ShaderAttribType, ShaderUniformType} from './renderer-types'
 
 export default {
-  
+
   defaultSettings: {
       clearColor: [0.0, 0.0, 0.0, 1.0],
       minFilter: 'LINEAR',

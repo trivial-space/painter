@@ -1,5 +1,4 @@
-import renderer from '../dist/tvs-renderer.js'
-
-let canvas = document.getElementById('canvas')
-
-export let ctx = renderer.create(canvas)
+import * as renderer from '../lib/renderer';
+let canvas = document.getElementById('canvas');
+export let ctx = renderer.create(canvas);
+//# sourceMappingURL=ctx.js.map

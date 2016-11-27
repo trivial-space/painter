@@ -1,0 +1,7 @@
+*.js.map
+lib/*.d.ts
+lib/*.js
+lib/utils/geometry/*.d.ts
+lib/utils/geometry/*.js
+lib/utils/stackgl/*.d.ts
+lib/utils/stackgl/*.js
