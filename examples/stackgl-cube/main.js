@@ -1,11 +1,11 @@
-import 'systemjs-hot-reloader/default-listener.js'
 import {renderer, renderUtils} from '../../dist/tvs-renderer.js'
 import {ctx} from '../ctx.js'
 import {mat4} from 'gl-matrix'
 import createCube from 'primitive-cube'
 
-const cubeStackgl = createCube(1),
-      cubeGeometry = renderUtils.stackgl.convertStackGLGeometry(cubeStackgl)
+
+const cubeStackgl = createCube(1)
+const cubeGeometry = renderUtils.stackgl.convertStackGLGeometry(cubeStackgl)
 
 console.log(cubeStackgl)
 console.log(cubeGeometry)
@@ -13,10 +13,11 @@ console.log(cubeGeometry)
 // cubeGeometry.drawType = "LINE_LOOP"
 
 
-let cubeMat = mat4.fromTranslation(mat4.create(), [0, 0, -3]),
-    rotationX = 0.01,
-    rotationZ = 0.009101,
-    projection = mat4.perspective(mat4.create(), 45, 1, 0.01, 10)
+const rotationX = 0.01
+const rotationZ = 0.009101
+const cubeMat = mat4.fromTranslation(mat4.create(), [0, 0, -3])
+const projection = mat4.perspective(mat4.create(), 45, 1, 0.01, 10)
+
 
 const scene = {
   geometries: {

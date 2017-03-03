@@ -35,8 +35,9 @@ export function convertStackGLGeometry(
     const arr = stackglGeometry[prop]
     if (prop === STACK_GL_GEOMETRY_PROP_ELEMENTS) {
       const buffer = new ( arr.length > 65535 ? Uint32Array : Uint16Array )(_flatten(arr))
-      geometry = Object.assign(geometry, {
-        elements: { buffer }, itemCount: buffer.length
+      Object.assign(geometry, {
+        elements: { buffer },
+        itemCount: buffer.length
       })
     } else if (prop === STACK_GL_GEOMETRY_PROP_POSITION) {
       geometry.attribs[constants.GEOMETRY_PROP_POSITION] = {

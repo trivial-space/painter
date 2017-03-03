@@ -1,17 +1,16 @@
-import 'systemjs-hot-reloader/default-listener.js'
 import {renderer, renderUtils} from '../../lib/index'
 import {ctx} from '../ctx'
 import {mat4} from 'gl-matrix'
 
-import planeVert from './plane-material.vert!text'
-import planeFrag from './plane-material.frag!text'
-import effectFrag from './effect.frag!text'
+import planeVert from './plane-material.vert'
+import planeFrag from './plane-material.frag'
+import effectFrag from './effect.frag'
 
 
-let planMat1 = mat4.fromTranslation(mat4.create(), [0, 0, -3]),
-    planMat2 = mat4.fromTranslation(mat4.create(), [0, 0, -3]),
-    rotation = 0.01,
-    projection = mat4.perspective(mat4.create(), 45, 1, 0.01, 10)
+const planMat1 = mat4.fromTranslation(mat4.create(), [0, 0, -3])
+const planMat2 = mat4.fromTranslation(mat4.create(), [0, 0, -3])
+const rotation = 0.01
+const projection = mat4.perspective(mat4.create(), 45, 1, 0.01, 10)
 
 mat4.rotateY(planMat2, planMat2, Math.PI / 2)
 
@@ -68,9 +67,10 @@ renderer.updateShader(ctx, "planeMaterial", {
   }
 })
 
-renderer.updateShader(ctx, "effect", Object.assign({}, renderer.lib.shaders.basicEffect, {
+renderer.updateShader(ctx, "effect", {
+  ...renderer.lib.shaders.basicEffect, 
   frag: effectFrag
-}))
+})
 
 renderer.updateObject(ctx, "plane1", {
   shader: "planeMaterial",

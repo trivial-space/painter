@@ -2,20 +2,21 @@ const { resolve } = require('path')
 const webpack = require('webpack')
 
 const hotCodeEntry = [
-  'webpack-dev-server/client?http://localhost:8080',
+  'webpack-dev-server/client?http://localhost:8081',
   'webpack/hot/only-dev-server'
 ]
 
 module.exports = {
   entry: {
     'basic': [...hotCodeEntry, './basic/main.ts'],
-    'minimal-own-canvas': [...hotCodeEntry, './minimal-own-canvas/main.ts'],
+    'minimal-own-canvas': [...hotCodeEntry, './minimal-own-canvas/main.js'],
     'rotaion': [...hotCodeEntry, './rotation/main.ts'],
-    'stackgl-cube': [...hotCodeEntry, './stackgl-cube/main.ts'],
-    'update-order': [...hotCodeEntry, './update-order/main.ts']
+    'stackgl-cube': [...hotCodeEntry, './stackgl-cube/main.js'],
+    'update-order': [...hotCodeEntry, './update-order/main.ts'],
+    'shader': [...hotCodeEntry, './shader/main.ts']
   },
 
-  context: resolve(__dirname, 'src'),
+  context: resolve(__dirname, 'examples'),
 
   output: {
     path: resolve(__dirname, 'examples'),
@@ -27,6 +28,7 @@ module.exports = {
 
   module: {
     rules: [
+      { test: /\.js$/, use: [{ loader: 'babel-loader', options: { presets: ['es2015'] } }], exclude: /node_modules/},
       { test: /\.ts$/, use: 'ts-loader', exclude: /node_modules/ },
       { test: /\.(glsl|frag|vert)$/, use: ['raw-loader', 'glslify-loader'], exclude: /node_modules/ },
     ]
@@ -37,7 +39,7 @@ module.exports = {
       'node_modules',
       resolve(__dirname, 'lib'),
     ],
-    extensions: ['.ts', '.js']
+    extensions: ['.js', '.ts']
   },
 
   devtool: 'inline-source-map',
@@ -46,7 +48,7 @@ module.exports = {
     hot: true,
     // enable HMR on the server
 
-    contentBase: resolve(__dirname, 'public'),
+    contentBase: resolve(__dirname, 'examples'),
     // match the output path
 
     publicPath: '/'
@@ -60,48 +62,4 @@ module.exports = {
     new webpack.NamedModulesPlugin(),
     // prints more readable module names in the browser console on HMR updates
   ],
-}
-
-
-var path = require('path'),
-    webpack = require('webpack')
-
-
-module.exports = {
-
-  entry: path.resolve(__dirname, "./lib/index.js"),
-
-  output: {
-    path: path.resolve(__dirname, "./dist"),
-    filename: "tvs-renderer.js",
-    library: 'tvsRenderer',
-    libraryTarget: "umd"
-  },
-
-  module: {
-    loaders: [
-      {
-        test: /\.js$/,
-        exclude: /node_modules/,
-        loader: 'babel',
-        query: {
-          presets: ['es2015']
-        }
-      }
-    ]
-  },
-
-  resolve: {
-    // Add `.ts` and `.tsx` as a resolvable extension.
-    extensions: ['', '.json', '.js'],
-    root: [
-      path.resolve(__dirname, "./lib")
-    ]
-  },
-
-  plugins: [
-    new webpack.optimize.UglifyJsPlugin({
-      beautify: true
-    })
-  ]
 }

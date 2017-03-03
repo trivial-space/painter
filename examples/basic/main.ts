@@ -1,5 +1,4 @@
-import 'systemjs-hot-reloader/default-listener.js'
-import renderer from '../../dist/tvs-renderer.js'
+import renderer from '../../lib/index'
 import {ctx} from '../ctx.js'
 
 

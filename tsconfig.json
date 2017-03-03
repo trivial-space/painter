@@ -7,21 +7,17 @@
     "strictNullChecks": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
-    "declaration": true,
     "isolatedModules": false,
     "noImplicitAny": true,
     "noImplicitUseStrict": false,
-    "removeComments": true,
+    "suppressImplicitAnyIndexErrors": false,
     "preserveConstEnums": true,
-    "suppressImplicitAnyIndexErrors": true,
+    "removeComments": true,
+    "declaration": true,
     "sourceMap": true
   },
   "exclude": [
-    "node_modules",
-    "jspm_packages"
-  ],
-  "files": [
-    "lib/index.ts"
+    "node_modules"
   ],
   "filesGlob": [
     "**/*.ts",

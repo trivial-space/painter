@@ -1,11 +1,10 @@
-import 'systemjs-hot-reloader/default-listener.js'
-import renderer from '../../dist/tvs-renderer.js'
+import renderer from '../../lib/index.js'
 import {ctx} from '../ctx.js'
 import {mat4} from 'gl-matrix'
 
-import plainVert from './plain-material.vert!text'
-import plainFrag from './plain-material.frag!text'
-import effectFrag from './effect.frag!text'
+import plainVert from './plain-material.vert'
+import plainFrag from './plain-material.frag'
+import effectFrag from './effect.frag'
 
 
 let planMat = mat4.fromTranslation(mat4.create(), [0, 0, -1]),
@@ -103,5 +102,5 @@ const scene = {
 
 
 renderer.init(ctx, scene)
-window.ctx = ctx
-window.renderer = renderer
+window['ctx'] = ctx
+window['renderer'] = renderer

@@ -2,9 +2,6 @@
 .idea
 .vscode
 node_modules
-jspm_packages
-jspm.config.js
-.eslintrc
 gulpfile.js
 examples.d.ts
 webpack.config.js
