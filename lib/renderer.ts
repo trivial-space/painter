@@ -128,11 +128,11 @@ export function updateSettings (ctx: Context, data: any = {}): Context {
 
   if (data.enable != null) {
     for (let param of ctx.settings.enable) {
-      gl.disable(gl[param])
+      gl.disable((gl as any)[param])
     }
     ctx.settings.enable = data.enable
     for (let param of ctx.settings.enable) {
-      gl.enable(gl[param])
+      gl.enable((gl as any)[param])
     }
   }
 
@@ -259,7 +259,7 @@ export function updateGeometry (
     }
     gl.bindBuffer(gl.ARRAY_BUFFER, attribs[id])
     gl.bufferData(gl.ARRAY_BUFFER, getBufferData(attribData),
-                  gl[(attribData.storeType || 'STATIC') + '_DRAW'])
+                  (gl as any)[(attribData.storeType || 'STATIC') + '_DRAW'])
   }
   geometry.attribs = attribs
 
@@ -274,7 +274,7 @@ export function updateGeometry (
     geometry.elements.glType = typedArrayToGLType(buffer, gl)
     gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, geometry.elements.buffer)
     gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, buffer,
-                  gl[(data.elements.storeType || 'STATIC') + '_DRAW'])
+                  (gl as any)[(data.elements.storeType || 'STATIC') + '_DRAW'])
 
   } else if (geometry.elements) {
     delete geometry.elements
@@ -293,7 +293,7 @@ export function updateLayer (
 
   const layer = ctx.layers[layerId] || {} as ContextLayer
   layer.noClear = !!data.noClear
-  layer.clearColor = data.clearColor || ctx.settings.clearColor
+  layer.clearColor = data.clearColor 
 
   if (data.buffered) {
     layer.renderTarget = {
@@ -479,7 +479,7 @@ function renderObject (
         let texture = value ?
           (ctx.layers[value] as ContextLayerStatic).texture :
           ctx.source.texture
-        gl.activeTexture(gl['TEXTURE' + textureCount])
+        gl.activeTexture((gl as any)['TEXTURE' + textureCount])
         gl.bindTexture(gl.TEXTURE_2D, texture)
         gl.uniform1i(index, textureCount)
         textureCount++
@@ -547,13 +547,13 @@ function renderObject (
 
 function makeClear (gl: GL, clearArray: string[]): number {
   return clearArray.reduce(
-    (res, item) => res | gl[item + '_BUFFER_BIT'], 0
+    (res, item) => res | (gl as any)[item + '_BUFFER_BIT'], 0
   )
 }
 
 
 function setBlendFunc (gl: GL, blendOpts: string[]) {
-  gl.blendFunc.apply(gl, blendOpts.map(opt => gl[opt]))
+  gl.blendFunc.apply(gl, blendOpts.map(opt => (gl as any)[opt]))
 }
 
 
@@ -613,7 +613,7 @@ function getBufferData (data: GeometryBuffer | GeometryArray): TypedArray {
   if (isGeometryBuffer(data)) {
     return data.buffer
   } else {
-    let TypedArray = window[data.type] as TypedArrayConstructor
+    let TypedArray = (window as any)[data.type] as TypedArrayConstructor
     return new TypedArray(data.array)
   }
 }

@@ -102,5 +102,5 @@ const scene = {
 
 
 renderer.init(ctx, scene)
-window['ctx'] = ctx
-window['renderer'] = renderer
+;(window as any)['ctx'] = ctx
+;(window as any)['renderer'] = renderer

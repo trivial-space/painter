@@ -13,7 +13,7 @@
     "graphics engine"
   ],
   "scripts": {
-    "examples": "webpack-dev-server --config webpack.examples.config.js"
+    "examples": "webpack-dev-server --config webpack.examples.config.js --port 8081"
   },
   "author": "Thomas Gorny",
   "license": "MIT",
