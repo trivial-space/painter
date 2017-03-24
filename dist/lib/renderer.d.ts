@@ -36,10 +36,10 @@ declare var _default: {
                 attribs: {
                     [x: string]: {
                         buffer: Float32Array;
-                        storeType: "STATIC" | "DYNAMIC";
+                        storeType: "DYNAMIC" | "STATIC";
                     };
                 };
-                drawType: "TRIANGLE_STRIP" | "TRIANGLES" | "TRIANGLE_FAN" | "POINTS" | "LINES" | "LINE_LOOP" | "LINE_STRIP";
+                drawType: "TRIANGLES" | "TRIANGLE_STRIP" | "TRIANGLE_FAN" | "POINTS" | "LINES" | "LINE_LOOP" | "LINE_STRIP";
                 itemCount: number;
             };
         };
@@ -48,10 +48,10 @@ declare var _default: {
                 vert: string;
                 frag: string;
                 attribs: {
-                    [x: string]: "f 2" | "f" | "f 1" | "f 3" | "f 4" | "m 2" | "m 3" | "m 4";
+                    [x: string]: "f" | "f 1" | "f 2" | "f 3" | "f 4" | "m 2" | "m 3" | "m 4";
                 };
                 uniforms: {
-                    [x: string]: "f 2" | "f" | "f 1" | "f 3" | "f 4" | "m 2" | "m 3" | "m 4" | "t" | "i" | "i 1" | "i 2" | "i 3" | "i 4";
+                    [x: string]: "i" | "f" | "f 1" | "f 2" | "f 3" | "f 4" | "m 2" | "m 3" | "m 4" | "i 1" | "i 2" | "i 3" | "i 4" | "t";
                 };
             };
         };

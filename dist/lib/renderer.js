@@ -3,11 +3,11 @@ export function create(canvas) {
     if (canvas == null) {
         canvas = document.createElement('canvas');
     }
-    const gl = canvas.getContext('webgl') || canvas.getContext('experimental-webgl');
+    var gl = canvas.getContext('webgl') || canvas.getContext('experimental-webgl');
     if (!gl) {
         throw Error('WebGL-Context could not be initialized!');
     }
-    const ctx = {
+    var ctx = {
         settings: Object.assign({}, lib.defaultSettings),
         shaders: {},
         geometries: {},
@@ -33,38 +33,39 @@ export function init(ctx, data) {
 }
 function initShaders(ctx, data) {
     if (data) {
-        for (let k in data) {
-            let v = data[k];
+        for (var k in data) {
+            var v = data[k];
             updateShader(ctx, k, v);
         }
     }
 }
 function initLayers(ctx, data) {
     if (data) {
-        for (let k in data) {
-            let v = data[k];
+        for (var k in data) {
+            var v = data[k];
             updateLayer(ctx, k, v);
         }
     }
 }
 function initGeometries(ctx, data) {
     if (data) {
-        for (let k in data) {
-            let v = data[k];
+        for (var k in data) {
+            var v = data[k];
             updateGeometry(ctx, k, v);
         }
     }
 }
 function initObjects(ctx, data) {
     if (data) {
-        for (let k in data) {
-            let v = data[k];
+        for (var k in data) {
+            var v = data[k];
             updateObject(ctx, k, v);
         }
     }
 }
-export function updateSettings(ctx, data = {}) {
-    const gl = ctx.gl;
+export function updateSettings(ctx, data) {
+    if (data === void 0) { data = {}; }
+    var gl = ctx.gl;
     if (data.clearColor != null) {
         ctx.settings.clearColor = data.clearColor;
     }
@@ -82,11 +83,13 @@ export function updateSettings(ctx, data = {}) {
         ctx.settings.clearBits = makeClear(gl, data.clearBuffers);
     }
     if (data.enable != null) {
-        for (let param of ctx.settings.enable) {
+        for (var _i = 0, _a = ctx.settings.enable; _i < _a.length; _i++) {
+            var param = _a[_i];
             gl.disable(gl[param]);
         }
         ctx.settings.enable = data.enable;
-        for (let param of ctx.settings.enable) {
+        for (var _b = 0, _c = ctx.settings.enable; _b < _c.length; _b++) {
+            var param = _c[_b];
             gl.enable(gl[param]);
         }
     }
@@ -99,8 +102,8 @@ export function updateSettings(ctx, data = {}) {
     return ctx;
 }
 export function updateObject(ctx, id, object) {
-    let old = ctx.objects[id];
-    let newO = Object.assign({}, object, {
+    var old = ctx.objects[id];
+    var newO = Object.assign({}, object, {
         type: "initialized"
     });
     if (newO.uniforms == null) {
@@ -108,17 +111,17 @@ export function updateObject(ctx, id, object) {
     }
     ctx.objects[id] = newO;
     if (old && old.type === "missing") {
-        for (let layerId in old.updateLayers) {
+        for (var layerId in old.updateLayers) {
             updateLayer(ctx, layerId, old.updateLayers[layerId]);
         }
     }
     return ctx;
 }
 export function updateShader(ctx, id, data) {
-    const shader = ctx.shaders[id] || {};
-    const newProgram = shader.program == null;
-    const gl = ctx.gl;
-    const fragSource = 'precision mediump float;\n' + data.frag;
+    var shader = ctx.shaders[id] || {};
+    var newProgram = shader.program == null;
+    var gl = ctx.gl;
+    var fragSource = 'precision mediump float;\n' + data.frag;
     if (newProgram) {
         shader.program = gl.createProgram();
     }
@@ -144,9 +147,9 @@ export function updateShader(ctx, id, data) {
     }
     gl.linkProgram(shader.program);
     shader.attribs = {};
-    for (let aid in data.attribs) {
-        let type = data.attribs[aid];
-        let attrib = {
+    for (var aid in data.attribs) {
+        var type = data.attribs[aid];
+        var attrib = {
             index: gl.getAttribLocation(shader.program, aid),
             type: gl.FLOAT,
             itemSize: attribItemSize[type]
@@ -157,7 +160,7 @@ export function updateShader(ctx, id, data) {
         shader.attribs[aid] = attrib;
     }
     shader.uniforms = {};
-    for (let uid in data.uniforms) {
+    for (var uid in data.uniforms) {
         shader.uniforms[uid] = {
             index: gl.getUniformLocation(shader.program, uid),
             type: data.uniforms[uid]
@@ -167,17 +170,17 @@ export function updateShader(ctx, id, data) {
     return ctx;
 }
 export function updateGeometry(ctx, id, data) {
-    const gl = ctx.gl;
-    const geometry = ctx.geometries[id] || {};
+    var gl = ctx.gl;
+    var geometry = ctx.geometries[id] || {};
     geometry.drawType = gl[data.drawType];
     geometry.itemCount = data.itemCount;
-    const attribs = geometry.attribs || {};
-    for (let id in data.attribs) {
-        let attribData = data.attribs[id];
-        if (attribs[id] == null) {
-            attribs[id] = gl.createBuffer();
+    var attribs = geometry.attribs || {};
+    for (var id_1 in data.attribs) {
+        var attribData = data.attribs[id_1];
+        if (attribs[id_1] == null) {
+            attribs[id_1] = gl.createBuffer();
         }
-        gl.bindBuffer(gl.ARRAY_BUFFER, attribs[id]);
+        gl.bindBuffer(gl.ARRAY_BUFFER, attribs[id_1]);
         gl.bufferData(gl.ARRAY_BUFFER, getBufferData(attribData), gl[(attribData.storeType || 'STATIC') + '_DRAW']);
     }
     geometry.attribs = attribs;
@@ -188,7 +191,7 @@ export function updateGeometry(ctx, id, data) {
         if (geometry.elements.buffer == null) {
             geometry.elements.buffer = gl.createBuffer();
         }
-        const buffer = getBufferData(data.elements);
+        var buffer = getBufferData(data.elements);
         geometry.elements.glType = typedArrayToGLType(buffer, gl);
         gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, geometry.elements.buffer);
         gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, buffer, gl[(data.elements.storeType || 'STATIC') + '_DRAW']);
@@ -200,9 +203,9 @@ export function updateGeometry(ctx, id, data) {
     return ctx;
 }
 export function updateLayer(ctx, layerId, data) {
-    const layer = ctx.layers[layerId] || {};
+    var layer = ctx.layers[layerId] || {};
     layer.noClear = !!data.noClear;
-    layer.clearColor = data.clearColor || ctx.settings.clearColor;
+    layer.clearColor = data.clearColor;
     if (data.buffered) {
         layer.renderTarget = {
             width: data.width || ctx.settings.width,
@@ -219,13 +222,14 @@ export function updateLayer(ctx, layerId, data) {
         updateStaticLayer(ctx.gl, layer, data);
     }
     else if (data.objects) {
-        let l = layer;
+        var l = layer;
         l.type = "objects";
         l.transparents = [];
         l.opaques = [];
         l.uniforms = data.uniforms || {};
-        for (let id of data.objects) {
-            let o = ctx.objects[id];
+        for (var _i = 0, _a = data.objects; _i < _a.length; _i++) {
+            var id = _a[_i];
+            var o = ctx.objects[id];
             if (o) {
                 if (o.type === "initialized") {
                     if (o.blend) {
@@ -242,15 +246,15 @@ export function updateLayer(ctx, layerId, data) {
             else {
                 ctx.objects[id] = {
                     type: "missing",
-                    updateLayers: {
-                        [layerId]: data
-                    }
+                    updateLayers: (_b = {},
+                        _b[layerId] = data,
+                        _b)
                 };
             }
         }
     }
     else if (data.shader) {
-        let l = layer;
+        var l = layer;
         l.type = "shader";
         l.object = {
             type: "initialized",
@@ -261,9 +265,10 @@ export function updateLayer(ctx, layerId, data) {
     }
     ctx.layers[layerId] = layer;
     return ctx;
+    var _b;
 }
 function updateStaticLayer(gl, layer, data) {
-    const texture = layer.texture || gl.createTexture();
+    var texture = layer.texture || gl.createTexture();
     gl.bindTexture(gl.TEXTURE_2D, texture);
     setTextureParams(gl, data);
     gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, data.asset);
@@ -274,9 +279,9 @@ function updateStaticLayer(gl, layer, data) {
     layer.texture = texture;
 }
 export function updateSize(ctx) {
-    const gl = ctx.gl;
-    const width = gl.canvas.clientWidth || gl.canvas.width;
-    const height = gl.canvas.clientHeight || gl.canvas.height;
+    var gl = ctx.gl;
+    var width = gl.canvas.clientWidth || gl.canvas.width;
+    var height = gl.canvas.clientHeight || gl.canvas.height;
     if (width !== ctx.settings.width || height !== ctx.settings.height) {
         gl.canvas.height = ctx.settings.height = height;
         gl.canvas.width = ctx.settings.width = width;
@@ -286,13 +291,13 @@ export function updateSize(ctx) {
     return ctx;
 }
 export function renderLayers(ctx, layerIds) {
-    const gl = ctx.gl;
-    const last = layerIds.length - 1;
-    for (let i = 0; i < layerIds.length; i++) {
-        const layerId = layerIds[i];
-        const layer = ctx.layers[layerId];
-        const directRender = i === last;
-        const renderToStack = !directRender && layer.renderTarget == null;
+    var gl = ctx.gl;
+    var last = layerIds.length - 1;
+    for (var i = 0; i < layerIds.length; i++) {
+        var layerId = layerIds[i];
+        var layer = ctx.layers[layerId];
+        var directRender = i === last;
+        var renderToStack = !directRender && layer.renderTarget == null;
         if (directRender) {
             gl.bindFramebuffer(gl.FRAMEBUFFER, null);
             gl.viewport(0, 0, gl.drawingBufferWidth, gl.drawingBufferHeight);
@@ -314,12 +319,14 @@ export function renderLayers(ctx, layerIds) {
                 renderObject(ctx, layer.object);
                 break;
             case "objects":
-                for (let id of layer.opaques) {
+                for (var _i = 0, _a = layer.opaques; _i < _a.length; _i++) {
+                    var id = _a[_i];
                     renderObject(ctx, ctx.objects[id], layer.uniforms);
                 }
                 if (layer.transparents.length) {
                     gl.enable(gl.BLEND);
-                    for (let id of layer.transparents) {
+                    for (var _b = 0, _c = layer.transparents; _b < _c.length; _b++) {
+                        var id = _c[_b];
                         renderObject(ctx, ctx.objects[id], layer.uniforms);
                     }
                     gl.disable(gl.BLEND);
@@ -327,37 +334,37 @@ export function renderLayers(ctx, layerIds) {
                 break;
             case "static":
                 if (directRender) {
-                    const object = ctx.objects['_result'];
+                    var object = ctx.objects['_result'];
                     renderObject(ctx, object, { source: layerId });
                 }
                 break;
         }
         if (renderToStack) {
-            const tmp = ctx.source;
+            var tmp = ctx.source;
             ctx.source = ctx.target;
             ctx.target = tmp;
         }
     }
 }
 function renderObject(ctx, object, globalUniforms) {
-    let textureCount = 0;
-    const gl = ctx.gl;
-    const shader = ctx.shaders[object.shader];
-    const geometry = ctx.geometries[object.geometry];
+    var textureCount = 0;
+    var gl = ctx.gl;
+    var shader = ctx.shaders[object.shader];
+    var geometry = ctx.geometries[object.geometry];
     gl.useProgram(shader.program);
-    for (let id in shader.attribs) {
-        const attrib = shader.attribs[id];
+    for (var id in shader.attribs) {
+        var attrib = shader.attribs[id];
         gl.bindBuffer(gl.ARRAY_BUFFER, geometry.attribs[id]);
         gl.enableVertexAttribArray(attrib.index);
         gl.vertexAttribPointer(attrib.index, attrib.itemSize, attrib.type, false, 0, 0);
     }
-    for (let id in shader.uniforms) {
-        const uniform = shader.uniforms[id];
-        const index = uniform.index;
-        const value = object.uniforms[id] || (globalUniforms && globalUniforms[id]);
+    for (var id in shader.uniforms) {
+        var uniform = shader.uniforms[id];
+        var index = uniform.index;
+        var value = object.uniforms[id] || (globalUniforms && globalUniforms[id]);
         switch (uniform.type) {
             case 't':
-                let texture = value ?
+                var texture = value ?
                     ctx.layers[value].texture :
                     ctx.source.texture;
                 gl.activeTexture(gl['TEXTURE' + textureCount]);
@@ -413,14 +420,14 @@ function renderObject(ctx, object, globalUniforms) {
     }
 }
 function makeClear(gl, clearArray) {
-    return clearArray.reduce((res, item) => res | gl[item + '_BUFFER_BIT'], 0);
+    return clearArray.reduce(function (res, item) { return res | gl[item + '_BUFFER_BIT']; }, 0);
 }
 function setBlendFunc(gl, blendOpts) {
-    gl.blendFunc.apply(gl, blendOpts.map(opt => gl[opt]));
+    gl.blendFunc.apply(gl, blendOpts.map(function (opt) { return gl[opt]; }));
 }
 function setTextureParams(gl, data) {
     gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, data.flipY);
-    let wrapS, wrapT;
+    var wrapS, wrapT;
     if (data.wrap) {
         wrapS = wrapT = data.wrap;
     }
@@ -453,7 +460,7 @@ function updateRenderTarget(gl, target, data) {
     gl.bindFramebuffer(gl.FRAMEBUFFER, target.frameBuffer);
     gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, target.texture, 0);
     gl.framebufferRenderbuffer(gl.FRAMEBUFFER, gl.DEPTH_ATTACHMENT, gl.RENDERBUFFER, target.depthBuffer);
-    const err = gl.checkFramebufferStatus(gl.FRAMEBUFFER);
+    var err = gl.checkFramebufferStatus(gl.FRAMEBUFFER);
     if (err !== gl.FRAMEBUFFER_COMPLETE) {
         console.error('framebuffer error', err, data);
     }
@@ -466,7 +473,7 @@ function getBufferData(data) {
         return data.buffer;
     }
     else {
-        let TypedArray = window[data.type];
+        var TypedArray = window[data.type];
         return new TypedArray(data.array);
     }
 }
@@ -482,7 +489,7 @@ function typedArrayToGLType(array, gl) {
     }
     throw new TypeError('invalid array type');
 }
-const attribItemSize = {
+var attribItemSize = {
     'f': 1,
     'f 1': 1,
     'f 2': 2,
@@ -496,15 +503,15 @@ function isGeometryBuffer(b) {
     return (b.buffer != null);
 }
 export default {
-    create,
-    init,
-    updateSettings,
-    updateObject,
-    updateGeometry,
-    updateShader,
-    updateLayer,
-    updateSize,
-    renderLayers,
-    lib
+    create: create,
+    init: init,
+    updateSettings: updateSettings,
+    updateObject: updateObject,
+    updateGeometry: updateGeometry,
+    updateShader: updateShader,
+    updateLayer: updateLayer,
+    updateSize: updateSize,
+    renderLayers: renderLayers,
+    lib: lib
 };
 //# sourceMappingURL=renderer.js.map

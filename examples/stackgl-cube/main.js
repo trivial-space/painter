@@ -1,5 +1,5 @@
 import {renderer, renderUtils} from '../../dist/tvs-renderer.js'
-import {ctx} from '../ctx.js'
+import {ctx} from '../ctx'
 import {mat4} from 'gl-matrix'
 import createCube from 'primitive-cube'
 

@@ -53,7 +53,7 @@ export interface Context {
 }
 export interface ContextLayerBase {
     noClear: boolean;
-    clearColor: Color;
+    clearColor?: Color;
     renderTarget?: RenderTarget;
 }
 export interface ContextLayerStatic extends ContextLayerBase {

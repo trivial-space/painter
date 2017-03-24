@@ -10,7 +10,7 @@ module.exports = {
   entry: {
     'basic': [...hotCodeEntry, './basic/main.ts'],
     'minimal-own-canvas': [...hotCodeEntry, './minimal-own-canvas/main.js'],
-    'rotaion': [...hotCodeEntry, './rotation/main.ts'],
+    'rotation': [...hotCodeEntry, './rotation/main.ts'],
     'stackgl-cube': [...hotCodeEntry, './stackgl-cube/main.js'],
     'update-order': [...hotCodeEntry, './update-order/main.ts'],
     'shader': [...hotCodeEntry, './shader/main.ts']

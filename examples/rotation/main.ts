@@ -1,5 +1,5 @@
-import renderer from '../../lib/index.js'
-import {ctx} from '../ctx.js'
+import renderer from 'index'
+import {ctx} from '../ctx'
 import {mat4} from 'gl-matrix'
 
 import plainVert from './plain-material.vert'

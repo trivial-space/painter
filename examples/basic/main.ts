@@ -1,5 +1,5 @@
-import renderer from '../../lib/index'
-import {ctx} from '../ctx.js'
+import renderer from 'index'
+import {ctx} from '../ctx'
 
 
 const scene = {

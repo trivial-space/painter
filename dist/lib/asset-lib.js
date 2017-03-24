@@ -14,8 +14,8 @@ export default {
     },
     geometries: {
         renderQuad: {
-            attribs: {
-                [constants.GEOMETRY_PROP_POSITION]: {
+            attribs: (_a = {},
+                _a[constants.GEOMETRY_PROP_POSITION] = {
                     buffer: new Float32Array([
                         -1, 1,
                         -1, -1,
@@ -24,7 +24,7 @@ export default {
                     ]),
                     storeType: "STATIC"
                 },
-                [constants.GEOMETRY_PROP_UV]: {
+                _a[constants.GEOMETRY_PROP_UV] = {
                     buffer: new Float32Array([
                         0, 1,
                         0, 0,
@@ -32,35 +32,23 @@ export default {
                         1, 0
                     ]),
                     storeType: "STATIC"
-                }
-            },
+                },
+                _a),
             drawType: "TRIANGLE_STRIP",
             itemCount: 4
         }
     },
     shaders: {
         basicEffect: {
-            vert: `
-        attribute vec2 ${constants.GEOMETRY_PROP_POSITION};
-        attribute vec2 ${constants.GEOMETRY_PROP_UV};
-        varying vec2 vUv;
-        void main() {
-          vUv = ${constants.GEOMETRY_PROP_UV};
-          gl_Position = vec4(${constants.GEOMETRY_PROP_POSITION}, 0.0, 1.0);
-        }`,
-            frag: `
-        uniform sampler2D ${constants.UNIFORM_SOURCE_TEXTURE};
-        varying vec2 vUv;
-        void main() {
-          gl_FragColor = texture2D(${constants.UNIFORM_SOURCE_TEXTURE}, vUv);
-        }`,
-            attribs: {
-                [constants.GEOMETRY_PROP_POSITION]: "f 2",
-                [constants.GEOMETRY_PROP_UV]: "f 2"
-            },
-            uniforms: {
-                [constants.UNIFORM_SOURCE_TEXTURE]: "t"
-            }
+            vert: "\n        attribute vec2 " + constants.GEOMETRY_PROP_POSITION + ";\n        attribute vec2 " + constants.GEOMETRY_PROP_UV + ";\n        varying vec2 vUv;\n        void main() {\n          vUv = " + constants.GEOMETRY_PROP_UV + ";\n          gl_Position = vec4(" + constants.GEOMETRY_PROP_POSITION + ", 0.0, 1.0);\n        }",
+            frag: "\n        uniform sampler2D " + constants.UNIFORM_SOURCE_TEXTURE + ";\n        varying vec2 vUv;\n        void main() {\n          gl_FragColor = texture2D(" + constants.UNIFORM_SOURCE_TEXTURE + ", vUv);\n        }",
+            attribs: (_b = {},
+                _b[constants.GEOMETRY_PROP_POSITION] = "f 2",
+                _b[constants.GEOMETRY_PROP_UV] = "f 2",
+                _b),
+            uniforms: (_c = {},
+                _c[constants.UNIFORM_SOURCE_TEXTURE] = "t",
+                _c)
         }
     },
     objects: {
@@ -70,4 +58,5 @@ export default {
         }
     }
 };
+var _a, _b, _c;
 //# sourceMappingURL=asset-lib.js.map

@@ -1,30 +1,31 @@
 import * as constants from '../../contants';
-export const STACK_GL_GEOMETRY_PROP_POSITION = "positions";
-export const STACK_GL_GEOMETRY_PROP_NORMAL = "normals";
-export const STACK_GL_GEOMETRY_PROP_UV = "normals";
-export const STACK_GL_GEOMETRY_PROP_ELEMENTS = "cells";
+export var STACK_GL_GEOMETRY_PROP_POSITION = "positions";
+export var STACK_GL_GEOMETRY_PROP_NORMAL = "normals";
+export var STACK_GL_GEOMETRY_PROP_UV = "normals";
+export var STACK_GL_GEOMETRY_PROP_ELEMENTS = "cells";
 function _flatten(array) {
-    let results = [];
-    for (let i = 0; i < array.length; i++) {
+    var results = [];
+    for (var i = 0; i < array.length; i++) {
         var subarray = array[i];
-        for (let j = 0; j < subarray.length; j++) {
+        for (var j = 0; j < subarray.length; j++) {
             results.push(subarray[j]);
         }
     }
     return results;
 }
 export function convertStackGLGeometry(stackglGeometry) {
-    let geometry = {
+    var geometry = {
         drawType: "TRIANGLES",
         attribs: {},
         itemCount: 0
     };
-    for (let prop in stackglGeometry) {
-        const arr = stackglGeometry[prop];
+    for (var prop in stackglGeometry) {
+        var arr = stackglGeometry[prop];
         if (prop === STACK_GL_GEOMETRY_PROP_ELEMENTS) {
-            const buffer = new (arr.length > 65535 ? Uint32Array : Uint16Array)(_flatten(arr));
-            geometry = Object.assign(geometry, {
-                elements: { buffer }, itemCount: buffer.length
+            var buffer = new (arr.length > 65535 ? Uint32Array : Uint16Array)(_flatten(arr));
+            Object.assign(geometry, {
+                elements: { buffer: buffer },
+                itemCount: buffer.length
             });
         }
         else if (prop === STACK_GL_GEOMETRY_PROP_POSITION) {

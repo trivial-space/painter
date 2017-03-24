@@ -3,7 +3,8 @@
   "version": "0.1.13",
   "description": "trivialspace renderer - a webgl rendering engine",
   "main": "dist/tvs-renderer.js",
-  "typings": "lib/index.ts",
+  "typings": "dist/lib/index.d.ts",
+  "types": "dist/lib/index.d.ts",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/trivial-space/renderer.git"
@@ -13,7 +14,9 @@
     "graphics engine"
   ],
   "scripts": {
-    "examples": "webpack-dev-server --config webpack.examples.config.js --port 8081"
+    "examples": "webpack-dev-server --config webpack.examples.config.js --port 8081",
+    "build": "tsc; webpack",
+    "prepublish": "npm run build"
   },
   "author": "Thomas Gorny",
   "license": "MIT",
