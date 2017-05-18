@@ -293,7 +293,7 @@ export function updateLayer (
 
   const layer = ctx.layers[layerId] || {} as ContextLayer
   layer.noClear = !!data.noClear
-  layer.clearColor = data.clearColor 
+  layer.clearColor = data.clearColor
 
   if (data.buffered) {
     layer.renderTarget = {
@@ -357,7 +357,9 @@ function updateStaticLayer (gl: GL, layer: ContextLayerStatic, data: LayerData) 
   const texture = layer.texture || gl.createTexture()
   gl.bindTexture(gl.TEXTURE_2D, texture)
   setTextureParams(gl, data)
-  gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, data.asset)
+  if (data.asset) {
+    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, data.asset)
+  }
   if (data.minFilter && data.minFilter.indexOf("MIPMAP") > 0) {
     gl.generateMipmap(gl.TEXTURE_2D)
   }
@@ -590,7 +592,7 @@ function updateRenderTarget (gl: GL, target: RenderTarget, data: LayerData) {
     target.depthBuffer = gl.createRenderbuffer()
   }
   gl.bindTexture(gl.TEXTURE_2D, target.texture)
-  gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, data.width, data.height, 0, gl.RGBA, gl.UNSIGNED_BYTE, undefined)
+  gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, data.width, data.height, 0, gl.RGBA, gl.UNSIGNED_BYTE, null)
   setTextureParams(gl, data)
   gl.bindRenderbuffer(gl.RENDERBUFFER, target.depthBuffer)
   gl.renderbufferStorage(gl.RENDERBUFFER, gl.DEPTH_COMPONENT16, data.width, data.height)
