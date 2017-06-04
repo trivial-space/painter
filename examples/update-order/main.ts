@@ -1,10 +1,11 @@
-import {renderer, renderUtils} from '../../lib/index'
-import {ctx} from '../ctx'
 import {mat4} from 'gl-matrix'
-
 import planeVert from './plane-material.vert'
 import planeFrag from './plane-material.frag'
 import effectFrag from './effect.frag'
+import { plane } from '../../lib/utils/geometry/plane'
+
+const ctx: any = {}
+const renderer: any = {}
 
 
 const planMat1 = mat4.fromTranslation(mat4.create(), [0, 0, -3])
@@ -26,7 +27,7 @@ function animate () {
 }
 
 
-let img = new Image()
+const img = new Image()
 img.onload = function() {
   renderer.updateLayer(ctx, 'textureLayer', {
     asset: img
@@ -38,51 +39,51 @@ img.src = '../shared-assets/hepatica_256.png'
 
 // ===== Setup Render Context =====
 
-renderer.updateLayer(ctx, "planeLayer", {
-  objects: ["plane1", "plane2"],
+renderer.updateLayer(ctx, 'planeLayer', {
+  objects: ['plane1', 'plane2'],
   clearColor: [0.0, 1.0, 0.0, 1.0],
   uniforms: {
-    texture: "textureLayer",
+    texture: 'textureLayer',
     projection
   }
 })
 
-renderer.updateLayer(ctx, "effectLayer", {
-  shader: "effect",
+renderer.updateLayer(ctx, 'effectLayer', {
+  shader: 'effect'
 })
 
-renderer.updateGeometry(ctx, "planeGeometry", renderUtils.geometry.plane(2, 2))
+renderer.updateGeometry(ctx, 'planeGeometry', plane(2, 2))
 
-renderer.updateShader(ctx, "planeMaterial", {
+renderer.updateShader(ctx, 'planeMaterial', {
   vert: planeVert,
   frag: planeFrag,
   attribs: {
-    "position": "f 3",
-    "uv": "f 2"
+    'position': 'f 3',
+    'uv': 'f 2'
   },
   uniforms: {
-    "texture": "t",
-    "object": "m 4",
-    "projection": "m 4"
+    'texture': 't',
+    'object': 'm 4',
+    'projection': 'm 4'
   }
 })
 
-renderer.updateShader(ctx, "effect", {
-  ...renderer.lib.shaders.basicEffect, 
+renderer.updateShader(ctx, 'effect', {
+  ...renderer.lib.shaders.basicEffect,
   frag: effectFrag
 })
 
-renderer.updateObject(ctx, "plane1", {
-  shader: "planeMaterial",
-  geometry: "planeGeometry",
+renderer.updateObject(ctx, 'plane1', {
+  shader: 'planeMaterial',
+  geometry: 'planeGeometry',
   uniforms: {
     object: planMat1
   }
 })
 
-renderer.updateObject(ctx, "plane2", {
-  shader: "planeMaterial",
-  geometry: "planeGeometry",
+renderer.updateObject(ctx, 'plane2', {
+  shader: 'planeMaterial',
+  geometry: 'planeGeometry',
   uniforms: {
     object: planMat2
   },

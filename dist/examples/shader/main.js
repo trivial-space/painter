@@ -9,9 +9,10 @@ var __assign = (this && this.__assign) || Object.assign || function(t) {
 import renderer from '../../lib/index';
 import { ctx } from '../ctx';
 import shaderCode from './shader.glsl';
-renderer.updateLayer(ctx, "shaderLayer", {
-    shader: "shader",
+// ===== Setup Render Context =====
+renderer.updateLayer(ctx, 'shaderLayer', {
+    shader: 'shader',
 });
-renderer.updateShader(ctx, "shader", __assign({}, renderer.lib.shaders.basicEffect, { frag: shaderCode }));
+renderer.updateShader(ctx, 'shader', __assign({}, renderer.lib.shaders.basicEffect, { frag: shaderCode }));
 renderer.renderLayers(ctx, ['shaderLayer']);
 //# sourceMappingURL=main.js.map

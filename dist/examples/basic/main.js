@@ -29,7 +29,7 @@ var scene = {
                     ])
                 }
             },
-            drawType: "TRIANGLE_STRIP",
+            drawType: 'TRIANGLE_STRIP',
             itemCount: 4
         }
     },
@@ -38,7 +38,7 @@ var scene = {
             vert: "\n          attribute vec2 position;\n          void main() {\n              gl_Position = vec4(position, 0.0, 1.0);\n          }\n        ",
             frag: "\n          void main() {\n              gl_FragColor = vec4(1.0, 0.0, 0.0, 1.0);\n          }\n        ",
             attribs: {
-                position: "f 2"
+                position: 'f 2'
             }
         },
         texture: renderer.lib.shaders.basicEffect,
@@ -46,25 +46,25 @@ var scene = {
     },
     objects: {
         plane1: {
-            shader: "red",
-            geometry: "planeGeometry"
+            shader: 'red',
+            geometry: 'planeGeometry'
         },
         plane2: {
-            shader: "texture",
-            geometry: "planeGeometry"
+            shader: 'texture',
+            geometry: 'planeGeometry'
         }
     },
     layers: {
         textureLayer: {
-            objects: ["plane1"],
+            objects: ['plane1'],
             clearColor: [1.0, 0.0, 1.0, 1.0]
         },
         planeLayer: {
-            objects: ["plane2"],
+            objects: ['plane2'],
             clearColor: [0.0, 0.0, 0.0, 1.0]
         },
         effectLayer: {
-            shader: "effect",
+            shader: 'effect',
         }
     }
 };

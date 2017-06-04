@@ -1,7 +1,6 @@
-import * as renderer from '../lib/renderer'
-import {Context} from '../lib/renderer-types'
+import { getContext } from '../lib/utils/context'
 
 
-let canvas = document.getElementById('canvas') as HTMLCanvasElement
+export const canvas = document.getElementById('canvas') as HTMLCanvasElement
 
-export let ctx: Context = renderer.create(canvas)
+export const gl = getContext(canvas)

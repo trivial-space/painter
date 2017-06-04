@@ -1,21 +1,22 @@
 import * as constants from '../../contants';
-export var STACK_GL_GEOMETRY_PROP_POSITION = "positions";
-export var STACK_GL_GEOMETRY_PROP_NORMAL = "normals";
-export var STACK_GL_GEOMETRY_PROP_UV = "normals";
-export var STACK_GL_GEOMETRY_PROP_ELEMENTS = "cells";
+export var STACK_GL_GEOMETRY_PROP_POSITION = 'positions';
+export var STACK_GL_GEOMETRY_PROP_NORMAL = 'normals';
+export var STACK_GL_GEOMETRY_PROP_UV = 'uvs';
+export var STACK_GL_GEOMETRY_PROP_ELEMENTS = 'cells';
 function _flatten(array) {
     var results = [];
-    for (var i = 0; i < array.length; i++) {
-        var subarray = array[i];
-        for (var j = 0; j < subarray.length; j++) {
-            results.push(subarray[j]);
+    for (var _i = 0, array_1 = array; _i < array_1.length; _i++) {
+        var subarray = array_1[_i];
+        for (var _a = 0, subarray_1 = subarray; _a < subarray_1.length; _a++) {
+            var el = subarray_1[_a];
+            results.push(el);
         }
     }
     return results;
 }
 export function convertStackGLGeometry(stackglGeometry) {
     var geometry = {
-        drawType: "TRIANGLES",
+        drawType: 'TRIANGLES',
         attribs: {},
         itemCount: 0
     };

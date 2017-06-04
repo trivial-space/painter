@@ -1,4 +1,3 @@
-import { GeometryStoreType, GeometryDrawType, ShaderAttribType, ShaderUniformType } from './renderer-types';
 declare var _default: {
     defaultSettings: {
         clearColor: number[];
@@ -17,10 +16,10 @@ declare var _default: {
             attribs: {
                 [x: string]: {
                     buffer: Float32Array;
-                    storeType: GeometryStoreType;
+                    storeType: any;
                 };
             };
-            drawType: GeometryDrawType;
+            drawType: any;
             itemCount: number;
         };
     };
@@ -28,18 +27,6 @@ declare var _default: {
         basicEffect: {
             vert: string;
             frag: string;
-            attribs: {
-                [x: string]: ShaderAttribType;
-            };
-            uniforms: {
-                [x: string]: ShaderUniformType;
-            };
-        };
-    };
-    objects: {
-        resultScreen: {
-            shader: string;
-            geometry: string;
         };
     };
 };

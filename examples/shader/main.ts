@@ -1,16 +1,16 @@
-import renderer from '../../lib/index'
-import {ctx} from '../ctx'
+const ctx: any = {}
+const renderer: any = {}
 
 import shaderCode from './shader.glsl'
 
 
 // ===== Setup Render Context =====
 
-renderer.updateLayer(ctx, "shaderLayer", {
-  shader: "shader",
+renderer.updateLayer(ctx, 'shaderLayer', {
+  shader: 'shader'
 })
 
-renderer.updateShader(ctx, "shader", {
+renderer.updateShader(ctx, 'shader', {
   ...renderer.lib.shaders.basicEffect,
   frag: shaderCode
 })

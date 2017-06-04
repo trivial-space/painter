@@ -1,5 +1,5 @@
-import renderer from 'index'
-import {ctx} from '../ctx'
+const ctx: any = {}
+const renderer: any = {}
 
 
 const scene = {
@@ -23,7 +23,7 @@ const scene = {
           ])
         }
       },
-      drawType: "TRIANGLE_STRIP",
+      drawType: 'TRIANGLE_STRIP',
       itemCount: 4
     }
   },
@@ -44,7 +44,7 @@ const scene = {
           }
         `,
       attribs: {
-        position: "f 2"
+        position: 'f 2'
       }
     },
     texture: renderer.lib.shaders.basicEffect,
@@ -64,26 +64,26 @@ const scene = {
 
   objects: {
     plane1: {
-      shader: "red",
-      geometry: "planeGeometry"
+      shader: 'red',
+      geometry: 'planeGeometry'
     },
     plane2: {
-      shader: "texture",
-      geometry: "planeGeometry"
+      shader: 'texture',
+      geometry: 'planeGeometry'
     }
   },
 
   layers: {
     textureLayer: {
-      objects: ["plane1"],
+      objects: ['plane1'],
       clearColor: [1.0, 0.0, 1.0, 1.0]
     },
     planeLayer: {
-      objects: ["plane2"],
+      objects: ['plane2'],
       clearColor: [0.0, 0.0, 0.0, 1.0]
     },
     effectLayer: {
-      shader: "effect",
+      shader: 'effect'
     }
   }
 }

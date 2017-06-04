@@ -1,0 +1,27 @@
+{
+	"rules": {
+		"no-unused-expression": true,
+		"no-duplicate-variable": true,
+		"no-unused-variable": true,
+		"curly": true,
+		"class-name": true,
+		"semicolon": [
+			true,
+			"never"
+		],
+		"triple-equals": [
+			true,
+			"allow-null-check"
+		],
+		"quotemark": [
+			true,
+			"single",
+			"avoid-escape",
+			"jsx-double"
+		],
+		"no-var-keyword": true,
+		"trailing-comma": [ true, {"multiline": "never", "singleline": "never"} ],
+		"prefer-for-of": true,
+		"prefer-const": true
+	}
+}

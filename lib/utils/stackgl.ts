@@ -1,0 +1,64 @@
+import * as constants from '../contants'
+import { GeometryData, GeometryDrawType } from '../Geometry'
+
+
+export const STACK_GL_GEOMETRY_PROP_POSITION = 'positions'
+export const STACK_GL_GEOMETRY_PROP_NORMAL = 'normals'
+export const STACK_GL_GEOMETRY_PROP_UV = 'uvs'
+export const STACK_GL_GEOMETRY_PROP_ELEMENTS = 'cells'
+
+
+function _flatten<T>(array: T[][]): T[] {
+	const results: T[] = []
+
+	for (const subarray of array) {
+		for (const el of subarray) {
+			results.push(el)
+		}
+	}
+	return results
+}
+
+
+export function convertStackGLGeometry (
+	stackglGeometry: { [id: string]: number[][] }
+): GeometryData {
+
+	const geometry: GeometryData = {
+		drawType: 'TRIANGLES' as GeometryDrawType,
+		attribs: {},
+		itemCount: 0
+	}
+
+	for (const prop in stackglGeometry) {
+		const arr = stackglGeometry[prop]
+
+		if (prop === STACK_GL_GEOMETRY_PROP_ELEMENTS) {
+			const buffer = new (arr.length > 65535 ? Uint32Array : Uint16Array)(_flatten(arr))
+			Object.assign(geometry, {
+				elements: { buffer },
+				itemCount: buffer.length
+			})
+
+		} else if (prop === STACK_GL_GEOMETRY_PROP_POSITION) {
+			geometry.attribs[constants.GEOMETRY_PROP_POSITION] = {
+				buffer: new Float32Array(_flatten(arr))
+			}
+
+		} else if (prop === STACK_GL_GEOMETRY_PROP_NORMAL) {
+			geometry.attribs[constants.GEOMETRY_PROP_NORMAL] = {
+				buffer: new Float32Array(_flatten(arr))
+			}
+
+		} else if (prop === STACK_GL_GEOMETRY_PROP_UV) {
+			geometry.attribs[constants.GEOMETRY_PROP_UV] = {
+				buffer: new Float32Array(_flatten(arr))
+			}
+
+		} else {
+			geometry.attribs[prop] = { buffer: new Float32Array(_flatten(arr)) }
+		}
+	}
+
+	return geometry
+}

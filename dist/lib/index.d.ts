@@ -5,21 +5,19 @@ import * as types from './renderer-types';
 export * from './renderer-types';
 export declare const renderUtils: {
     geometry: {
-        plane: (width: number, height: number, widthSegments?: number | undefined, heightSegments?: number | undefined) => types.GeometryData;
+        plane: (width: number, height: number, widthSegments?: number | undefined, heightSegments?: number | undefined) => any;
     };
     stackgl: typeof stackgl;
 };
 export declare const constants: typeof consts;
 export declare const renderer: {
-    create: (canvas?: HTMLCanvasElement | undefined) => types.Context;
-    init: (ctx: types.Context, data: any) => types.Context;
-    updateSettings: (ctx: types.Context, data?: any) => types.Context;
-    updateObject: (ctx: types.Context, id: string, object: types.ObjectData) => types.Context;
-    updateGeometry: (ctx: types.Context, id: string, data: types.GeometryData) => types.Context;
-    updateShader: (ctx: types.Context, id: string, data: types.ShaderData) => types.Context;
-    updateLayer: (ctx: types.Context, layerId: string, data: types.LayerData) => types.Context;
-    updateSize: (ctx: types.Context) => types.Context;
-    renderLayers: (ctx: types.Context, layerIds: string[]) => void;
+    create: (canvas?: HTMLCanvasElement | undefined) => any;
+    init: (ctx: any, data: any) => any;
+    updateSettings: (ctx: any, data?: any) => any;
+    updateObject: any;
+    updateLayer: (ctx: any, layerId: string, data: types.LayerData) => any;
+    updateSize: (ctx: any) => any;
+    renderLayers: (ctx: any, layerIds: string[]) => void;
     lib: {
         defaultSettings: {
             clearColor: number[];
@@ -38,10 +36,10 @@ export declare const renderer: {
                 attribs: {
                     [x: string]: {
                         buffer: Float32Array;
-                        storeType: types.GeometryStoreType;
+                        storeType: any;
                     };
                 };
-                drawType: types.GeometryDrawType;
+                drawType: any;
                 itemCount: number;
             };
         };
@@ -49,18 +47,6 @@ export declare const renderer: {
             basicEffect: {
                 vert: string;
                 frag: string;
-                attribs: {
-                    [x: string]: types.ShaderAttribType;
-                };
-                uniforms: {
-                    [x: string]: types.ShaderUniformType;
-                };
-            };
-        };
-        objects: {
-            resultScreen: {
-                shader: string;
-                geometry: string;
             };
         };
     };
