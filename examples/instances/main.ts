@@ -12,14 +12,14 @@ const rotationZ = 0.009101
 const triangleCount = 5000
 
 
-const positions: any = []
+const dimensions: any = []
 for (let i = 0; i < triangleCount; i++) {
 	const q = quat.create()
 	const scale = Math.random() * 5 + 1
 	quat.rotateX(q, q, Math.random() * Math.PI)
 	quat.rotateY(q, q, Math.random() * Math.PI)
 	quat.rotateZ(q, q, Math.random() * Math.PI)
-	positions.push({
+	dimensions.push({
 		pos: [
 			Math.random() * 100 - 50,
 			Math.random() * 100 - 50,
@@ -30,11 +30,13 @@ for (let i = 0; i < triangleCount; i++) {
 	})
 }
 
+dimensions.sort((d1, d2) => d1.pos[2] > d2.pos[2] ? 1 : d1.pos[2] < d2.pos[2] ? -1 : 0)
+
 const projection = mat4.perspective(mat4.create(), 65, 1, 0.01, 1000)
 
-const cubes = positions.map(vals => ({
+const cubes = dimensions.map(vals => ({
 	transform: mat4.fromRotationTranslationScale(mat4.create(), vals.rot, vals.pos, vals.scale ),
-	color: new Float32Array([Math.random(), Math.random(), Math.random(), 1])
+	color: new Float32Array([Math.random(), Math.random(), Math.random(), 0.8])
 }))
 
 const geometry = new Geometry(gl)
@@ -74,7 +76,8 @@ shader.update({
 const drawing = new Drawing(gl)
 drawing.update({
 	shader, geometry,
-	uniforms: cubes
+	uniforms: cubes,
+	blending: true
 })
 
 const clearBits = makeClear(gl, 'color', 'depth')
