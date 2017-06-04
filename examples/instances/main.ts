@@ -9,7 +9,7 @@ import { makeClear } from '../../lib/utils/context'
 const rotationX = 0.01
 const rotationZ = 0.009101
 
-const triangleCount = 2000
+const triangleCount = 5000
 
 
 const positions: any = []
@@ -29,6 +29,7 @@ for (let i = 0; i < triangleCount; i++) {
 		rot: q
 	})
 }
+
 const projection = mat4.perspective(mat4.create(), 65, 1, 0.01, 1000)
 
 const cubes = positions.map(vals => ({

@@ -7,11 +7,9 @@ import { Shader } from '../../lib/shader'
 import { Drawing } from '../../lib/drawing'
 import { makeClear } from '../../lib/utils/context'
 
+
 const cubeStackgl = createCube(1)
 let cubeGeometry = convertStackGLGeometry(cubeStackgl)
-
-console.log(cubeStackgl)
-console.log(cubeGeometry)
 
 cubeGeometry = {
 	...cubeGeometry,
