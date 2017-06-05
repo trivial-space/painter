@@ -9,7 +9,6 @@ const hotCodeEntry = [
 module.exports = {
 	entry: {
 		// 'basic': [...hotCodeEntry, './basic/main.ts'],
-		// 'minimal-own-canvas': [...hotCodeEntry, './minimal-own-canvas/main.js'],
 		// 'rotation': [...hotCodeEntry, './rotation/main.ts'],
 		'stackgl-cube': [...hotCodeEntry, './stackgl-cube/main.ts'],
 		'instances': [...hotCodeEntry, './instances/main.ts'],

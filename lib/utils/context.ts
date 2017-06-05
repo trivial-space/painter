@@ -1,4 +1,4 @@
-import { GL } from '../renderer-types'
+import { GL } from '../render-types'
 
 export function getContext (canvas: HTMLCanvasElement) {
 	const gl = canvas.getContext('webgl') || canvas.getContext('experimental-webgl')

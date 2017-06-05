@@ -1,5 +1,5 @@
 import * as constants from './contants'
-import { GeometryStoreType, GeometryDrawType } from './geometry'
+import { FormStoreType, FormDrawType } from './render-types'
 
 export default {
 
@@ -27,7 +27,7 @@ export default {
 						1, 1,
 						1, -1
 					]),
-					storeType: 'STATIC' as GeometryStoreType
+					storeType: 'STATIC' as FormStoreType
 				},
 				[constants.GEOMETRY_PROP_UV]: {
 					buffer: new Float32Array([
@@ -36,10 +36,10 @@ export default {
 						1, 1,
 						1, 0
 					]),
-					storeType: 'STATIC' as GeometryStoreType
+					storeType: 'STATIC' as FormStoreType
 				}
 			},
-			drawType: 'TRIANGLE_STRIP' as GeometryDrawType,
+			drawType: 'TRIANGLE_STRIP' as FormDrawType,
 			itemCount: 4
 		}
 	},
@@ -51,17 +51,17 @@ export default {
 			vert: `
 				attribute vec2 ${constants.GEOMETRY_PROP_POSITION};
 				attribute vec2 ${constants.GEOMETRY_PROP_UV};
-				varying vec2 vUv;
+				varying vec2 ${constants.VARYING_UV};
 				void main() {
-					vUv = ${constants.GEOMETRY_PROP_UV};
+					${constants.VARYING_UV} = ${constants.GEOMETRY_PROP_UV};
 					gl_Position = vec4(${constants.GEOMETRY_PROP_POSITION}, 0.0, 1.0);
 				}`,
 
-			frag: `
+			frag: `precision mediump float;
 				uniform sampler2D ${constants.UNIFORM_SOURCE_TEXTURE};
-				varying vec2 vUv;
+				varying vec2 ${constants.VARYING_UV};
 				void main() {
-					gl_FragColor = texture2D(${constants.UNIFORM_SOURCE_TEXTURE}, vUv);
+					gl_FragColor = texture2D(${constants.UNIFORM_SOURCE_TEXTURE}, ${constants.VARYING_UV});
 				}`
 		}
 	}

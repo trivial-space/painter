@@ -1,5 +1,5 @@
 import * as constants from '../contants'
-import { GeometryData, GeometryDrawType } from '../Geometry'
+import { FormData, FormDrawType } from '../render-types'
 
 
 export const STACK_GL_GEOMETRY_PROP_POSITION = 'positions'
@@ -22,10 +22,10 @@ function _flatten<T>(array: T[][]): T[] {
 
 export function convertStackGLGeometry (
 	stackglGeometry: { [id: string]: number[][] }
-): GeometryData {
+): FormData {
 
-	const geometry: GeometryData = {
-		drawType: 'TRIANGLES' as GeometryDrawType,
+	const geometry: FormData = {
+		drawType: 'TRIANGLES' as FormDrawType,
 		attribs: {},
 		itemCount: 0
 	}

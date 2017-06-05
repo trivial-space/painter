@@ -1,11 +1,12 @@
-import { GeometryData } from '../../Geometry'
+import { FormData } from '../../render-types'
+
 
 export function plane (
 	width: number,
 	height: number,
 	widthSegments?: number,
 	heightSegments?: number
-): GeometryData {
+): FormData {
 
 	const widthHalf = width / 2
 	const heightHalf = height / 2
