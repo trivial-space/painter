@@ -1,9 +1,10 @@
 import { GL } from '../render-types'
 
+
 export function getContext (canvas: HTMLCanvasElement) {
 	const gl = canvas.getContext('webgl') || canvas.getContext('experimental-webgl')
 	if (gl == null) {
-		throw Error('cannot retrieve Webgl Context')
+		throw Error('Webgl context cannot be initialized')
 	}
 	return gl
 }

@@ -1,17 +1,22 @@
 import lib from './asset-lib'
-import { GL, Uniforms, DrawSettings, Sketch, Shade, Form, Painter } from './render-types'
+import { GL, Uniforms, DrawSettings, Sketch, Shade, Form, Painter, RenderTarget, Layer } from './render-types'
 import * as form from './form'
 import * as shade from './shade'
 import * as sketch from './sketch'
 import * as layer from './layer'
+import { updateRenderTarget } from './render-utils'
+import { getContext, resizeCanvas } from './utils/context'
 
 
 
-export function create (gl: GL | null): Painter {
+export function create (canvas: HTMLCanvasElement): Painter {
 
-	if (gl == null) {
-		throw TypeError('No valid WebGL context received')
-	}
+	const gl = getContext(canvas)
+
+	const targets = [
+		{ } as RenderTarget,
+		{ } as RenderTarget
+	]
 
 	const renderQuad = form.create(gl).update(lib.geometries.renderQuad)
 
@@ -20,7 +25,26 @@ export function create (gl: GL | null): Painter {
 		shade: shade.create(gl).update(lib.shaders.basicEffect)
 	})
 
+	const result = createFlatSketch()
+
+	const resize = (multiplier = 1, forceUpdateTargets = false) => {
+		const needUpdate = resizeCanvas(canvas, multiplier)
+
+		if (needUpdate || forceUpdateTargets) {
+			targets.forEach(t => {
+				t.width = canvas.width
+				t.height = canvas.height
+				updateRenderTarget(gl, t)
+			})
+		}
+
+		return needUpdate
+	}
+
+	resize(1, true)
+
 	return {
+		gl,
 		createForm: () => form.create(gl),
 		createShade: () => shade.create(gl),
 		createSketch: () => sketch.create(gl),
@@ -31,7 +55,9 @@ export function create (gl: GL | null): Painter {
 			sketches: [createFlatSketch()]
 		}),
 		draw: (sketch: Sketch, globalUniforms?: Uniforms, globalSettings?: DrawSettings) =>
-			draw(gl, sketch, globalUniforms, globalSettings)
+			draw(gl, sketch, globalUniforms, globalSettings),
+		compose: (layers: Layer[]) => composeLayers(gl, layers, targets, result),
+		resize
 	}
 }
 
@@ -105,16 +131,16 @@ function shadeUniforms (shade: Shade, values: Uniforms) {
 }
 
 
-export function renderLayers (renderObject: any, ctx: any, layerIds: any[]) {
+function composeLayers (gl: GL, layers: Layer[], targets: RenderTarget[], result: Sketch) {
 
-	const gl = ctx.gl
-	const last = layerIds.length - 1
+	const last = layers.length - 1
 
-	for (let i = 0; i < layerIds.length; i++) {
-		const layerId = layerIds[i]
-		const layer = ctx.layers[layerId]
+	for (let i = 0; i < layers.length; i++) {
+		const layer = layers[i]
 		const directRender = i === last
-		const renderToStack = !directRender && layer.renderTarget == null
+		const renderToStack = !directRender && layer.target == null
+		const source = targets[0]
+		const target = targets[1]
 
 		if (directRender) {
 			gl.bindFramebuffer(gl.FRAMEBUFFER, null)
@@ -124,46 +150,31 @@ export function renderLayers (renderObject: any, ctx: any, layerIds: any[]) {
 			gl.bindFramebuffer(gl.FRAMEBUFFER, ctx.target.frameBuffer)
 			gl.viewport(0, 0, gl.drawingBufferWidth, gl.drawingBufferHeight)
 
-		} else if (layer.renderTarget) {
-			gl.bindFramebuffer(gl.FRAMEBUFFER, layer.renderTarget.frameBuffer)
-			gl.viewport(0, 0, layer.renderTarget.width, layer.renderTarget.height)
+		} else if (layer.target) {
+			gl.bindFramebuffer(gl.FRAMEBUFFER, layer.target.frameBuffer)
+			gl.viewport(0, 0, layer.target.width, layer.target.height)
 		}
 
-		if (!layer.noClear) {
-			gl.clearColor.apply(gl, layer.clearColor || ctx.settings.clearColor)
-			gl.clear(ctx.settings.clearBits)
+		if (layer.data.clearColor) {
+			gl.clearColor.apply(gl, layer.data.clearColor)
 		}
 
-		switch (layer.type) {
-			case 'shader':
-				renderObject(ctx, layer.object)
-				break
+		if (layer.data.clearBits) {
+			gl.clear(layer.data.clearBits)
+		}
 
-			case 'objects':
-				for (const id of layer.opaques) {
-					renderObject(ctx, ctx.objects[id] as any, layer.uniforms)
-				}
-				if (layer.transparents.length) {
-					gl.enable(gl.BLEND)
-					for (const id of layer.transparents) {
-						renderObject(ctx, ctx.objects[id] as any, layer.uniforms)
-					}
-					gl.disable(gl.BLEND)
-				}
-				break
-
-			case 'static':
-				if (directRender) {
-					const object = ctx.objects['_result'] as any
-					renderObject(ctx, object, { source: layerId })
-				}
-				break
+		if (layer.sketches) {
+			for (const sketch of layer.sketches) {
+				draw(gl, sketch, layer.uniforms, layer.data)
+			}
+		} else if (directRender) {
+			draw(gl, result, { source: layer.texture() })
 		}
 
 		if (renderToStack) {
-			const tmp = ctx.source
-			ctx.source = ctx.target
-			ctx.target = tmp
+			targets[0] = target
+			targets[1] = source
 		}
 	}
 }
+

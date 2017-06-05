@@ -1,4 +1,4 @@
-import { GL, AttribContext, AttribSetter, UniformSetter, TextureData, RenderTarget } from './render-types'
+import { GL, AttribContext, AttribSetter, UniformSetter, TextureData, RenderTarget, Wrap } from './render-types'
 import { GL_TYPE } from './contants'
 
 
@@ -466,7 +466,7 @@ export function getGLTypeForTypedArrayType (typedArrayType: any) {
 
 // Texture helper
 
-export function setTextureParams (gl: GL, data: TextureData, oldData: TextureData) {
+export function setTextureParams (gl: GL, data: TextureData = {}, oldData: TextureData = {}) {
 	if (data.flipY != null && data.flipY !== oldData.flipY) {
 		gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, data.flipY as any)
 	}
@@ -476,18 +476,16 @@ export function setTextureParams (gl: GL, data: TextureData, oldData: TextureDat
 		|| (data.wrapS && data.wrapS !== oldData.wrapS)
 		|| (data.wrapT && data.wrapT !== oldData.wrapT)
 	) {
-		let wrapS: any, wrapT: any
+		let wrapS: Wrap, wrapT: Wrap
 		if (data.wrap) {
 			wrapS = wrapT = data.wrap
 		} else {
-			wrapT = data.wrapT
-			wrapS = data.wrapS
+			wrapT = data.wrapT || 'CLAMP_TO_EDGE'
+			wrapS = data.wrapS || 'CLAMP_TO_EDGE'
 		}
-		wrapS = wrapS ? gl[wrapS] : gl.CLAMP_TO_EDGE
-		wrapT = wrapT ? gl[wrapT] : gl.CLAMP_TO_EDGE
 
-		gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, wrapS)
-		gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, wrapT)
+		gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl[wrapS] )
+		gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl[wrapT] )
 	}
 
 	if (data.magFilter && data.magFilter !== oldData.magFilter) {
@@ -502,7 +500,7 @@ export function setTextureParams (gl: GL, data: TextureData, oldData: TextureDat
 
 // Framebuffers
 
-export function updateRenderTarget (gl: GL, target: RenderTarget, data: TextureData, oldData: TextureData) {
+export function updateRenderTarget (gl: GL, target: RenderTarget, data?: TextureData, oldData?: TextureData) {
 	if (target.width == null || target.height == null) {
 		return
 	}

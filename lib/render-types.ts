@@ -194,12 +194,15 @@ export interface Layer {
 // Painter
 
 export interface Painter {
+	gl: GL,
 	createForm: () => Form
-    createShade: () => Shade
-    createSketch: () => Sketch
-    createFlatSketch: () => Sketch
-    createStaticLayer: () => Layer
-    createDrawingLayer: () => Layer
-    createEffectLayer: () => Layer
-    draw: (sketchApi: Sketch, globalUniforms?: Uniforms, globalSettings?: DrawSettings) => void
+	createShade: () => Shade
+	createSketch: () => Sketch
+	createFlatSketch: () => Sketch
+	createStaticLayer: () => Layer
+	createDrawingLayer: () => Layer
+	createEffectLayer: () => Layer
+	draw: (sketchApi: Sketch, globalUniforms?: Uniforms, globalSettings?: DrawSettings) => void
+	compose: (layers: Layer[]) => void
+	resize: () => boolean
 }
