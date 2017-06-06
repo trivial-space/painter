@@ -184,15 +184,15 @@ function samplerArraySetter (gl: GL, type: number, unit: number, location: WebGL
 interface UniformTypeInfoNumber {
 	Type: Float32ArrayConstructor | Int32ArrayConstructor | Uint32ArrayConstructor
 	size: number
-	setter: (gl: WebGLRenderingContext, location: WebGLUniformLocation) => (v: number) => void
-	arraySetter?: (gl: WebGLRenderingContext, location: WebGLUniformLocation) => (v: any) => void
+	setter: (gl: GL, location: WebGLUniformLocation) => (v: number) => void
+	arraySetter?: (gl: GL, location: WebGLUniformLocation) => (v: any) => void
 }
 
 interface UniformTypeInfoSampler {
 	Type: null
 	size: number
-	setter: (gl: WebGLRenderingContext, type: number, unit: number, location: WebGLUniformLocation) => (texture: WebGLTexture) => void
-	arraySetter: (gl: WebGLRenderingContext, type: number, unit: number, location: WebGLUniformLocation, size: number) => (textures: WebGLTexture[]) => void
+	setter: (gl: GL, type: number, unit: number, location: WebGLUniformLocation) => (texture: WebGLTexture) => void
+	arraySetter: (gl: GL, type: number, unit: number, location: WebGLUniformLocation, size: number) => (textures: WebGLTexture[]) => void
 	bindPoint: number
 }
 
@@ -296,13 +296,13 @@ function matAttribSetter (gl: GL, location: number, typeInfo: any) {
 
 interface AttribTypeInfoNumber {
 	size: number
-	setter: (gl: WebGLRenderingContext, location: number, typeInfo: any) => (b: AttribContext) => void
+	setter: (gl: GL, location: number, typeInfo: any) => (b: AttribContext) => void
 	itemSize: number
 }
 
 interface AttribTypeInfoMat {
 	size: number
-	setter: (gl: WebGLRenderingContext, location: number, typeInfo: any) => (b: AttribContext) => void
+	setter: (gl: GL, location: number, typeInfo: any) => (b: AttribContext) => void
 	count: number
 }
 
