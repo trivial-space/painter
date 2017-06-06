@@ -1,20 +1,14 @@
 import { convertStackGLGeometry } from '../../lib/utils/stackgl'
 import { mat4 } from 'gl-matrix'
 import createCube from 'primitive-cube'
-import { gl } from '../ctx'
-import { Geometry } from '../../lib/geometry'
-import { Shader } from '../../lib/shader'
-import { Drawing } from '../../lib/drawing'
+import { painter } from '../painter'
 import { makeClear } from '../../lib/utils/context'
 
 
 const cubeStackgl = createCube(1)
-let cubeGeometry = convertStackGLGeometry(cubeStackgl)
+const cubeGeometry = convertStackGLGeometry(cubeStackgl)
 
-cubeGeometry = {
-	...cubeGeometry,
-	drawType: 'LINE_LOOP'
-}
+cubeGeometry.drawType = 'LINE_LOOP'
 
 
 const rotationX = 0.01
@@ -23,11 +17,9 @@ const cubeMat = mat4.fromTranslation(mat4.create(), [0, 0, -3])
 const projection = mat4.perspective(mat4.create(), 45, 1, 0.01, 10)
 
 
-const geometry = new Geometry(gl)
-geometry.update(cubeGeometry)
+const form = painter.createForm().update(cubeGeometry)
 
-const shader = new Shader(gl)
-shader.update({
+const shade = painter.createShade().update({
 	vert: `
 		attribute vec3 position;
 		attribute vec3 normal;
@@ -49,15 +41,15 @@ shader.update({
 	`
 })
 
-const drawing = new Drawing(gl)
-drawing.update({
-	shader, geometry,
+const sketch = painter.createSketch().update({
+	shade, form,
 	uniforms: {
 		camera: projection,
 		transform: cubeMat
 	}
 })
 
+const gl = painter.gl
 const clearBits = makeClear(gl, 'color', 'depth')
 gl.enable(gl.DEPTH_TEST)
 gl.clearColor(1.0, 0.5, 0.8, 1.0)
@@ -67,7 +59,7 @@ function animate () {
 	mat4.rotateZ(cubeMat, cubeMat, rotationZ)
 	mat4.rotateX(cubeMat, cubeMat, 1.78 * rotationZ)
 	gl.clear(clearBits)
-	drawing.draw()
+	painter.draw(sketch)
 	requestAnimationFrame(animate)
 }
 

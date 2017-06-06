@@ -1,92 +1,108 @@
-const ctx: any = {}
-const renderer: any = {}
+import { painter } from '../painter'
+import { defaultTextureSettings } from '../../lib/asset-lib'
 
 
-const scene = {
-  geometries: {
-    planeGeometry: {
-      attribs: {
-        position: {
-          buffer: new Float32Array([
-            -0.7, 0.7,
-            -0.5, -0.4,
-            0.6, 0.5,
-            0.5, -0.5
-          ])
-        },
-        uv: {
-          buffer: new Float32Array([
-            0, 1,
-            0, 0,
-            1, 1,
-            1, 0
-          ])
-        }
-      },
-      drawType: 'TRIANGLE_STRIP',
-      itemCount: 4
-    }
-  },
+const gl = painter.gl
 
-  shaders: {
-    red: {
-      vert:
-        `
-          attribute vec2 position;
-          void main() {
-              gl_Position = vec4(position, 0.0, 1.0);
-          }
-        `,
-      frag:
-        `
-          void main() {
-              gl_FragColor = vec4(1.0, 0.0, 0.0, 1.0);
-          }
-        `,
-      attribs: {
-        position: 'f 2'
-      }
-    },
-    texture: renderer.lib.shaders.basicEffect,
-    effect: {
-      ...renderer.lib.shaders.basicEffect,
-      frag:
-        `
-          uniform sampler2D source;
-          varying vec2 vUv;
-          void main() {
-              vec4 new_color = texture2D(source, vUv);
-              gl_FragColor = vec4(new_color.rgb * 0.5 + 0.3, 1.0);
-          }
-        `
-    }
-  },
 
-  objects: {
-    plane1: {
-      shader: 'red',
-      geometry: 'planeGeometry'
-    },
-    plane2: {
-      shader: 'texture',
-      geometry: 'planeGeometry'
-    }
-  },
+const plane = painter.createForm().update({
+	attribs: {
+		position: {
+			buffer: new Float32Array([
+				-0.7, 0.7,
+				-0.5, -0.4,
+				0.6, 0.5,
+				0.5, -0.5
+			])
+		},
+		uv: {
+			buffer: new Float32Array([
+				0, 1,
+				0, 0,
+				1, 1,
+				1, 0
+			])
+		}
+	},
+	drawType: 'TRIANGLE_STRIP',
+	itemCount: 4
+})
 
-  layers: {
-    textureLayer: {
-      objects: ['plane1'],
-      clearColor: [1.0, 0.0, 1.0, 1.0]
-    },
-    planeLayer: {
-      objects: ['plane2'],
-      clearColor: [0.0, 0.0, 0.0, 1.0]
-    },
-    effectLayer: {
-      shader: 'effect'
-    }
-  }
-}
 
-renderer.init(ctx, scene)
-renderer.renderLayers(ctx, ['textureLayer', 'planeLayer', 'effectLayer'])
+const red = painter.createShade().update({
+	vert: `
+		attribute vec2 position;
+		void main() {
+			gl_Position = vec4(position, 0.0, 1.0);
+		}
+	`,
+	frag: `precision mediump float;
+		void main() {
+			gl_FragColor = vec4(1.0, 0.0, 0.0, 1.0);
+		}
+	`
+})
+
+
+const textureLayer = painter.createDrawingLayer().update({
+	buffered: true,
+	sketches: [painter.createSketch().update({
+		form: plane,
+		shade: red
+	})],
+	clearColor: [1.0, 0.0, 1.0, 1.0],
+	clearBits: gl.COLOR_BUFFER_BIT,
+	...defaultTextureSettings
+})
+
+
+const paintTexture = painter.createShade().update({
+	vert: `
+		attribute vec2 position;
+		attribute vec2 uv;
+		varying vec2 coords;
+
+		void main() {
+			coords = uv;
+			gl_Position = vec4(position, 0.0, 1.0);
+		}
+	`,
+	frag: `precision mediump float;
+		uniform sampler2D fufu;
+		varying vec2 coords;
+		void main() {
+			vec4 new_color = texture2D(fufu, coords);
+			gl_FragColor = vec4(new_color.g + 0.2, new_color.r + 0.2, new_color.b + 0.2, 1.0);
+		}
+	`
+})
+
+const planeLayer = painter.createDrawingLayer().update({
+	sketches: [painter.createSketch().update({
+		form: plane,
+		shade: paintTexture,
+		uniforms: {
+			fufu: textureLayer.texture()
+		}
+	})],
+	clearColor: [0.0, 0.0, 0.0, 1.0],
+	clearBits: gl.COLOR_BUFFER_BIT
+})
+
+
+const effect = painter.createEffectLayer().update({
+	frag: `precision mediump float;
+		uniform sampler2D source;
+		varying vec2 coords;
+		void main() {
+			vec4 new_color = texture2D(source, coords);
+			gl_FragColor = vec4(new_color.rgb * 0.5 + 0.3, 1.0);
+		}
+	`,
+	uniforms: {
+		source: null
+	}
+})
+
+
+painter.compose(textureLayer, planeLayer, effect)

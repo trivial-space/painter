@@ -8,7 +8,7 @@ const hotCodeEntry = [
 
 module.exports = {
 	entry: {
-		// 'basic': [...hotCodeEntry, './basic/main.ts'],
+		'basic': [...hotCodeEntry, './basic/main.ts'],
 		// 'rotation': [...hotCodeEntry, './rotation/main.ts'],
 		'stackgl-cube': [...hotCodeEntry, './stackgl-cube/main.ts'],
 		'instances': [...hotCodeEntry, './instances/main.ts'],

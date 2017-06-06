@@ -1,8 +1,5 @@
 import { mat4, quat } from 'gl-matrix'
-import { gl } from '../ctx'
-import { Geometry } from '../../lib/geometry'
-import { Shader } from '../../lib/shader'
-import { Drawing } from '../../lib/drawing'
+import { painter } from '../painter'
 import { makeClear } from '../../lib/utils/context'
 
 
@@ -39,8 +36,7 @@ const cubes = dimensions.map(vals => ({
 	color: new Float32Array([Math.random(), Math.random(), Math.random(), 0.8])
 }))
 
-const geometry = new Geometry(gl)
-geometry.update({
+const form = painter.createForm().update({
 	attribs: {
 		position: {
 			buffer: new Float32Array([
@@ -54,8 +50,7 @@ geometry.update({
 	itemCount: 3
 })
 
-const shader = new Shader(gl)
-shader.update({
+const shade = painter.createShade().update({
 	vert: `
 		attribute vec3 position;
 		uniform mat4 camera;
@@ -73,12 +68,13 @@ shader.update({
 	`
 })
 
-const drawing = new Drawing(gl)
-drawing.update({
-	shader, geometry,
+const sketch = painter.createSketch().update({
+	shade, form,
 	uniforms: cubes,
-	blending: true
+	blend: true
 })
+
+const gl = painter.gl
 
 const clearBits = makeClear(gl, 'color', 'depth')
 gl.enable(gl.DEPTH_TEST)
@@ -91,7 +87,7 @@ function animate () {
 		mat4.rotateX(transform, transform, 1.78 * rotationZ)
 	})
 	gl.clear(clearBits)
-	drawing.draw({ camera: projection })
+	painter.draw(sketch, { camera: projection })
 	requestAnimationFrame(animate)
 }
 

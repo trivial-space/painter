@@ -1,40 +1,39 @@
-import lib from './asset-lib'
 import { GL, Uniforms, DrawSettings, Sketch, Shade, Form, Painter, RenderTarget, Layer } from './render-types'
 import * as form from './form'
 import * as shade from './shade'
 import * as sketch from './sketch'
 import * as layer from './layer'
 import { updateRenderTarget } from './render-utils'
-import { getContext, resizeCanvas } from './utils/context'
+import { resizeCanvas } from './utils/context'
+import { defaultForms, defaultShaders, defaultTextureSettings } from './asset-lib'
 
 
 
-export function create (canvas: HTMLCanvasElement): Painter {
-
-	const gl = getContext(canvas)
+export function create (gl: WebGLRenderingContext): Painter {
 
 	const targets = [
 		{ } as RenderTarget,
 		{ } as RenderTarget
 	]
 
-	const renderQuad = form.create(gl).update(lib.geometries.renderQuad)
+	const renderQuad = form.create(gl).update(defaultForms.renderQuad)
 
 	const createFlatSketch = () => sketch.create(gl).update({
 		form: renderQuad,
-		shade: shade.create(gl).update(lib.shaders.basicEffect)
+		shade: shade.create(gl).update(defaultShaders.basicEffect)
 	})
 
 	const result = createFlatSketch()
 
 	const resize = (multiplier = 1, forceUpdateTargets = false) => {
+		const canvas = gl.canvas
 		const needUpdate = resizeCanvas(canvas, multiplier)
 
 		if (needUpdate || forceUpdateTargets) {
 			targets.forEach(t => {
 				t.width = canvas.width
 				t.height = canvas.height
-				updateRenderTarget(gl, t)
+				updateRenderTarget(gl, t, defaultTextureSettings)
 			})
 		}
 
@@ -55,14 +54,20 @@ export function create (canvas: HTMLCanvasElement): Painter {
 			sketches: [createFlatSketch()]
 		}),
 		draw: (sketch: Sketch, globalUniforms?: Uniforms, globalSettings?: DrawSettings) =>
-			draw(gl, sketch, globalUniforms, globalSettings),
-		compose: (layers: Layer[]) => composeLayers(gl, layers, targets, result),
+			draw(gl, sketch, null, globalUniforms, globalSettings),
+		compose: (...layers: Layer[]) => composeLayers(gl, layers, targets, result),
 		resize
 	}
 }
 
 
-function draw (gl: GL, sketch: Sketch, globalUniforms?: Uniforms, globalSettings?: DrawSettings) {
+function draw (
+	gl: GL,
+	sketch: Sketch,
+	defaultTexture: WebGLTexture | null,
+	globalUniforms?: Uniforms,
+	globalSettings?: DrawSettings
+) {
 
 	const { shade, uniforms, form } = sketch
 	const blending = sketch.drawSettings.blending || (globalSettings && globalSettings.blending)
@@ -75,7 +80,7 @@ function draw (gl: GL, sketch: Sketch, globalUniforms?: Uniforms, globalSettings
 	shadeForm(shade, form)
 
 	if (globalUniforms) {
-		shadeUniforms(shade, globalUniforms)
+		shadeUniforms(shade, globalUniforms, defaultTexture)
 	}
 
 	if (blending) {
@@ -85,10 +90,10 @@ function draw (gl: GL, sketch: Sketch, globalUniforms?: Uniforms, globalSettings
 
 	if (Array.isArray(uniforms)) {
 		for (const instanceUniforms of uniforms) {
-			drawInstance(gl, sketch, instanceUniforms)
+			drawInstance(gl, sketch, defaultTexture, instanceUniforms)
 		}
 	} else {
-		drawInstance(gl, sketch, uniforms)
+		drawInstance(gl, sketch, defaultTexture, uniforms)
 	}
 
 	if (blending) {
@@ -97,9 +102,14 @@ function draw (gl: GL, sketch: Sketch, globalUniforms?: Uniforms, globalSettings
 }
 
 
-function drawInstance (gl: GL, sketch: Sketch, uniforms?: Uniforms) {
+function drawInstance (
+	gl: GL,
+	sketch: Sketch,
+	defaultTexture: WebGLTexture | null,
+	uniforms?: Uniforms
+) {
 	if (uniforms) {
-		shadeUniforms(sketch.shade, uniforms)
+		shadeUniforms(sketch.shade, uniforms, defaultTexture)
 	}
 
 	if (sketch.form.elements && sketch.form.elements.glType != null) {
@@ -121,11 +131,16 @@ function shadeForm (shade: Shade, form: Form) {
 }
 
 
-function shadeUniforms (shade: Shade, values: Uniforms) {
+function shadeUniforms (shade: Shade, values: Uniforms, defaultTexture: WebGLTexture | null) {
 	for (const name in values) {
 		const setter = shade.uniformSetters[name]
 		if (setter) {
-			setter.setter(values[name])
+			const value = values[name]
+			if (value === null || typeof value === 'string') {
+				setter.setter(defaultTexture)
+			} else {
+				setter.setter(value)
+			}
 		}
 	}
 }
@@ -146,13 +161,13 @@ function composeLayers (gl: GL, layers: Layer[], targets: RenderTarget[], result
 			gl.bindFramebuffer(gl.FRAMEBUFFER, null)
 			gl.viewport(0, 0, gl.drawingBufferWidth, gl.drawingBufferHeight)
 
-		} else if (renderToStack) {
-			gl.bindFramebuffer(gl.FRAMEBUFFER, ctx.target.frameBuffer)
-			gl.viewport(0, 0, gl.drawingBufferWidth, gl.drawingBufferHeight)
-
 		} else if (layer.target) {
 			gl.bindFramebuffer(gl.FRAMEBUFFER, layer.target.frameBuffer)
 			gl.viewport(0, 0, layer.target.width, layer.target.height)
+
+		} else {
+			gl.bindFramebuffer(gl.FRAMEBUFFER, target.frameBuffer)
+			gl.viewport(0, 0, gl.drawingBufferWidth, gl.drawingBufferHeight)
 		}
 
 		if (layer.data.clearColor) {
@@ -165,10 +180,11 @@ function composeLayers (gl: GL, layers: Layer[], targets: RenderTarget[], result
 
 		if (layer.sketches) {
 			for (const sketch of layer.sketches) {
-				draw(gl, sketch, layer.uniforms, layer.data)
+				draw(gl, sketch, source.textures[0], layer.uniforms, layer.data)
 			}
 		} else if (directRender) {
-			draw(gl, result, { source: layer.texture() })
+			// Display static texture
+			draw(gl, result, null, { source: layer.texture() })
 		}
 
 		if (renderToStack) {

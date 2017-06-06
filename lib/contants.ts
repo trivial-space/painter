@@ -3,7 +3,7 @@ export const GEOMETRY_PROP_NORMAL = 'normal'
 export const GEOMETRY_PROP_UV = 'uv'
 
 export const UNIFORM_SOURCE_TEXTURE = 'source'
-export const VARYING_UV = 'vUv'
+export const VARYING_UV_COORDS = 'coords'
 
 export const GL_TYPE = {
 

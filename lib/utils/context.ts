@@ -24,9 +24,8 @@ export function setBlendFunc (gl: GL, blendOpts: string[]) {
 
 
 /**
- * Resize a canvas to match the size it's displayed.
  * @param {HTMLCanvasElement} canvas The canvas to resize.
- * @param {number} [multiplier] So you can pass in `window.devicePixelRatio` if you want to.
+ * @param {number} [multiplier] optional `window.devicePixelRatio`.
  * @return {boolean} true if the canvas was resized.
  */
 export function resizeCanvas (canvas: HTMLCanvasElement, multiplier = 1) {

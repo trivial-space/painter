@@ -507,6 +507,9 @@ export function updateRenderTarget (gl: GL, target: RenderTarget, data?: Texture
 	if (target.frameBuffer == null) {
 		target.frameBuffer = gl.createFramebuffer()
 	}
+	if (!target.textures) {
+		target.textures = []
+	}
 	if (!target.textures.length) {
 		target.textures[0] = gl.createTexture()
 	}

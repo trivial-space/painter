@@ -51,15 +51,15 @@ export type FormDrawType =
 export type FormStoreType = 'DYNAMIC' | 'STATIC'
 
 export interface FormBufferStore {
-	readonly buffer: TypedArray
-	readonly storeType?: FormStoreType
+	buffer: TypedArray
+	storeType?: FormStoreType
 }
 
 export interface FormData {
-	readonly drawType?: FormDrawType
-	readonly itemCount?: number
-	readonly attribs: { [id: string]: FormBufferStore }
-	readonly elements?: FormBufferStore
+	drawType?: FormDrawType
+	itemCount?: number
+	attribs: { [id: string]: FormBufferStore }
+	elements?: FormBufferStore
 }
 
 export interface AttribContext {
@@ -85,8 +85,8 @@ export interface Form {
 // Shade
 
 export interface ShadeData {
-	readonly vert?: string
-	readonly frag?: string
+	vert?: string
+	frag?: string
 }
 
 export interface UniformSetter {
@@ -155,12 +155,12 @@ export type Cull = 'FRONT' | 'BACK' | 'FRONT_AND_BACK'
 export type Asset = ImageData | HTMLCanvasElement | HTMLImageElement | HTMLVideoElement
 
 export interface TextureData {
-	readonly flipY?: boolean
-	readonly wrap?: Wrap
-	readonly wrapT?: Wrap
-	readonly wrapS?: Wrap
-	readonly minFilter?: MinFilter
-	readonly magFilter?: MagFilter
+	flipY?: boolean
+	wrap?: Wrap
+	wrapT?: Wrap
+	wrapS?: Wrap
+	minFilter?: MinFilter
+	magFilter?: MagFilter
 }
 
 export interface LayerSettings extends DrawSettings {
@@ -169,14 +169,14 @@ export interface LayerSettings extends DrawSettings {
 }
 
 export interface LayerData extends TextureData, LayerSettings {
-	readonly buffered?: boolean // get its own RenderTarget
-	readonly width?: number // for own RenderTarget
-	readonly height?: number // for own RenderTarget
+	buffered?: boolean // get its own RenderTarget
+	width?: number // for own RenderTarget
+	height?: number // for own RenderTarget
 
-	readonly asset?: Asset // AssetLayer specific
-	readonly sketches?: Sketch[]
-	readonly uniforms?: { [id: string]: any } // ShaderLayer specific
-	readonly frag?: string
+	asset?: Asset // AssetLayer specific
+	sketches?: Sketch[]
+	uniforms?: { [id: string]: any } // ShaderLayer specific
+	frag?: string
 }
 
 export interface Layer {
@@ -203,6 +203,6 @@ export interface Painter {
 	createDrawingLayer: () => Layer
 	createEffectLayer: () => Layer
 	draw: (sketchApi: Sketch, globalUniforms?: Uniforms, globalSettings?: DrawSettings) => void
-	compose: (layers: Layer[]) => void
+	compose: (...layers: Layer[]) => void
 	resize: () => boolean
 }

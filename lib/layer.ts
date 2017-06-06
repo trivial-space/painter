@@ -49,6 +49,8 @@ export function createDrawing (gl: GL) {
 	layer.textures = [],
 	layer.data = {}
 
+	layer.texture = (i = 0) => layer.textures[i]
+
 	layer.update = (data: LayerData) => {
 		if (data.buffered && !layer.target) {
 			layer.target = {
