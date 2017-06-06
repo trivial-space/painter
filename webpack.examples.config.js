@@ -27,7 +27,6 @@ module.exports = {
 
 	module: {
 		rules: [
-			{ test: /\.js$/, use: [{ loader: 'babel-loader', options: { presets: ['es2015'] } }], exclude: /node_modules/ },
 			{ test: /\.ts$/, use: 'ts-loader', exclude: /node_modules/ },
 			{ test: /\.(glsl|frag|vert)$/, use: ['raw-loader', 'glslify-loader'], exclude: /node_modules/ },
 		]
