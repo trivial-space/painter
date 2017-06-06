@@ -20,7 +20,7 @@ export function createStatic (gl: GL) {
 	layer.update = (data: LayerData) => {
 		gl.bindTexture(gl.TEXTURE_2D, layer.textures[0])
 
-		setTextureParams(gl, layer.data, data)
+		setTextureParams(gl, data, layer.data)
 
 		if (data.asset) {
 			gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, data.asset)

@@ -9,11 +9,10 @@ const hotCodeEntry = [
 module.exports = {
 	entry: {
 		'basic': [...hotCodeEntry, './basic/main.ts'],
-		// 'rotation': [...hotCodeEntry, './rotation/main.ts'],
 		'stackgl-cube': [...hotCodeEntry, './stackgl-cube/main.ts'],
 		'instances': [...hotCodeEntry, './instances/main.ts'],
-		// 'update-order': [...hotCodeEntry, './update-order/main.ts'],
-		// 'shader': [...hotCodeEntry, './shader/main.ts']
+		'asset': [...hotCodeEntry, './asset/main.ts'],
+		'shader': [...hotCodeEntry, './shader/main.ts']
 	},
 
 	context: resolve(__dirname, 'examples'),

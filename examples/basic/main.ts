@@ -1,8 +1,5 @@
-import { painter } from '../painter'
+import { painter, gl } from '../painter'
 import { defaultTextureSettings } from '../../lib/asset-lib'
-
-
-const gl = painter.gl
 
 
 const plane = painter.createForm().update({

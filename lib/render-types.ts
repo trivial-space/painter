@@ -204,5 +204,5 @@ export interface Painter {
 	createEffectLayer: () => Layer
 	draw: (sketchApi: Sketch, globalUniforms?: Uniforms, globalSettings?: DrawSettings) => void
 	compose: (...layers: Layer[]) => void
-	resize: () => boolean
+	resize: (multiplier?: number) => boolean
 }
