@@ -85,7 +85,7 @@ function draw (
 
 	if (blending) {
 		gl.enable(gl.BLEND)
-		gl.blendFunc.apply(gl, sketch.drawSettings.blendFns)
+		gl.blendFunc.apply(gl, sketch.drawSettings.blendFunc)
 	}
 
 	if (Array.isArray(uniforms)) {

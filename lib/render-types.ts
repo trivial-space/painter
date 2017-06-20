@@ -124,9 +124,13 @@ export interface SketchData {
 }
 
 export interface DrawSettings {
-	blendFns?: [number, number],
+	blendFunc?: [number, number],
 	blending?: boolean
-	cull?: Cull
+	enable?: number[]
+	disable?: number[]
+	cullFace?: number
+	frontFace?: number
+	lineWidth?: number
 }
 
 export interface Sketch {
