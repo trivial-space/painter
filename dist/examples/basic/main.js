@@ -6,68 +6,58 @@ var __assign = (this && this.__assign) || Object.assign || function(t) {
     }
     return t;
 };
-import renderer from 'index';
-import { ctx } from '../ctx';
-var scene = {
-    geometries: {
-        planeGeometry: {
-            attribs: {
-                position: {
-                    buffer: new Float32Array([
-                        -0.7, 0.7,
-                        -0.5, -0.4,
-                        0.6, 0.5,
-                        0.5, -0.5
-                    ])
-                },
-                uv: {
-                    buffer: new Float32Array([
-                        0, 1,
-                        0, 0,
-                        1, 1,
-                        1, 0
-                    ])
-                }
-            },
-            drawType: 'TRIANGLE_STRIP',
-            itemCount: 4
+import { painter, gl } from '../painter';
+import { defaultTextureSettings } from '../../lib/asset-lib';
+var plane = painter.createForm().update({
+    attribs: {
+        position: {
+            buffer: new Float32Array([
+                -0.7, 0.7,
+                -0.5, -0.4,
+                0.6, 0.5,
+                0.5, -0.5
+            ])
+        },
+        uv: {
+            buffer: new Float32Array([
+                0, 1,
+                0, 0,
+                1, 1,
+                1, 0
+            ])
         }
     },
-    shaders: {
-        red: {
-            vert: "\n          attribute vec2 position;\n          void main() {\n              gl_Position = vec4(position, 0.0, 1.0);\n          }\n        ",
-            frag: "\n          void main() {\n              gl_FragColor = vec4(1.0, 0.0, 0.0, 1.0);\n          }\n        ",
-            attribs: {
-                position: 'f 2'
+    drawType: 'TRIANGLE_STRIP',
+    itemCount: 4
+});
+var red = painter.createShade().update({
+    vert: "\n\t\tattribute vec2 position;\n\t\tvoid main() {\n\t\t\tgl_Position = vec4(position, 0.0, 1.0);\n\t\t}\n\t",
+    frag: "precision mediump float;\n\t\tvoid main() {\n\t\t\tgl_FragColor = vec4(1.0, 0.0, 0.0, 1.0);\n\t\t}\n\t"
+});
+var textureLayer = painter.createDrawingLayer().update(__assign({ buffered: true, sketches: [painter.createSketch().update({
+            form: plane,
+            shade: red
+        })], clearColor: [1.0, 0.0, 1.0, 1.0], clearBits: gl.COLOR_BUFFER_BIT }, defaultTextureSettings));
+var paintTexture = painter.createShade().update({
+    vert: "\n\t\tattribute vec2 position;\n\t\tattribute vec2 uv;\n\t\tvarying vec2 coords;\n\n\t\tvoid main() {\n\t\t\tcoords = uv;\n\t\t\tgl_Position = vec4(position, 0.0, 1.0);\n\t\t}\n\t",
+    frag: "precision mediump float;\n\t\tuniform sampler2D fufu;\n\t\tvarying vec2 coords;\n\t\tvoid main() {\n\t\t\tvec4 new_color = texture2D(fufu, coords);\n\t\t\tgl_FragColor = vec4(new_color.g + 0.2, new_color.r + 0.2, new_color.b + 0.2, 1.0);\n\t\t}\n\t"
+});
+var planeLayer = painter.createDrawingLayer().update({
+    sketches: [painter.createSketch().update({
+            form: plane,
+            shade: paintTexture,
+            uniforms: {
+                fufu: textureLayer.texture()
             }
-        },
-        texture: renderer.lib.shaders.basicEffect,
-        effect: __assign({}, renderer.lib.shaders.basicEffect, { frag: "\n          uniform sampler2D source;\n          varying vec2 vUv;\n          void main() {\n              vec4 new_color = texture2D(source, vUv);\n              gl_FragColor = vec4(new_color.rgb * 0.5 + 0.3, 1.0);\n          }\n        " })
-    },
-    objects: {
-        plane1: {
-            shader: 'red',
-            geometry: 'planeGeometry'
-        },
-        plane2: {
-            shader: 'texture',
-            geometry: 'planeGeometry'
-        }
-    },
-    layers: {
-        textureLayer: {
-            objects: ['plane1'],
-            clearColor: [1.0, 0.0, 1.0, 1.0]
-        },
-        planeLayer: {
-            objects: ['plane2'],
-            clearColor: [0.0, 0.0, 0.0, 1.0]
-        },
-        effectLayer: {
-            shader: 'effect',
-        }
+        })],
+    clearColor: [0.0, 0.0, 0.0, 1.0],
+    clearBits: gl.COLOR_BUFFER_BIT
+});
+var effect = painter.createEffectLayer().update({
+    frag: "precision mediump float;\n\t\tuniform sampler2D source;\n\t\tvarying vec2 coords;\n\t\tvoid main() {\n\t\t\tvec4 new_color = texture2D(source, coords);\n\t\t\tgl_FragColor = vec4(new_color.rgb * 0.5 + 0.3, 1.0);\n\t\t}\n\t",
+    uniforms: {
+        source: null
     }
-};
-renderer.init(ctx, scene);
-renderer.renderLayers(ctx, ['textureLayer', 'planeLayer', 'effectLayer']);
+});
+painter.compose(textureLayer, planeLayer, effect);
 //# sourceMappingURL=main.js.map

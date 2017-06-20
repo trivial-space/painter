@@ -1,33 +1,29 @@
-declare var _default: {
-    defaultSettings: {
-        clearColor: number[];
-        minFilter: string;
-        magFilter: string;
-        wrap: string;
-        clearBuffers: string[];
-        clearBits: number;
-        enable: string[];
-        blend: string[];
-        width: number;
-        height: number;
-    };
-    geometries: {
-        renderQuad: {
-            attribs: {
-                [x: string]: {
-                    buffer: Float32Array;
-                    storeType: any;
-                };
+import { FormStoreType, FormDrawType, TextureData } from './render-types';
+export declare const defaultTextureSettings: TextureData;
+export declare const defaultLayerSettings: {
+    clearColor: number[];
+    clearBuffers: string[];
+    clearBits: number;
+    enable: string[];
+    blend: string[];
+    width: number;
+    height: number;
+};
+export declare const defaultForms: {
+    renderQuad: {
+        attribs: {
+            [x: string]: {
+                buffer: Float32Array;
+                storeType: FormStoreType;
             };
-            drawType: any;
-            itemCount: number;
         };
-    };
-    shaders: {
-        basicEffect: {
-            vert: string;
-            frag: string;
-        };
+        drawType: FormDrawType;
+        itemCount: number;
     };
 };
-export default _default;
+export declare const defaultShaders: {
+    basicEffect: {
+        vert: string;
+        frag: string;
+    };
+};

@@ -46,16 +46,13 @@ export function plane(width, height, widthSegments, heightSegments) {
     return {
         attribs: {
             'position': {
-                buffer: vertices,
-                storeType: 'STATIC'
+                buffer: vertices
             },
             'normal': {
-                buffer: normals,
-                storeType: 'STATIC'
+                buffer: normals
             },
             'uv': {
-                buffer: uvs,
-                storeType: 'STATIC'
+                buffer: uvs
             }
         },
         elements: {
