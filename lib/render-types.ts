@@ -34,6 +34,10 @@ export interface RenderTarget {
 	depthBuffer: WebGLRenderbuffer | null
 	width: number
 	height: number
+	textureConfig: {
+		type: number
+		count: number
+	}
 }
 
 

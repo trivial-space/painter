@@ -56,7 +56,11 @@ export function createDrawing (gl: GL) {
 			layer.target = {
 				width: data.width || gl.canvas.width,
 				height: data.height || gl.canvas.height,
-				frameBuffer: null, textures: [], depthBuffer: null
+				frameBuffer: null, textures: [], depthBuffer: null,
+				textureConfig: {
+					type: gl.UNSIGNED_BYTE,
+					count: 1
+				}
 			} as RenderTarget
 
 			updateRenderTarget(gl, layer.target, data, layer.data)
