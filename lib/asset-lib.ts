@@ -1,5 +1,5 @@
 import * as constants from './contants'
-import { FormStoreType, FormDrawType, TextureData } from './render-types'
+import { FormStoreType, FormDrawType, TextureData, GL, DrawSettings } from './render-types'
 
 
 export const defaultTextureSettings = {
@@ -9,14 +9,12 @@ export const defaultTextureSettings = {
 } as TextureData
 
 
-export const defaultLayerSettings = {
-	clearColor: [0.0, 0.0, 0.0, 1.0],
-	clearBuffers: ['DEPTH', 'COLOR'],
-	clearBits: 0,
-	enable: ['DEPTH_TEST'],
-	blend: ['SRC_ALPHA', 'ONE_MINUS_SRC_ALPHA'],
-	width: 0,
-	height: 0
+export function getDefaultLayerSettings (gl: GL): DrawSettings {
+	return {
+		clearColor: [0.0, 0.0, 0.0, 1.0],
+		enable: [gl.DEPTH_TEST],
+		blendFunc: [gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA]
+	}
 }
 
 

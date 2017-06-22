@@ -2,38 +2,38 @@ export type GL = WebGLRenderingContext
 export type Color = [number, number, number, number]
 
 export type TypedArray = Uint8Array |
-                  Uint16Array |
-                  Uint32Array |
-                  Int8Array |
-                  Int16Array |
-                  Int32Array |
-                  Float32Array |
-                  Float64Array
+					Uint16Array |
+					Uint32Array |
+					Int8Array |
+					Int16Array |
+					Int32Array |
+					Float32Array |
+					Float64Array
 
 export type TypedArrayConstructor = Uint8ArrayConstructor |
-                             Uint16ArrayConstructor |
-                             Uint32ArrayConstructor |
-                             Int8ArrayConstructor |
-                             Int16ArrayConstructor |
-                             Int32ArrayConstructor |
-                             Float32ArrayConstructor |
-                             Float64ArrayConstructor
+								Uint16ArrayConstructor |
+								Uint32ArrayConstructor |
+								Int8ArrayConstructor |
+								Int16ArrayConstructor |
+								Int32ArrayConstructor |
+								Float32ArrayConstructor |
+								Float64ArrayConstructor
 
 export type TypedArrayTypes = 'Uint8Array' |
-                       'Uint16Array' |
-                       'Uint32Array' |
-                       'Int8Array' |
-                       'Int16Array' |
-                       'Int32Array' |
-                       'Float32Array' |
-                       'Float64Array'
+							'Uint16Array' |
+							'Uint32Array' |
+							'Int8Array' |
+							'Int16Array' |
+							'Int32Array' |
+							'Float32Array' |
+							'Float64Array'
 
 export interface RenderTarget {
-  frameBuffer: WebGLFramebuffer | null
-  textures: (WebGLTexture | null)[]
-  depthBuffer: WebGLRenderbuffer | null
-  width: number
-  height: number
+	frameBuffer: WebGLFramebuffer | null
+	textures: (WebGLTexture | null)[]
+	depthBuffer: WebGLRenderbuffer | null
+	width: number
+	height: number
 }
 
 
@@ -77,6 +77,7 @@ export interface Form {
 		buffer: WebGLBuffer | null
 		glType: number | null
 	}
+
 	update: (FormData) => Form
 	delete: () => Form
 }
@@ -107,6 +108,7 @@ export interface Shade {
 	fragSource?: string
 	uniformSetters: { [id: string]: UniformSetter }
 	attributeSetters: { [id: string]: AttribSetter }
+
 	update: (ShadeData) => Shade
 	delete: () => Shade
 }
@@ -116,16 +118,10 @@ export interface Shade {
 
 export type Uniforms = { [id: string]: any }
 
-export interface SketchData {
-	form?: Form,
-	shade?: Shade,
-	uniforms?: Uniforms,
-	blend?: [number, number] | boolean,
-}
-
 export interface DrawSettings {
+	clearColor?: Color
+	clearBits?: number
 	blendFunc?: [number, number],
-	blending?: boolean
 	enable?: number[]
 	disable?: number[]
 	cullFace?: number
@@ -133,11 +129,19 @@ export interface DrawSettings {
 	lineWidth?: number
 }
 
+export interface SketchData {
+	form?: Form,
+	shade?: Shade,
+	uniforms?: Uniforms,
+	drawSettings?: DrawSettings
+}
+
 export interface Sketch {
-	drawSettings: DrawSettings
+	drawSettings?: DrawSettings
 	form: Form
 	shade: Shade
 	uniforms: Uniforms
+
 	update: (data: SketchData) => Sketch
 }
 
@@ -167,12 +171,8 @@ export interface TextureData {
 	magFilter?: MagFilter
 }
 
-export interface LayerSettings extends DrawSettings {
-	clearColor?: Color
-	clearBits?: number
-}
-
-export interface LayerData extends TextureData, LayerSettings {
+export interface LayerData extends TextureData {
+	drawSettings?: DrawSettings
 	buffered?: boolean // get its own RenderTarget
 	width?: number // for own RenderTarget
 	height?: number // for own RenderTarget
@@ -189,6 +189,7 @@ export interface Layer {
 	target?: RenderTarget
 	uniforms?: Uniforms
 	sketches?: Sketch[]
+
 	texture: (index?: number) => WebGLTexture | null
 	update: (LayerData) => Layer
 	delete: () => Layer
@@ -199,6 +200,7 @@ export interface Layer {
 
 export interface Painter {
 	gl: GL,
+	updateDrawSettings: (drawSettings?: DrawSettings) => void
 	createForm: () => Form
 	createShade: () => Shade
 	createSketch: () => Sketch
@@ -206,7 +208,7 @@ export interface Painter {
 	createStaticLayer: () => Layer
 	createDrawingLayer: () => Layer
 	createEffectLayer: () => Layer
-	draw: (sketchApi: Sketch, globalUniforms?: Uniforms, globalSettings?: DrawSettings) => void
+	draw: (sketchApi: Sketch, globalUniforms?: Uniforms) => void
 	compose: (...layers: Layer[]) => void
 	resize: (multiplier?: number) => boolean
 }

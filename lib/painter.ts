@@ -1,11 +1,11 @@
-import { GL, Uniforms, DrawSettings, Sketch, Shade, Form, Painter, RenderTarget, Layer } from './render-types'
+import { GL, Uniforms, Sketch, Shade, Form, Painter, RenderTarget, Layer, DrawSettings } from './render-types'
 import * as form from './form'
 import * as shade from './shade'
 import * as sketch from './sketch'
 import * as layer from './layer'
-import { updateRenderTarget } from './render-utils'
+import { updateRenderTarget, applyDrawSettings, revertDrawSettings } from './render-utils'
 import { resizeCanvas } from './utils/context'
-import { defaultForms, defaultShaders, defaultTextureSettings } from './asset-lib'
+import { defaultForms, defaultShaders, defaultTextureSettings, getDefaultLayerSettings } from './asset-lib'
 
 
 
@@ -16,9 +16,11 @@ export function create (gl: WebGLRenderingContext): Painter {
 		{ } as RenderTarget
 	]
 
+	const defaultSettings = getDefaultLayerSettings(gl)
+
 	const renderQuad = form.create(gl).update(defaultForms.renderQuad)
 
-	const createFlatSketch = () => sketch.create(gl).update({
+	const createFlatSketch = () => sketch.create().update({
 		form: renderQuad,
 		shade: shade.create(gl).update(defaultShaders.basicEffect)
 	})
@@ -44,17 +46,21 @@ export function create (gl: WebGLRenderingContext): Painter {
 
 	return {
 		gl,
+		updateDrawSettings: (drawSettings?: DrawSettings) => applyDrawSettings(gl, {
+			...defaultSettings,
+			...drawSettings
+		}),
 		createForm: () => form.create(gl),
 		createShade: () => shade.create(gl),
-		createSketch: () => sketch.create(gl),
+		createSketch: () => sketch.create(),
 		createFlatSketch,
 		createStaticLayer: () => layer.createStatic(gl),
 		createDrawingLayer: () => layer.createDrawing(gl),
 		createEffectLayer: () => layer.createDrawing(gl).update({
 			sketches: [createFlatSketch()]
 		}),
-		draw: (sketch: Sketch, globalUniforms?: Uniforms, globalSettings?: DrawSettings) =>
-			draw(gl, sketch, null, globalUniforms, globalSettings),
+		draw: (sketch: Sketch, globalUniforms?: Uniforms) =>
+			draw(gl, sketch, null, globalUniforms),
 		compose: (...layers: Layer[]) => composeLayers(gl, layers, targets, result),
 		resize
 	}
@@ -65,12 +71,10 @@ function draw (
 	gl: GL,
 	sketch: Sketch,
 	defaultTexture: WebGLTexture | null,
-	globalUniforms?: Uniforms,
-	globalSettings?: DrawSettings
+	globalUniforms?: Uniforms
 ) {
 
-	const { shade, uniforms, form } = sketch
-	const blending = sketch.drawSettings.blending || (globalSettings && globalSettings.blending)
+	const { shade, uniforms, form, drawSettings } = sketch
 
 	if (!(shade && form)) {
 		throw Error('cannot draw, shader or geometry are not set')
@@ -83,9 +87,8 @@ function draw (
 		shadeUniforms(shade, globalUniforms, defaultTexture)
 	}
 
-	if (blending) {
-		gl.enable(gl.BLEND)
-		gl.blendFunc.apply(gl, sketch.drawSettings.blendFunc)
+	if (drawSettings) {
+		applyDrawSettings(gl, drawSettings)
 	}
 
 	if (Array.isArray(uniforms)) {
@@ -96,8 +99,8 @@ function draw (
 		drawInstance(gl, sketch, defaultTexture, uniforms)
 	}
 
-	if (blending) {
-		gl.disable(gl.BLEND)
+	if (drawSettings) {
+		revertDrawSettings(gl, drawSettings)
 	}
 }
 
@@ -170,21 +173,21 @@ function composeLayers (gl: GL, layers: Layer[], targets: RenderTarget[], result
 			gl.viewport(0, 0, gl.drawingBufferWidth, gl.drawingBufferHeight)
 		}
 
-		if (layer.data.clearColor) {
-			gl.clearColor.apply(gl, layer.data.clearColor)
-		}
-
-		if (layer.data.clearBits) {
-			gl.clear(layer.data.clearBits)
+		if (layer.data.drawSettings) {
+			applyDrawSettings(gl, layer.data.drawSettings)
 		}
 
 		if (layer.sketches) {
 			for (const sketch of layer.sketches) {
-				draw(gl, sketch, source.textures[0], layer.uniforms, layer.data)
+				draw(gl, sketch, source.textures[0], layer.uniforms)
 			}
 		} else if (directRender) {
 			// Display static texture
 			draw(gl, result, null, { source: layer.texture() })
+		}
+
+		if (layer.data.drawSettings) {
+			revertDrawSettings(gl, layer.data.drawSettings)
 		}
 
 		if (renderToStack) {

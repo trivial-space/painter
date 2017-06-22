@@ -1,5 +1,5 @@
 import { mat4, quat } from 'gl-matrix'
-import { painter } from '../painter'
+import { painter, gl } from '../painter'
 import { makeClear } from '../../lib/utils/context'
 
 
@@ -7,6 +7,8 @@ const rotationX = 0.01
 const rotationZ = 0.009101
 
 const triangleCount = 5000
+
+painter.updateDrawSettings()
 
 
 const dimensions: any = []
@@ -71,10 +73,10 @@ const shade = painter.createShade().update({
 const sketch = painter.createSketch().update({
 	shade, form,
 	uniforms: cubes,
-	blend: true
+	drawSettings: {
+		enable: [gl.BLEND]
+	}
 })
-
-const gl = painter.gl
 
 const clearBits = makeClear(gl, 'color', 'depth')
 gl.enable(gl.DEPTH_TEST)

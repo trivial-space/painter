@@ -1,4 +1,4 @@
-import { GL, AttribContext, AttribSetter, UniformSetter, TextureData, RenderTarget, Wrap } from './render-types'
+import { GL, AttribContext, AttribSetter, UniformSetter, TextureData, RenderTarget, Wrap, DrawSettings } from './render-types'
 import { GL_TYPE } from './contants'
 
 
@@ -539,4 +539,60 @@ export function updateRenderTarget (gl: GL, target: RenderTarget, data?: Texture
 	gl.bindFramebuffer(gl.FRAMEBUFFER, null)
 	gl.bindTexture(gl.TEXTURE_2D, null)
 	gl.bindRenderbuffer(gl.RENDERBUFFER, null)
+}
+
+
+// Settings
+
+export function applyDrawSettings (gl: GL, settings: DrawSettings) {
+	if (settings.enable) {
+		for (const setting of settings.enable) {
+			gl.enable(setting)
+		}
+	}
+
+	if (settings.disable) {
+		for (const setting of settings.disable) {
+			gl.disable(setting)
+		}
+	}
+
+	if (settings.blendFunc) {
+		gl.blendFunc.apply(gl, settings.blendFunc)
+	}
+
+	if (settings.cullFace) {
+		gl.cullFace(settings.cullFace)
+	}
+
+	if (settings.frontFace) {
+		gl.cullFace(settings.frontFace)
+	}
+
+	if (settings.lineWidth) {
+		gl.cullFace(settings.lineWidth)
+	}
+
+	if (settings.clearColor) {
+		gl.clearColor.apply(gl, settings.clearColor)
+	}
+
+	if (settings.clearBits) {
+		gl.clear(settings.clearBits)
+	}
+}
+
+
+export function revertDrawSettings (gl: GL, settings: DrawSettings) {
+	if (settings.enable) {
+		for (const setting of settings.enable) {
+			gl.disable(setting)
+		}
+	}
+
+	if (settings.disable) {
+		for (const setting of settings.disable) {
+			gl.enable(setting)
+		}
+	}
 }

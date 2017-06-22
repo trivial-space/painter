@@ -1,23 +1,13 @@
-import { GL, SketchData, Sketch } from './render-types'
+import { SketchData, Sketch } from './render-types'
 
 
-export function create (gl: GL): Sketch {
+export function create (): Sketch {
 
 	const sketch = {} as Sketch
 
-	sketch.drawSettings = {
-		blendFunc: [gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA],
-		blending: false
-	}
-
 	sketch.update = (data: SketchData) => {
-		if (data.blend != null) {
-			if (Array.isArray(data.blend)) {
-				sketch.drawSettings.blendFunc = data.blend
-				sketch.drawSettings.blending = true
-			} else {
-				sketch.drawSettings.blending = data.blend
-			}
+		if (data.drawSettings) {
+			sketch.drawSettings = data.drawSettings
 		}
 
 		if (data.form) {

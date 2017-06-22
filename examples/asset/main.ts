@@ -4,8 +4,10 @@ import planeVert from './plane-material.vert'
 import planeFrag from './plane-material.frag'
 import effectFrag from './effect.frag'
 import { plane } from '../../lib/utils/geometry/plane'
+import { makeClear } from '../../lib/utils/context'
 
 
+painter.updateDrawSettings()
 painter.resize(window.devicePixelRatio)
 
 const planMat1 = mat4.fromTranslation(mat4.create(), [0, 0, -3])
@@ -43,6 +45,9 @@ const plane1 = painter.createSketch().update({
 	form, shade,
 	uniforms: {
 		transform: planMat1
+	},
+	drawSettings: {
+		enable: [gl.CULL_FACE]
 	}
 })
 
@@ -51,7 +56,9 @@ const plane2 = painter.createSketch().update({
 	uniforms: {
 		transform: planMat2
 	},
-	blend: true
+	drawSettings: {
+		enable: [gl.BLEND]
+	}
 })
 
 const planeLayer = painter.createDrawingLayer().update({
@@ -60,8 +67,10 @@ const planeLayer = painter.createDrawingLayer().update({
 		texture: texture.texture(),
 		projection
 	},
-	clearColor: [0.0, 1.0, 0.0, 1.0],
-	clearBits: gl.COLOR_BUFFER_BIT
+	drawSettings: {
+		clearColor: [0.0, 1.0, 0.0, 1.0],
+		clearBits: makeClear(gl, 'COLOR', 'DEPTH')
+	}
 })
 
 
