@@ -68,7 +68,7 @@ function draw(gl, sketch, defaultTexture, globalUniforms, globalSettings) {
     }
     if (blending) {
         gl.enable(gl.BLEND);
-        gl.blendFunc.apply(gl, sketch.drawSettings.blendFns);
+        gl.blendFunc.apply(gl, sketch.drawSettings.blendFunc);
     }
     if (Array.isArray(uniforms)) {
         for (var _i = 0, uniforms_1 = uniforms; _i < uniforms_1.length; _i++) {

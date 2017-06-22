@@ -1,13 +1,13 @@
 export function create(gl) {
     var sketch = {};
     sketch.drawSettings = {
-        blendFns: [gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA],
+        blendFunc: [gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA],
         blending: false
     };
     sketch.update = function (data) {
         if (data.blend != null) {
             if (Array.isArray(data.blend)) {
-                sketch.drawSettings.blendFns = data.blend;
+                sketch.drawSettings.blendFunc = data.blend;
                 sketch.drawSettings.blending = true;
             }
             else {

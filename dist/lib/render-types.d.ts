@@ -80,9 +80,15 @@ export interface SketchData {
     blend?: [number, number] | boolean;
 }
 export interface DrawSettings {
-    blendFns?: [number, number];
+    clearColor?: Color;
+    clearBits?: number;
+    blendFunc?: [number, number];
     blending?: boolean;
-    cull?: Cull;
+    enable?: number[];
+    disable?: number[];
+    cullFace?: number;
+    frontFace?: number;
+    lineWidth?: number;
 }
 export interface Sketch {
     drawSettings: DrawSettings;
@@ -104,11 +110,7 @@ export interface TextureData {
     minFilter?: MinFilter;
     magFilter?: MagFilter;
 }
-export interface LayerSettings extends DrawSettings {
-    clearColor?: Color;
-    clearBits?: number;
-}
-export interface LayerData extends TextureData, LayerSettings {
+export interface LayerData extends TextureData, DrawSettings {
     buffered?: boolean;
     width?: number;
     height?: number;
