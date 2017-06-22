@@ -8,7 +8,9 @@ const rotationZ = 0.009101
 
 const triangleCount = 5000
 
-painter.updateDrawSettings()
+painter.updateDrawSettings({
+	clearColor: [1.0, 0.5, 0.8, 1.0]
+})
 
 
 const dimensions: any = []
@@ -74,13 +76,10 @@ const sketch = painter.createSketch().update({
 	shade, form,
 	uniforms: cubes,
 	drawSettings: {
-		enable: [gl.BLEND]
+		enable: [gl.BLEND],
+		clearBits: makeClear(gl, 'color', 'depth')
 	}
 })
-
-const clearBits = makeClear(gl, 'color', 'depth')
-gl.enable(gl.DEPTH_TEST)
-gl.clearColor(1.0, 0.5, 0.8, 1.0)
 
 function animate () {
 	cubes.forEach(({ transform }, i) => {
@@ -88,7 +87,6 @@ function animate () {
 		mat4.rotateZ(transform, transform, rotationZ * (i / triangleCount))
 		mat4.rotateX(transform, transform, 1.78 * rotationZ)
 	})
-	gl.clear(clearBits)
 	painter.draw(sketch, { camera: projection })
 	requestAnimationFrame(animate)
 }

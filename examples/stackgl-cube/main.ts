@@ -8,7 +8,7 @@ import { makeClear } from '../../lib/utils/context'
 const cubeStackgl = createCube(1)
 const cubeGeometry = convertStackGLGeometry(cubeStackgl)
 
-cubeGeometry.drawType = 'LINE_LOOP'
+//cubeGeometry.drawType = 'LINE_LOOP'
 
 
 const rotationX = 0.01
@@ -41,24 +41,28 @@ const shade = painter.createShade().update({
 	`
 })
 
+
 const sketch = painter.createSketch().update({
 	shade, form,
 	uniforms: {
 		camera: projection,
 		transform: cubeMat
+	},
+	drawSettings: {
+		clearBits: makeClear(painter.gl, 'color', 'depth')
 	}
 })
 
-const gl = painter.gl
-const clearBits = makeClear(gl, 'color', 'depth')
-gl.enable(gl.DEPTH_TEST)
-gl.clearColor(1.0, 0.5, 0.8, 1.0)
+
+painter.updateDrawSettings({
+	clearColor: [1.0, 0.5, 0.8, 1.0]
+})
+
 
 function animate () {
 	mat4.rotateY(cubeMat, cubeMat, rotationX)
 	mat4.rotateZ(cubeMat, cubeMat, rotationZ)
 	mat4.rotateX(cubeMat, cubeMat, 1.78 * rotationZ)
-	gl.clear(clearBits)
 	painter.draw(sketch)
 	requestAnimationFrame(animate)
 }

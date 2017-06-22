@@ -47,8 +47,10 @@ const textureLayer = painter.createDrawingLayer().update({
 		form: plane,
 		shade: red
 	})],
-	clearColor: [1.0, 0.0, 1.0, 1.0],
-	clearBits: gl.COLOR_BUFFER_BIT,
+	drawSettings: {
+		clearColor: [1.0, 0.0, 1.0, 1.0],
+		clearBits: gl.COLOR_BUFFER_BIT
+	},
 	...defaultTextureSettings
 })
 
@@ -82,8 +84,10 @@ const planeLayer = painter.createDrawingLayer().update({
 			fufu: textureLayer.texture()
 		}
 	})],
-	clearColor: [0.0, 0.0, 0.0, 1.0],
-	clearBits: gl.COLOR_BUFFER_BIT
+	drawSettings: {
+		clearColor: [0.0, 0.0, 0.0, 1.0],
+		clearBits: gl.COLOR_BUFFER_BIT
+	}
 })
 
 
