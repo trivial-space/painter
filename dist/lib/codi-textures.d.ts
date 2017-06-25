@@ -1,0 +1,10 @@
+declare let gl: any;
+declare let glDB: any;
+declare let bufferAttachments: any;
+declare let readFramebuffer: any;
+declare function init(): void;
+declare function createEmptyTexture(size: any, type?: string): any;
+declare function setTextureParams(): void;
+declare function setTextureData(tex: any, size: any, data: any, type?: string): void;
+declare function createFramebufferWithTextures(textures: any): any;
+declare function readTexture(tex: any, buffer: any, x: any, y: any, width: any, height: any, type?: string): any;

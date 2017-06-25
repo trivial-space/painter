@@ -9,6 +9,10 @@ export interface RenderTarget {
     depthBuffer: WebGLRenderbuffer | null;
     width: number;
     height: number;
+    textureConfig: {
+        type: number;
+        count: number;
+    };
 }
 export declare type FormDrawType = 'TRIANGLES' | 'TRIANGLE_STRIP' | 'TRIANGLE_FAN' | 'POINTS' | 'LINES' | 'LINE_LOOP' | 'LINE_STRIP';
 export declare type FormStoreType = 'DYNAMIC' | 'STATIC';
@@ -73,25 +77,28 @@ export interface Shade {
 export declare type Uniforms = {
     [id: string]: any;
 };
-export interface SketchData {
-    form?: Form;
-    shade?: Shade;
-    uniforms?: Uniforms;
-    blend?: [number, number] | boolean;
-}
 export interface DrawSettings {
     clearColor?: Color;
+    clearDepth?: number;
     clearBits?: number;
+    depthMask?: boolean;
+    colorMask?: [boolean, boolean, boolean, boolean];
+    depthFunc?: number;
     blendFunc?: [number, number];
-    blending?: boolean;
     enable?: number[];
     disable?: number[];
     cullFace?: number;
     frontFace?: number;
     lineWidth?: number;
 }
+export interface SketchData {
+    form?: Form;
+    shade?: Shade;
+    uniforms?: Uniforms;
+    drawSettings?: DrawSettings;
+}
 export interface Sketch {
-    drawSettings: DrawSettings;
+    drawSettings?: DrawSettings;
     form: Form;
     shade: Shade;
     uniforms: Uniforms;
@@ -110,10 +117,15 @@ export interface TextureData {
     minFilter?: MinFilter;
     magFilter?: MagFilter;
 }
-export interface LayerData extends TextureData, DrawSettings {
+export interface LayerData extends TextureData {
+    drawSettings?: DrawSettings;
     buffered?: boolean;
     width?: number;
     height?: number;
+    textureConfig?: {
+        type?: number;
+        count?: number;
+    };
     asset?: Asset;
     sketches?: Sketch[];
     uniforms?: {
@@ -133,6 +145,7 @@ export interface Layer {
 }
 export interface Painter {
     gl: GL;
+    updateDrawSettings: (drawSettings?: DrawSettings) => void;
     createForm: () => Form;
     createShade: () => Shade;
     createSketch: () => Sketch;
@@ -140,7 +153,7 @@ export interface Painter {
     createStaticLayer: () => Layer;
     createDrawingLayer: () => Layer;
     createEffectLayer: () => Layer;
-    draw: (sketchApi: Sketch, globalUniforms?: Uniforms, globalSettings?: DrawSettings) => void;
+    draw: (sketchApi: Sketch, globalUniforms?: Uniforms) => void;
     compose: (...layers: Layer[]) => void;
     resize: (multiplier?: number) => boolean;
 }

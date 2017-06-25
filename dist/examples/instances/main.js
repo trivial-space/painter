@@ -1,9 +1,12 @@
 import { mat4, quat } from 'gl-matrix';
-import { painter } from '../painter';
+import { painter, gl } from '../painter';
 import { makeClear } from '../../lib/utils/context';
 var rotationX = 0.01;
 var rotationZ = 0.009101;
 var triangleCount = 5000;
+painter.updateDrawSettings({
+    clearColor: [1.0, 0.5, 0.8, 1.0]
+});
 var dimensions = [];
 for (var i = 0; i < triangleCount; i++) {
     var q = quat.create();
@@ -47,12 +50,11 @@ var shade = painter.createShade().update({
 var sketch = painter.createSketch().update({
     shade: shade, form: form,
     uniforms: cubes,
-    blend: true
+    drawSettings: {
+        enable: [gl.BLEND],
+        clearBits: makeClear(gl, 'color', 'depth')
+    }
 });
-var gl = painter.gl;
-var clearBits = makeClear(gl, 'color', 'depth');
-gl.enable(gl.DEPTH_TEST);
-gl.clearColor(1.0, 0.5, 0.8, 1.0);
 function animate() {
     cubes.forEach(function (_a, i) {
         var transform = _a.transform;
@@ -60,9 +62,9 @@ function animate() {
         mat4.rotateZ(transform, transform, rotationZ * (i / triangleCount));
         mat4.rotateX(transform, transform, 1.78 * rotationZ);
     });
-    gl.clear(clearBits);
     painter.draw(sketch, { camera: projection });
     requestAnimationFrame(animate);
 }
 animate();
+window['gl'] = gl;
 //# sourceMappingURL=main.js.map

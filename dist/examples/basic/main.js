@@ -37,7 +37,10 @@ var red = painter.createShade().update({
 var textureLayer = painter.createDrawingLayer().update(__assign({ buffered: true, sketches: [painter.createSketch().update({
             form: plane,
             shade: red
-        })], clearColor: [1.0, 0.0, 1.0, 1.0], clearBits: gl.COLOR_BUFFER_BIT }, defaultTextureSettings));
+        })], drawSettings: {
+        clearColor: [1.0, 0.0, 1.0, 1.0],
+        clearBits: gl.COLOR_BUFFER_BIT
+    } }, defaultTextureSettings));
 var paintTexture = painter.createShade().update({
     vert: "\n\t\tattribute vec2 position;\n\t\tattribute vec2 uv;\n\t\tvarying vec2 coords;\n\n\t\tvoid main() {\n\t\t\tcoords = uv;\n\t\t\tgl_Position = vec4(position, 0.0, 1.0);\n\t\t}\n\t",
     frag: "precision mediump float;\n\t\tuniform sampler2D fufu;\n\t\tvarying vec2 coords;\n\t\tvoid main() {\n\t\t\tvec4 new_color = texture2D(fufu, coords);\n\t\t\tgl_FragColor = vec4(new_color.g + 0.2, new_color.r + 0.2, new_color.b + 0.2, 1.0);\n\t\t}\n\t"
@@ -50,8 +53,10 @@ var planeLayer = painter.createDrawingLayer().update({
                 fufu: textureLayer.texture()
             }
         })],
-    clearColor: [0.0, 0.0, 0.0, 1.0],
-    clearBits: gl.COLOR_BUFFER_BIT
+    drawSettings: {
+        clearColor: [0.0, 0.0, 0.0, 1.0],
+        clearBits: gl.COLOR_BUFFER_BIT
+    }
 });
 var effect = painter.createEffectLayer().update({
     frag: "precision mediump float;\n\t\tuniform sampler2D source;\n\t\tvarying vec2 coords;\n\t\tvoid main() {\n\t\t\tvec4 new_color = texture2D(source, coords);\n\t\t\tgl_FragColor = vec4(new_color.rgb * 0.5 + 0.3, 1.0);\n\t\t}\n\t",

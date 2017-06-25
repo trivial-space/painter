@@ -1,18 +1,8 @@
-export function create(gl) {
+export function create() {
     var sketch = {};
-    sketch.drawSettings = {
-        blendFunc: [gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA],
-        blending: false
-    };
     sketch.update = function (data) {
-        if (data.blend != null) {
-            if (Array.isArray(data.blend)) {
-                sketch.drawSettings.blendFunc = data.blend;
-                sketch.drawSettings.blending = true;
-            }
-            else {
-                sketch.drawSettings.blending = data.blend;
-            }
+        if (data.drawSettings) {
+            sketch.drawSettings = data.drawSettings;
         }
         if (data.form) {
             sketch.form = data.form;

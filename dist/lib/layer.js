@@ -39,7 +39,11 @@ export function createDrawing(gl) {
             layer.target = {
                 width: data.width || gl.canvas.width,
                 height: data.height || gl.canvas.height,
-                frameBuffer: null, textures: [], depthBuffer: null
+                frameBuffer: null, textures: [], depthBuffer: null,
+                textureConfig: {
+                    type: (data.textureConfig && data.textureConfig.type) || gl.UNSIGNED_BYTE,
+                    count: (data.textureConfig && data.textureConfig.count) || 1
+                }
             };
             updateRenderTarget(gl, layer.target, data, layer.data);
             layer.textures = layer.target.textures;

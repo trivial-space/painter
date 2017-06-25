@@ -1,14 +1,6 @@
-import { FormStoreType, FormDrawType, TextureData } from './render-types';
+import { FormStoreType, FormDrawType, TextureData, GL, DrawSettings } from './render-types';
 export declare const defaultTextureSettings: TextureData;
-export declare const defaultLayerSettings: {
-    clearColor: number[];
-    clearBuffers: string[];
-    clearBits: number;
-    enable: string[];
-    blend: string[];
-    width: number;
-    height: number;
-};
+export declare function getDefaultLayerSettings(gl: GL): DrawSettings;
 export declare const defaultForms: {
     renderQuad: {
         attribs: {

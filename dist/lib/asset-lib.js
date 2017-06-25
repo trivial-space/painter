@@ -4,15 +4,13 @@ export var defaultTextureSettings = {
     minFilter: 'LINEAR',
     magFilter: 'NEAREST'
 };
-export var defaultLayerSettings = {
-    clearColor: [0.0, 0.0, 0.0, 1.0],
-    clearBuffers: ['DEPTH', 'COLOR'],
-    clearBits: 0,
-    enable: ['DEPTH_TEST'],
-    blend: ['SRC_ALPHA', 'ONE_MINUS_SRC_ALPHA'],
-    width: 0,
-    height: 0
-};
+export function getDefaultLayerSettings(gl) {
+    return {
+        clearColor: [0.0, 0.0, 0.0, 1.0],
+        enable: [gl.DEPTH_TEST],
+        blendFunc: [gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA]
+    };
+}
 export var defaultForms = {
     renderQuad: {
         attribs: (_a = {},

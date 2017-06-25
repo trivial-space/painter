@@ -4,6 +4,8 @@ import planeVert from './plane-material.vert';
 import planeFrag from './plane-material.frag';
 import effectFrag from './effect.frag';
 import { plane } from '../../lib/utils/geometry/plane';
+import { makeClear } from '../../lib/utils/context';
+painter.updateDrawSettings();
 painter.resize(window.devicePixelRatio);
 var planMat1 = mat4.fromTranslation(mat4.create(), [0, 0, -3]);
 var planMat2 = mat4.fromTranslation(mat4.create(), [0, 0, -3]);
@@ -31,6 +33,9 @@ var plane1 = painter.createSketch().update({
     form: form, shade: shade,
     uniforms: {
         transform: planMat1
+    },
+    drawSettings: {
+        enable: [gl.CULL_FACE]
     }
 });
 var plane2 = painter.createSketch().update({
@@ -38,21 +43,26 @@ var plane2 = painter.createSketch().update({
     uniforms: {
         transform: planMat2
     },
-    blend: true
+    drawSettings: {
+        enable: [gl.BLEND]
+    }
 });
 var planeLayer = painter.createDrawingLayer().update({
     sketches: [plane1, plane2],
     uniforms: {
-        texture: texture.texture(),
-        projection: projection
+        projection: projection,
+        texture: texture.texture()
     },
-    clearColor: [0.0, 1.0, 0.0, 1.0],
-    clearBits: gl.COLOR_BUFFER_BIT
+    drawSettings: {
+        clearColor: [0.0, 1.0, 0.0, 1.0],
+        clearBits: makeClear(gl, 'color', 'depth')
+    }
 });
 // ===== initialize animation =====
 function animate() {
     mat4.rotateY(planMat1, planMat1, rotation);
     mat4.rotateY(planMat2, planMat2, rotation);
+    // painter.compose(texture)
     painter.compose(planeLayer, effect);
     requestAnimationFrame(animate);
 }
@@ -63,5 +73,5 @@ img.onload = function () {
     });
     animate();
 };
-img.src = '../shared-assets/hepatica_256.png';
+img.src = '../hepatica_256.png';
 //# sourceMappingURL=main.js.map

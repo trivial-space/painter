@@ -426,20 +426,44 @@ export function updateRenderTarget(gl, target, data, oldData) {
     if (!target.textures) {
         target.textures = [];
     }
-    if (!target.textures.length) {
-        target.textures[0] = gl.createTexture();
+    gl.bindFramebuffer(gl.FRAMEBUFFER, target.frameBuffer);
+    if (target.textureConfig.type === gl.FLOAT) {
+        gl.getExtension('OES_texture_float');
+    }
+    var texCount = target.textureConfig.count;
+    if (texCount > 1) {
+        var glDB_1 = gl.getExtension('WEBGL_draw_buffers');
+        var bufferAttachments_1 = [];
+        for (var i = 0; i < texCount; i++) {
+            bufferAttachments_1.push(glDB_1["COLOR_ATTACHMENT" + i + "_WEBGL"]);
+        }
+        glDB_1.drawBuffersWEBGL(bufferAttachments_1);
+        for (var i = 0; i < texCount; i++) {
+            if (target.textures[i] == null) {
+                target.textures[i] = gl.createTexture();
+            }
+            var texture = target.textures[i];
+            gl.bindTexture(gl.TEXTURE_2D, texture);
+            gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, target.width, target.height, 0, gl.RGBA, target.textureConfig.type, null);
+            setTextureParams(gl, data, oldData);
+            gl.framebufferTexture2D(gl.FRAMEBUFFER, bufferAttachments_1[i], gl.TEXTURE_2D, texture, 0);
+        }
+    }
+    else {
+        if (target.textures[0] == null) {
+            target.textures[0] = gl.createTexture();
+        }
+        var texture = target.textures[0];
+        gl.bindTexture(gl.TEXTURE_2D, texture);
+        gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, target.width, target.height, 0, gl.RGBA, target.textureConfig.type, null);
+        setTextureParams(gl, data, oldData);
+        gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, texture, 0);
     }
     if (target.depthBuffer == null) {
         target.depthBuffer = gl.createRenderbuffer();
     }
-    var texture = target.textures[0];
-    gl.bindTexture(gl.TEXTURE_2D, texture);
-    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, target.width, target.height, 0, gl.RGBA, gl.UNSIGNED_BYTE, null);
-    setTextureParams(gl, data, oldData);
     gl.bindRenderbuffer(gl.RENDERBUFFER, target.depthBuffer);
     gl.renderbufferStorage(gl.RENDERBUFFER, gl.DEPTH_COMPONENT16, target.width, target.height);
-    gl.bindFramebuffer(gl.FRAMEBUFFER, target.frameBuffer);
-    gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, texture, 0);
     gl.framebufferRenderbuffer(gl.FRAMEBUFFER, gl.DEPTH_ATTACHMENT, gl.RENDERBUFFER, target.depthBuffer);
     var err = gl.checkFramebufferStatus(gl.FRAMEBUFFER);
     if (err !== gl.FRAMEBUFFER_COMPLETE) {
@@ -448,6 +472,65 @@ export function updateRenderTarget(gl, target, data, oldData) {
     gl.bindFramebuffer(gl.FRAMEBUFFER, null);
     gl.bindTexture(gl.TEXTURE_2D, null);
     gl.bindRenderbuffer(gl.RENDERBUFFER, null);
+}
+// Settings
+export function applyDrawSettings(gl, settings) {
+    if (settings.enable) {
+        for (var _i = 0, _a = settings.enable; _i < _a.length; _i++) {
+            var setting = _a[_i];
+            gl.enable(setting);
+        }
+    }
+    if (settings.disable) {
+        for (var _b = 0, _c = settings.disable; _b < _c.length; _b++) {
+            var setting = _c[_b];
+            gl.disable(setting);
+        }
+    }
+    if (settings.blendFunc) {
+        gl.blendFunc.apply(gl, settings.blendFunc);
+    }
+    if (settings.depthFunc != null) {
+        gl.depthFunc(settings.depthFunc);
+    }
+    if (settings.cullFace != null) {
+        gl.cullFace(settings.cullFace);
+    }
+    if (settings.frontFace != null) {
+        gl.frontFace(settings.frontFace);
+    }
+    if (settings.lineWidth != null) {
+        gl.lineWidth(settings.lineWidth);
+    }
+    if (settings.colorMask) {
+        gl.colorMask.apply(gl, settings.colorMask);
+    }
+    if (settings.depthMask != null) {
+        gl.depthMask(settings.depthMask);
+    }
+    if (settings.clearColor) {
+        gl.clearColor.apply(gl, settings.clearColor);
+    }
+    if (settings.clearDepth != null) {
+        gl.clearDepth(settings.clearDepth);
+    }
+    if (settings.clearBits != null) {
+        gl.clear(settings.clearBits);
+    }
+}
+export function revertDrawSettings(gl, settings) {
+    if (settings.enable) {
+        for (var _i = 0, _a = settings.enable; _i < _a.length; _i++) {
+            var setting = _a[_i];
+            gl.disable(setting);
+        }
+    }
+    if (settings.disable) {
+        for (var _b = 0, _c = settings.disable; _b < _c.length; _b++) {
+            var setting = _c[_b];
+            gl.enable(setting);
+        }
+    }
 }
 var _a, _b, _c;
 //# sourceMappingURL=render-utils.js.map

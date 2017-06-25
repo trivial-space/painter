@@ -12,9 +12,7 @@
             return r[t].call(n.exports, n, n.exports, _), n.l = !0, n.exports;
         }
         var e = {};
-        return _.m = r, _.c = e, _.i = function(r) {
-            return r;
-        }, _.d = function(r, e, t) {
+        return _.m = r, _.c = e, _.d = function(r, e, t) {
             _.o(r, e) || Object.defineProperty(r, e, {
                 configurable: !1,
                 enumerable: !0,
@@ -29,7 +27,7 @@
             return _.d(e, "a", e), e;
         }, _.o = function(r, _) {
             return Object.prototype.hasOwnProperty.call(r, _);
-        }, _.p = "", _(_.s = 3);
+        }, _.p = "", _(_.s = 1);
     }([ function(r, _, e) {
         "use strict";
         Object.defineProperty(_, "__esModule", {
@@ -108,12 +106,27 @@
         };
     }, function(r, _, e) {
         "use strict";
+        Object.defineProperty(_, "__esModule", {
+            value: !0
+        }), e.d(_, "renderUtils", function() {
+            return E;
+        }), e.d(_, "constants", function() {
+            return u;
+        });
+        var t = e(0), n = e(2), o = e(3), E = {
+            geometry: {
+                plane: n
+            },
+            stackgl: o
+        }, u = t;
+    }, function(r, _, e) {
+        "use strict";
         function t(r, _, e, t) {
-            var n, o, E = r / 2, u = _ / 2, T = e || 1, A = t || 1, O = T + 1, f = A + 1, i = r / T, R = _ / A, N = new Float32Array(O * f * 3), a = new Float32Array(O * f * 3), c = new Float32Array(O * f * 2), S = 0, s = 0;
+            var n, o, E = r / 2, u = _ / 2, T = e || 1, A = t || 1, O = T + 1, f = A + 1, R = r / T, i = _ / A, N = new Float32Array(O * f * 3), a = new Float32Array(O * f * 3), c = new Float32Array(O * f * 2), S = 0, s = 0;
             for (n = 0; n < f; n++) {
-                var I = n * R - u;
+                var I = n * i - u;
                 for (o = 0; o < O; o++) {
-                    var L = o * i - E;
+                    var L = o * R - E;
                     N[S] = L, N[S + 1] = -I, a[S + 2] = 1, c[s] = o / T, c[s + 1] = 1 - n / A, S += 3, 
                     s += 2;
                 }
@@ -196,20 +209,5 @@
             return A;
         }), _.convertStackGLGeometry = n;
         var o = e(0), E = "positions", u = "normals", T = "uvs", A = "cells";
-    }, function(r, _, e) {
-        "use strict";
-        Object.defineProperty(_, "__esModule", {
-            value: !0
-        }), e.d(_, "renderUtils", function() {
-            return E;
-        }), e.d(_, "constants", function() {
-            return u;
-        });
-        var t = e(0), n = e(1), o = e(2), E = {
-            geometry: {
-                plane: n
-            },
-            stackgl: o
-        }, u = t;
     } ]);
 });
