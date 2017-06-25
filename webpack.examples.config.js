@@ -12,7 +12,9 @@ module.exports = {
 		'stackgl-cube': [...hotCodeEntry, './stackgl-cube/main.ts'],
 		'instances': [...hotCodeEntry, './instances/main.ts'],
 		'asset': [...hotCodeEntry, './asset/main.ts'],
-		'shader': [...hotCodeEntry, './shader/main.ts']
+		'shader': [...hotCodeEntry, './shader/main.ts'],
+		'deferred_rendering': [...hotCodeEntry, './deferred_rendering/main.ts'],
+		'effect_stack': [...hotCodeEntry, './effect_stack/main.ts']
 	},
 
 	context: resolve(__dirname, 'examples'),

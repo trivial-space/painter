@@ -58,8 +58,8 @@ export function createDrawing (gl: GL) {
 				height: data.height || gl.canvas.height,
 				frameBuffer: null, textures: [], depthBuffer: null,
 				textureConfig: {
-					type: gl.UNSIGNED_BYTE,
-					count: 1
+					type: (data.textureConfig && data.textureConfig.type) || gl.UNSIGNED_BYTE,
+					count: (data.textureConfig && data.textureConfig.count) || 1
 				}
 			} as RenderTarget
 

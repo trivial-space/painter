@@ -35,6 +35,10 @@ export function create (gl: WebGLRenderingContext): Painter {
 			targets.forEach(t => {
 				t.width = canvas.width
 				t.height = canvas.height
+				t.textureConfig = {
+					count: 1,
+					type: gl.UNSIGNED_BYTE
+				}
 				updateRenderTarget(gl, t, defaultTextureSettings)
 			})
 		}
@@ -134,11 +138,11 @@ function shadeForm (shade: Shade, form: Form) {
 }
 
 
-function shadeUniforms (shade: Shade, values: Uniforms, defaultTexture: WebGLTexture | null) {
-	for (const name in values) {
+function shadeUniforms (shade: Shade, uniforms: Uniforms, defaultTexture: WebGLTexture | null) {
+	for (const name in uniforms) {
 		const setter = shade.uniformSetters[name]
 		if (setter) {
-			const value = values[name]
+			const value = uniforms[name]
 			if (value === null || typeof value === 'string') {
 				setter.setter(defaultTexture)
 			} else {
@@ -155,45 +159,61 @@ function composeLayers (gl: GL, layers: Layer[], targets: RenderTarget[], result
 
 	for (let i = 0; i < layers.length; i++) {
 		const layer = layers[i]
-		const directRender = i === last
-		const renderToStack = !directRender && layer.target == null
-		const source = targets[0]
-		const target = targets[1]
 
-		if (directRender) {
-			gl.bindFramebuffer(gl.FRAMEBUFFER, null)
-			gl.viewport(0, 0, gl.drawingBufferWidth, gl.drawingBufferHeight)
+		const render = (uniforms, directRender: boolean) => {
+			const source = targets[0]
+			const target = targets[1]
+			const renderToStack = !directRender && layer.target == null
 
-		} else if (layer.target) {
-			gl.bindFramebuffer(gl.FRAMEBUFFER, layer.target.frameBuffer)
-			gl.viewport(0, 0, layer.target.width, layer.target.height)
+			if (directRender) {
+				gl.bindFramebuffer(gl.FRAMEBUFFER, null)
+				gl.viewport(0, 0, gl.drawingBufferWidth, gl.drawingBufferHeight)
+
+			} else if (layer.target) {
+				gl.bindFramebuffer(gl.FRAMEBUFFER, layer.target.frameBuffer)
+				gl.viewport(0, 0, layer.target.width, layer.target.height)
+
+			} else {
+				gl.bindFramebuffer(gl.FRAMEBUFFER, target.frameBuffer)
+				gl.viewport(0, 0, gl.drawingBufferWidth, gl.drawingBufferHeight)
+			}
+
+			if (layer.data.drawSettings) {
+				applyDrawSettings(gl, layer.data.drawSettings)
+			}
+
+			if (layer.sketches) {
+				for (const sketch of layer.sketches) {
+					draw(gl, sketch, source.textures[0], uniforms)
+				}
+			} else {
+				// Display static texture
+				draw(gl, result, null, { source: layer.texture() })
+			}
+
+			if (layer.data.drawSettings) {
+				revertDrawSettings(gl, layer.data.drawSettings)
+			}
+
+			if (renderToStack) {
+				targets[0] = target
+				targets[1] = source
+			}
+		}
+
+		if (Array.isArray(layer.uniforms)) {
+			const newLast = last + layer.uniforms.length - 1
+
+			for (let j = 0; j < layer.uniforms.length; j++) {
+				const directRender = i + j === newLast
+				render(layer.uniforms[j], directRender)
+			}
 
 		} else {
-			gl.bindFramebuffer(gl.FRAMEBUFFER, target.frameBuffer)
-			gl.viewport(0, 0, gl.drawingBufferWidth, gl.drawingBufferHeight)
+			const directRender = i === last
+			render(layer.uniforms, directRender)
 		}
 
-		if (layer.data.drawSettings) {
-			applyDrawSettings(gl, layer.data.drawSettings)
-		}
-
-		if (layer.sketches) {
-			for (const sketch of layer.sketches) {
-				draw(gl, sketch, source.textures[0], layer.uniforms)
-			}
-		} else if (directRender) {
-			// Display static texture
-			draw(gl, result, null, { source: layer.texture() })
-		}
-
-		if (layer.data.drawSettings) {
-			revertDrawSettings(gl, layer.data.drawSettings)
-		}
-
-		if (renderToStack) {
-			targets[0] = target
-			targets[1] = source
-		}
 	}
 }
 

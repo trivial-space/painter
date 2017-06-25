@@ -92,3 +92,5 @@ function animate () {
 }
 
 animate()
+
+window['gl'] = gl

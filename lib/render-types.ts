@@ -124,7 +124,11 @@ export type Uniforms = { [id: string]: any }
 
 export interface DrawSettings {
 	clearColor?: Color
+	clearDepth?: number
 	clearBits?: number
+	depthMask?: boolean
+	colorMask?: [boolean, boolean, boolean, boolean]
+	depthFunc?: number
 	blendFunc?: [number, number],
 	enable?: number[]
 	disable?: number[]
@@ -180,6 +184,10 @@ export interface LayerData extends TextureData {
 	buffered?: boolean // get its own RenderTarget
 	width?: number // for own RenderTarget
 	height?: number // for own RenderTarget
+	textureConfig?: {
+		type?: number
+		count?: number
+	}
 
 	asset?: Asset // AssetLayer specific
 	sketches?: Sketch[]

@@ -26,14 +26,15 @@
   "homepage": "https://github.com/trivial-space/renderer#readme",
   "devDependencies": {
     "gl-matrix": "^2.3.2",
+    "glsl-fast-gaussian-blur": "^1.0.2",
     "glslify-loader": "^1.0.2",
     "primitive-cube": "^2.0.1",
+    "primitive-sphere": "^3.0.0",
     "raw-loader": "^0.5.1",
     "ts-loader": "^2.2.0",
     "tslint": "^5.4.3",
     "typescript": "2.4",
     "webpack": "^3.0.0",
     "webpack-dev-server": "^2.5.0"
-  },
-  "dependencies": {}
+  }
 }

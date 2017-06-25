@@ -20,6 +20,10 @@ export function create (gl: GL): Shade {
 
 		if (!(frag && vert)) { return shade }
 
+		if (frag.indexOf('GL_EXT_draw_buffers') >= 0) {
+			gl.getExtension('WEBGL_draw_buffers')
+		}
+
 		gl.shaderSource(shade.vert, vert)
 		gl.shaderSource(shade.frag, frag)
 		gl.compileShader(shade.vert)

@@ -504,31 +504,67 @@ export function updateRenderTarget (gl: GL, target: RenderTarget, data?: Texture
 	if (target.width == null || target.height == null) {
 		return
 	}
+
 	if (target.frameBuffer == null) {
 		target.frameBuffer = gl.createFramebuffer()
 	}
+
 	if (!target.textures) {
 		target.textures = []
 	}
-	if (!target.textures.length) {
-		target.textures[0] = gl.createTexture()
+
+	gl.bindFramebuffer(gl.FRAMEBUFFER, target.frameBuffer)
+
+	if (target.textureConfig.type === gl.FLOAT) {
+		gl.getExtension('OES_texture_float')
 	}
+
+	const texCount = target.textureConfig.count
+
+	if (texCount > 1) {
+		const glDB = gl.getExtension('WEBGL_draw_buffers')
+		const bufferAttachments: number[] = []
+
+		for (let i = 0; i < texCount; i++) {
+			bufferAttachments.push(glDB[`COLOR_ATTACHMENT${i}_WEBGL`])
+		}
+
+		glDB.drawBuffersWEBGL(bufferAttachments)
+
+		for (let i = 0; i < texCount; i++) {
+			if (target.textures[i] == null) {
+				target.textures[i] = gl.createTexture()
+			}
+			const texture = target.textures[i]
+
+			gl.bindTexture(gl.TEXTURE_2D, texture)
+			gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, target.width, target.height, 0, gl.RGBA, target.textureConfig.type, null)
+
+			setTextureParams(gl, data, oldData)
+			gl.framebufferTexture2D(gl.FRAMEBUFFER, bufferAttachments[i], gl.TEXTURE_2D, texture, 0)
+		}
+
+	} else {
+
+		if (target.textures[0] == null) {
+			target.textures[0] = gl.createTexture()
+		}
+		const texture = target.textures[0]
+
+		gl.bindTexture(gl.TEXTURE_2D, texture)
+		gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, target.width, target.height, 0, gl.RGBA, target.textureConfig.type, null)
+
+		setTextureParams(gl, data, oldData)
+		gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, texture, 0)
+	}
+
+
 	if (target.depthBuffer == null) {
 		target.depthBuffer = gl.createRenderbuffer()
 	}
 
-	const texture = target.textures[0]
-
-	gl.bindTexture(gl.TEXTURE_2D, texture)
-	gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, target.width, target.height, 0, gl.RGBA, gl.UNSIGNED_BYTE, null)
-
-	setTextureParams(gl, data, oldData)
-
 	gl.bindRenderbuffer(gl.RENDERBUFFER, target.depthBuffer)
 	gl.renderbufferStorage(gl.RENDERBUFFER, gl.DEPTH_COMPONENT16, target.width, target.height)
-
-	gl.bindFramebuffer(gl.FRAMEBUFFER, target.frameBuffer)
-	gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, texture, 0)
 	gl.framebufferRenderbuffer(gl.FRAMEBUFFER, gl.DEPTH_ATTACHMENT, gl.RENDERBUFFER, target.depthBuffer)
 
 	const err = gl.checkFramebufferStatus(gl.FRAMEBUFFER)
@@ -561,23 +597,39 @@ export function applyDrawSettings (gl: GL, settings: DrawSettings) {
 		gl.blendFunc.apply(gl, settings.blendFunc)
 	}
 
-	if (settings.cullFace) {
+	if (settings.depthFunc != null) {
+		gl.depthFunc(settings.depthFunc)
+	}
+
+	if (settings.cullFace != null) {
 		gl.cullFace(settings.cullFace)
 	}
 
-	if (settings.frontFace) {
-		gl.cullFace(settings.frontFace)
+	if (settings.frontFace != null) {
+		gl.frontFace(settings.frontFace)
 	}
 
-	if (settings.lineWidth) {
-		gl.cullFace(settings.lineWidth)
+	if (settings.lineWidth != null) {
+		gl.lineWidth(settings.lineWidth)
+	}
+
+	if (settings.colorMask) {
+		gl.colorMask.apply(gl, settings.colorMask)
+	}
+
+	if (settings.depthMask != null) {
+		gl.depthMask(settings.depthMask)
 	}
 
 	if (settings.clearColor) {
 		gl.clearColor.apply(gl, settings.clearColor)
 	}
 
-	if (settings.clearBits) {
+	if (settings.clearDepth != null) {
+		gl.clearDepth(settings.clearDepth)
+	}
+
+	if (settings.clearBits != null) {
 		gl.clear(settings.clearBits)
 	}
 }

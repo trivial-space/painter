@@ -64,12 +64,12 @@ const plane2 = painter.createSketch().update({
 const planeLayer = painter.createDrawingLayer().update({
 	sketches: [plane1, plane2],
 	uniforms: {
-		texture: texture.texture(),
-		projection
+		projection,
+		texture: texture.texture()
 	},
 	drawSettings: {
 		clearColor: [0.0, 1.0, 0.0, 1.0],
-		clearBits: makeClear(gl, 'COLOR', 'DEPTH')
+		clearBits: makeClear(gl, 'color', 'depth')
 	}
 })
 
@@ -79,6 +79,7 @@ const planeLayer = painter.createDrawingLayer().update({
 function animate () {
 	mat4.rotateY(planMat1, planMat1, rotation)
 	mat4.rotateY(planMat2, planMat2, rotation)
+	// painter.compose(texture)
 	painter.compose(planeLayer, effect)
 	requestAnimationFrame(animate)
 }
@@ -91,5 +92,5 @@ img.onload = function() {
 	})
 	animate()
 }
-img.src = '../shared-assets/hepatica_256.png'
+img.src = '../hepatica_256.png'
 
