@@ -25,6 +25,7 @@
   },
   "homepage": "https://github.com/trivial-space/renderer#readme",
   "devDependencies": {
+    "@types/node": "^8.0.2",
     "gl-matrix": "^2.3.2",
     "glsl-fast-gaussian-blur": "^1.0.2",
     "glslify-loader": "^1.0.2",
