@@ -1,6 +1,7 @@
 import * as consts from './contants'
 import * as plane from './utils/geometry/plane'
 import * as stackgl from './utils/stackgl'
+import * as context from './utils/context'
 import * as aLib from './asset-lib'
 import * as Painter from './painter'
 export * from './render-types'
@@ -10,7 +11,8 @@ export const utils = {
   geometry: {
     plane
   },
-  stackgl
+  stackgl,
+	context
 }
 
 export const lib = aLib
