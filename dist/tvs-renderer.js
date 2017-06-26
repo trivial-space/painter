@@ -219,12 +219,12 @@
                 e.uniformMatrix4x2fv(t, !1, r);
             };
         }
-        function U(e, t) {
+        function g(e, t) {
             return function(r) {
                 e.uniformMatrix3x4fv(t, !1, r);
             };
         }
-        function g(e, t) {
+        function U(e, t) {
             return function(r) {
                 e.uniformMatrix4x3fv(t, !1, r);
             };
@@ -477,7 +477,7 @@
         }, V[k.GL_TYPE.FLOAT_MAT3X4] = {
             Type: Float32Array,
             size: 48,
-            setter: U
+            setter: g
         }, V[k.GL_TYPE.FLOAT_MAT4X2] = {
             Type: Float32Array,
             size: 32,
@@ -485,7 +485,7 @@
         }, V[k.GL_TYPE.FLOAT_MAT4X3] = {
             Type: Float32Array,
             size: 48,
-            setter: g
+            setter: U
         }, V[k.GL_TYPE.SAMPLER_2D] = {
             Type: null,
             size: 0,
@@ -1074,9 +1074,13 @@
                 }
                 return r.uniforms && (t.uniforms = r.uniforms), Object.assign(t.data, r), t;
             }, t.destroy = function() {
-                if (t.target) a.d(e, t.target); else for (var r = 0, n = t.textures; r < n.length; r++) {
+                if (t.sketches) for (var r = 0, n = t.sketches; r < n.length; r++) {
                     var i = n[r];
-                    e.deleteTexture(i);
+                    i.destroy();
+                }
+                if (t.target) a.d(e, t.target); else for (var u = 0, f = t.textures; u < f.length; u++) {
+                    var o = f[u];
+                    e.deleteTexture(o);
                 }
             }, t;
         }

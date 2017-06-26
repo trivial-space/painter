@@ -66,12 +66,18 @@ export function createDrawing(gl) {
         return layer;
     };
     layer.destroy = function () {
+        if (layer.sketches) {
+            for (var _i = 0, _a = layer.sketches; _i < _a.length; _i++) {
+                var sketch = _a[_i];
+                sketch.destroy();
+            }
+        }
         if (layer.target) {
             destroyRenderTarget(gl, layer.target);
         }
         else {
-            for (var _i = 0, _a = layer.textures; _i < _a.length; _i++) {
-                var texture = _a[_i];
+            for (var _b = 0, _c = layer.textures; _b < _c.length; _b++) {
+                var texture = _c[_b];
                 gl.deleteTexture(texture);
             }
         }

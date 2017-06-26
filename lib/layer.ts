@@ -95,6 +95,12 @@ export function createDrawing (gl: GL) {
 	}
 
 	layer.destroy = () => {
+		if (layer.sketches) {
+			for (const sketch of layer.sketches) {
+				sketch.destroy()
+			}
+		}
+
 		if (layer.target) {
 			destroyRenderTarget(gl, layer.target)
 
