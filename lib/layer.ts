@@ -1,24 +1,20 @@
 import { GL, Layer, LayerData, RenderTarget } from './render-types'
-import { setTextureParams, updateRenderTarget } from './render-utils'
+import { setTextureParams, updateRenderTarget, destroyRenderTarget } from './render-utils'
 
 
 export function createStatic (gl: GL) {
 
 	const layer = {} as Layer
 
-	layer.textures = [],
-	layer.data = {}
-
-	layer.texture = (i = 0) => layer.textures[i]
-
 	const texture = gl.createTexture()
 
-	if (texture) {
-		layer.textures.push(texture)
-	}
+	layer.textures = [texture],
+	layer.data = {}
+
+	layer.texture = () => texture
 
 	layer.update = (data: LayerData) => {
-		gl.bindTexture(gl.TEXTURE_2D, layer.textures[0])
+		gl.bindTexture(gl.TEXTURE_2D, texture)
 
 		setTextureParams(gl, data, layer.data)
 
@@ -35,6 +31,10 @@ export function createStatic (gl: GL) {
 		Object.assign(layer.data, data)
 
 		return layer
+	}
+
+	layer.destroy = () => {
+		gl.deleteTexture(texture)
 	}
 
 	return layer
@@ -94,17 +94,15 @@ export function createDrawing (gl: GL) {
 		return layer
 	}
 
-	layer.delete = () => {
-		for (const texture of layer.textures) {
-			gl.deleteTexture(texture)
-		}
-
+	layer.destroy = () => {
 		if (layer.target) {
-			gl.deleteFramebuffer(layer.target.frameBuffer)
-			gl.deleteRenderbuffer(layer.target.depthBuffer)
-		}
+			destroyRenderTarget(gl, layer.target)
 
-		return layer
+		} else {
+			for (const texture of layer.textures) {
+				gl.deleteTexture(texture)
+			}
+		}
 	}
 
 	return layer

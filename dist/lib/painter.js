@@ -10,7 +10,7 @@ import * as form from './form';
 import * as shade from './shade';
 import * as sketch from './sketch';
 import * as layer from './layer';
-import { updateRenderTarget, applyDrawSettings, revertDrawSettings } from './render-utils';
+import { updateRenderTarget, applyDrawSettings, revertDrawSettings, destroyRenderTarget } from './render-utils';
 import { resizeCanvas } from './utils/context';
 import { defaultForms, defaultShaders, defaultTextureSettings, getDefaultLayerSettings } from './asset-lib';
 export function create(gl) {
@@ -44,6 +44,13 @@ export function create(gl) {
         return needUpdate;
     };
     resize(1, true);
+    var destroy = function () {
+        result.destroy();
+        for (var _i = 0, targets_1 = targets; _i < targets_1.length; _i++) {
+            var target = targets_1[_i];
+            destroyRenderTarget(gl, target);
+        }
+    };
     return {
         gl: gl,
         updateDrawSettings: function (drawSettings) { return applyDrawSettings(gl, __assign({}, defaultSettings, drawSettings)); },
@@ -66,7 +73,7 @@ export function create(gl) {
             }
             return composeLayers(gl, layers, targets, result);
         },
-        resize: resize
+        resize: resize, destroy: destroy
     };
 }
 function draw(gl, sketch, defaultTexture, globalUniforms) {

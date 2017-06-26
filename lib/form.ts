@@ -55,7 +55,7 @@ export function create (gl: GL): Form {
 	}
 
 
-	form.delete = () => {
+	form.destroy = () => {
 		for (const id in form.attribs) {
 			gl.deleteBuffer(form.attribs[id].buffer)
 		}

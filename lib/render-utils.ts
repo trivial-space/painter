@@ -578,6 +578,15 @@ export function updateRenderTarget (gl: GL, target: RenderTarget, data?: Texture
 }
 
 
+export function destroyRenderTarget (gl: GL, target: RenderTarget) {
+	gl.deleteFramebuffer(target.frameBuffer)
+	gl.deleteRenderbuffer(target.depthBuffer)
+	for (const texture of target.textures) {
+		gl.deleteTexture(texture)
+	}
+}
+
+
 // Settings
 
 export function applyDrawSettings (gl: GL, settings: DrawSettings) {

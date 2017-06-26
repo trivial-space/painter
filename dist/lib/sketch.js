@@ -15,6 +15,10 @@ export function create() {
         }
         return sketch;
     };
+    sketch.destroy = function () {
+        sketch.form.destroy();
+        sketch.shade.destroy();
+    };
     return sketch;
 }
 //# sourceMappingURL=sketch.js.map

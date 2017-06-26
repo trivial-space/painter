@@ -62,12 +62,10 @@ export function create (gl: GL): Shade {
 	}
 
 
-	shade.delete = () => {
+	shade.destroy = () => {
 		gl.deleteProgram(shade.program)
 		gl.deleteShader(shade.frag)
 		gl.deleteShader(shade.vert)
-
-		return shade
 	}
 
 	return shade

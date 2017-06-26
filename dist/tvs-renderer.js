@@ -107,7 +107,7 @@
     }, function(e, t, r) {
         "use strict";
         function n(e) {
-            return k[e].bindPoint;
+            return W[e].bindPoint;
         }
         function i(e, t) {
             return function(r) {
@@ -169,12 +169,12 @@
                 e.uniform1uiv(t, r);
             };
         }
-        function R(e, t) {
+        function d(e, t) {
             return function(r) {
                 e.uniform2uiv(t, r);
             };
         }
-        function d(e, t) {
+        function R(e, t) {
             return function(r) {
                 e.uniform3uiv(t, r);
             };
@@ -199,17 +199,17 @@
                 e.uniformMatrix4fv(t, !1, r);
             };
         }
-        function G(e, t) {
+        function y(e, t) {
             return function(r) {
                 e.uniformMatrix2x3fv(t, !1, r);
             };
         }
-        function p(e, t) {
+        function G(e, t) {
             return function(r) {
                 e.uniformMatrix3x2fv(t, !1, r);
             };
         }
-        function y(e, t) {
+        function p(e, t) {
             return function(r) {
                 e.uniformMatrix2x4fv(t, !1, r);
             };
@@ -219,12 +219,12 @@
                 e.uniformMatrix4x2fv(t, !1, r);
             };
         }
-        function g(e, t) {
+        function U(e, t) {
             return function(r) {
                 e.uniformMatrix3x4fv(t, !1, r);
             };
         }
-        function U(e, t) {
+        function g(e, t) {
             return function(r) {
                 e.uniformMatrix4x3fv(t, !1, r);
             };
@@ -247,20 +247,20 @@
         }
         function b(e, t, r) {
             return function(n) {
-                e.bindBuffer(e.ARRAY_BUFFER, n.buffer), e.enableVertexAttribArray(t), e.vertexAttribPointer(t, r.itemSize, H.GL_TYPE.FLOAT, n.normalize || !1, n.stride || 0, n.offset || 0);
+                e.bindBuffer(e.ARRAY_BUFFER, n.buffer), e.enableVertexAttribArray(t), e.vertexAttribPointer(t, r.itemSize, k.GL_TYPE.FLOAT, n.normalize || !1, n.stride || 0, n.offset || 0);
             };
         }
         function I(e, t, r) {
             return function(n) {
-                e.bindBuffer(e.ARRAY_BUFFER, n.buffer), e.enableVertexAttribArray(t), e.vertexAttribIPointer(t, r.itemSize, H.GL_TYPE.INT, n.stride || 0, n.offset || 0);
+                e.bindBuffer(e.ARRAY_BUFFER, n.buffer), e.enableVertexAttribArray(t), e.vertexAttribIPointer(t, r.itemSize, k.GL_TYPE.INT, n.stride || 0, n.offset || 0);
             };
         }
         function Y(e, t, r) {
             var n = r.size, i = r.count;
             return function(r) {
                 e.bindBuffer(e.ARRAY_BUFFER, r.buffer);
-                for (var a = n, u = a / i, f = k[H.GL_TYPE.FLOAT], o = f.size * a, _ = r.normalize || !1, T = r.offset || 0, E = o / i, s = 0; s < i; ++s) e.enableVertexAttribArray(t + s), 
-                e.vertexAttribPointer(t + s, u, H.GL_TYPE.FLOAT, _, o, T + E * s);
+                for (var a = n, u = a / i, f = W[k.GL_TYPE.FLOAT], o = f.size * a, _ = r.normalize || !1, T = r.offset || 0, E = o / i, s = 0; s < i; ++s) e.enableVertexAttribArray(t + s), 
+                e.vertexAttribPointer(t + s, u, k.GL_TYPE.FLOAT, _, o, T + E * s);
             };
         }
         function h(e, t) {
@@ -270,7 +270,7 @@
                 var f = u.name;
                 if ("[0]" === f.substr(-3) && (f = f.substr(0, f.length - 3)), t) {
                     var o = function(t, n) {
-                        var i = e.getUniformLocation(t, n.name), a = n.size > 1 && "[0]" === n.name.substr(-3), u = n.type, f = k[u];
+                        var i = e.getUniformLocation(t, n.name), a = n.size > 1 && "[0]" === n.name.substr(-3), u = n.type, f = W[u];
                         if (!f) throw "unknown type: 0x" + u.toString(16);
                         if (null != i) {
                             var o;
@@ -293,7 +293,7 @@
             for (var r = {}, n = e.getProgramParameter(t, e.ACTIVE_ATTRIBUTES), i = 0; i < n; i++) {
                 var a = e.getActiveAttrib(t, i);
                 if (!a) break;
-                var u = e.getAttribLocation(t, a.name), f = W[a.type], o = f.setter(e, u, f);
+                var u = e.getAttribLocation(t, a.name), f = j[a.type], o = f.setter(e, u, f);
                 r[a.name] = {
                     setter: o,
                     location: u
@@ -302,14 +302,14 @@
             return r;
         }
         function M(e) {
-            if (e instanceof Int8Array) return H.GL_TYPE.BYTE;
-            if (e instanceof Uint8Array) return H.GL_TYPE.UNSIGNED_BYTE;
-            if (e instanceof Uint8ClampedArray) return H.GL_TYPE.UNSIGNED_BYTE;
-            if (e instanceof Int16Array) return H.GL_TYPE.SHORT;
-            if (e instanceof Uint16Array) return H.GL_TYPE.UNSIGNED_SHORT;
-            if (e instanceof Int32Array) return H.GL_TYPE.INT;
-            if (e instanceof Uint32Array) return H.GL_TYPE.UNSIGNED_INT;
-            if (e instanceof Float32Array) return H.GL_TYPE.FLOAT;
+            if (e instanceof Int8Array) return k.GL_TYPE.BYTE;
+            if (e instanceof Uint8Array) return k.GL_TYPE.UNSIGNED_BYTE;
+            if (e instanceof Uint8ClampedArray) return k.GL_TYPE.UNSIGNED_BYTE;
+            if (e instanceof Int16Array) return k.GL_TYPE.SHORT;
+            if (e instanceof Uint16Array) return k.GL_TYPE.UNSIGNED_SHORT;
+            if (e instanceof Int32Array) return k.GL_TYPE.INT;
+            if (e instanceof Uint32Array) return k.GL_TYPE.UNSIGNED_INT;
+            if (e instanceof Float32Array) return k.GL_TYPE.FLOAT;
             throw "unsupported typed array type";
         }
         function C(e, t, r) {
@@ -350,6 +350,13 @@
             }
         }
         function B(e, t) {
+            e.deleteFramebuffer(t.frameBuffer), e.deleteRenderbuffer(t.depthBuffer);
+            for (var r = 0, n = t.textures; r < n.length; r++) {
+                var i = n[r];
+                e.deleteTexture(i);
+            }
+        }
+        function z(e, t) {
             if (t.enable) for (var r = 0, n = t.enable; r < n.length; r++) {
                 var i = n[r];
                 e.enable(i);
@@ -364,7 +371,7 @@
             null != t.depthMask && e.depthMask(t.depthMask), t.clearColor && e.clearColor.apply(e, t.clearColor), 
             null != t.clearDepth && e.clearDepth(t.clearDepth), null != t.clearBits && e.clear(t.clearBits);
         }
-        function z(e, t) {
+        function w(e, t) {
             if (t.enable) for (var r = 0, n = t.enable; r < n.length; r++) {
                 var i = n[r];
                 e.disable(i);
@@ -374,285 +381,285 @@
                 e.enable(i);
             }
         }
-        t.c = h, t.b = D, t.d = M, t.f = C, t.g = x, t.a = B, t.e = z;
-        var w, V, X, H = r(0), k = (w = {}, w[H.GL_TYPE.FLOAT] = {
+        t.c = h, t.b = D, t.e = M, t.g = C, t.h = x, t.d = B, t.a = z, t.f = w;
+        var V, X, H, k = r(0), W = (V = {}, V[k.GL_TYPE.FLOAT] = {
             Type: Float32Array,
             size: 4,
             setter: i,
             arraySetter: a
-        }, w[H.GL_TYPE.FLOAT_VEC2] = {
+        }, V[k.GL_TYPE.FLOAT_VEC2] = {
             Type: Float32Array,
             size: 8,
             setter: u
-        }, w[H.GL_TYPE.FLOAT_VEC3] = {
+        }, V[k.GL_TYPE.FLOAT_VEC3] = {
             Type: Float32Array,
             size: 12,
             setter: f
-        }, w[H.GL_TYPE.FLOAT_VEC4] = {
+        }, V[k.GL_TYPE.FLOAT_VEC4] = {
             Type: Float32Array,
             size: 16,
             setter: o
-        }, w[H.GL_TYPE.INT] = {
+        }, V[k.GL_TYPE.INT] = {
             Type: Int32Array,
             size: 4,
             setter: _,
             arraySetter: T
-        }, w[H.GL_TYPE.INT_VEC2] = {
+        }, V[k.GL_TYPE.INT_VEC2] = {
             Type: Int32Array,
             size: 8,
             setter: E
-        }, w[H.GL_TYPE.INT_VEC3] = {
+        }, V[k.GL_TYPE.INT_VEC3] = {
             Type: Int32Array,
             size: 12,
             setter: s
-        }, w[H.GL_TYPE.INT_VEC4] = {
+        }, V[k.GL_TYPE.INT_VEC4] = {
             Type: Int32Array,
             size: 16,
             setter: l
-        }, w[H.GL_TYPE.UNSIGNED_INT] = {
+        }, V[k.GL_TYPE.UNSIGNED_INT] = {
             Type: Uint32Array,
             size: 4,
             setter: c,
             arraySetter: A
-        }, w[H.GL_TYPE.UNSIGNED_INT_VEC2] = {
+        }, V[k.GL_TYPE.UNSIGNED_INT_VEC2] = {
             Type: Uint32Array,
             size: 8,
-            setter: R
-        }, w[H.GL_TYPE.UNSIGNED_INT_VEC3] = {
+            setter: d
+        }, V[k.GL_TYPE.UNSIGNED_INT_VEC3] = {
             Type: Uint32Array,
             size: 12,
-            setter: d
-        }, w[H.GL_TYPE.UNSIGNED_INT_VEC4] = {
+            setter: R
+        }, V[k.GL_TYPE.UNSIGNED_INT_VEC4] = {
             Type: Uint32Array,
             size: 16,
             setter: P
-        }, w[H.GL_TYPE.BOOL] = {
+        }, V[k.GL_TYPE.BOOL] = {
             Type: Uint32Array,
             size: 4,
             setter: _,
             arraySetter: T
-        }, w[H.GL_TYPE.BOOL_VEC2] = {
+        }, V[k.GL_TYPE.BOOL_VEC2] = {
             Type: Uint32Array,
             size: 8,
             setter: E
-        }, w[H.GL_TYPE.BOOL_VEC3] = {
+        }, V[k.GL_TYPE.BOOL_VEC3] = {
             Type: Uint32Array,
             size: 12,
             setter: s
-        }, w[H.GL_TYPE.BOOL_VEC4] = {
+        }, V[k.GL_TYPE.BOOL_VEC4] = {
             Type: Uint32Array,
             size: 16,
             setter: l
-        }, w[H.GL_TYPE.FLOAT_MAT2] = {
+        }, V[k.GL_TYPE.FLOAT_MAT2] = {
             Type: Float32Array,
             size: 16,
             setter: L
-        }, w[H.GL_TYPE.FLOAT_MAT3] = {
+        }, V[k.GL_TYPE.FLOAT_MAT3] = {
             Type: Float32Array,
             size: 36,
             setter: S
-        }, w[H.GL_TYPE.FLOAT_MAT4] = {
+        }, V[k.GL_TYPE.FLOAT_MAT4] = {
             Type: Float32Array,
             size: 64,
             setter: m
-        }, w[H.GL_TYPE.FLOAT_MAT2X3] = {
+        }, V[k.GL_TYPE.FLOAT_MAT2X3] = {
+            Type: Float32Array,
+            size: 24,
+            setter: y
+        }, V[k.GL_TYPE.FLOAT_MAT2X4] = {
+            Type: Float32Array,
+            size: 32,
+            setter: p
+        }, V[k.GL_TYPE.FLOAT_MAT3X2] = {
             Type: Float32Array,
             size: 24,
             setter: G
-        }, w[H.GL_TYPE.FLOAT_MAT2X4] = {
-            Type: Float32Array,
-            size: 32,
-            setter: y
-        }, w[H.GL_TYPE.FLOAT_MAT3X2] = {
-            Type: Float32Array,
-            size: 24,
-            setter: p
-        }, w[H.GL_TYPE.FLOAT_MAT3X4] = {
-            Type: Float32Array,
-            size: 48,
-            setter: g
-        }, w[H.GL_TYPE.FLOAT_MAT4X2] = {
-            Type: Float32Array,
-            size: 32,
-            setter: N
-        }, w[H.GL_TYPE.FLOAT_MAT4X3] = {
+        }, V[k.GL_TYPE.FLOAT_MAT3X4] = {
             Type: Float32Array,
             size: 48,
             setter: U
-        }, w[H.GL_TYPE.SAMPLER_2D] = {
+        }, V[k.GL_TYPE.FLOAT_MAT4X2] = {
+            Type: Float32Array,
+            size: 32,
+            setter: N
+        }, V[k.GL_TYPE.FLOAT_MAT4X3] = {
+            Type: Float32Array,
+            size: 48,
+            setter: g
+        }, V[k.GL_TYPE.SAMPLER_2D] = {
             Type: null,
             size: 0,
             setter: O,
             arraySetter: F,
-            bindPoint: H.GL_TYPE.TEXTURE_2D
-        }, w[H.GL_TYPE.SAMPLER_CUBE] = {
+            bindPoint: k.GL_TYPE.TEXTURE_2D
+        }, V[k.GL_TYPE.SAMPLER_CUBE] = {
             Type: null,
             size: 0,
             setter: O,
             arraySetter: F,
-            bindPoint: H.GL_TYPE.TEXTURE_CUBE_MAP
-        }, w[H.GL_TYPE.SAMPLER_3D] = {
+            bindPoint: k.GL_TYPE.TEXTURE_CUBE_MAP
+        }, V[k.GL_TYPE.SAMPLER_3D] = {
             Type: null,
             size: 0,
             setter: O,
             arraySetter: F,
-            bindPoint: H.GL_TYPE.TEXTURE_3D
-        }, w[H.GL_TYPE.SAMPLER_2D_SHADOW] = {
+            bindPoint: k.GL_TYPE.TEXTURE_3D
+        }, V[k.GL_TYPE.SAMPLER_2D_SHADOW] = {
             Type: null,
             size: 0,
             setter: O,
             arraySetter: F,
-            bindPoint: H.GL_TYPE.TEXTURE_2D
-        }, w[H.GL_TYPE.SAMPLER_2D_ARRAY] = {
+            bindPoint: k.GL_TYPE.TEXTURE_2D
+        }, V[k.GL_TYPE.SAMPLER_2D_ARRAY] = {
             Type: null,
             size: 0,
             setter: O,
             arraySetter: F,
-            bindPoint: H.GL_TYPE.TEXTURE_2D_ARRAY
-        }, w[H.GL_TYPE.SAMPLER_2D_ARRAY_SHADOW] = {
+            bindPoint: k.GL_TYPE.TEXTURE_2D_ARRAY
+        }, V[k.GL_TYPE.SAMPLER_2D_ARRAY_SHADOW] = {
             Type: null,
             size: 0,
             setter: O,
             arraySetter: F,
-            bindPoint: H.GL_TYPE.TEXTURE_2D_ARRAY
-        }, w[H.GL_TYPE.SAMPLER_CUBE_SHADOW] = {
+            bindPoint: k.GL_TYPE.TEXTURE_2D_ARRAY
+        }, V[k.GL_TYPE.SAMPLER_CUBE_SHADOW] = {
             Type: null,
             size: 0,
             setter: O,
             arraySetter: F,
-            bindPoint: H.GL_TYPE.TEXTURE_CUBE_MAP
-        }, w[H.GL_TYPE.INT_SAMPLER_2D] = {
+            bindPoint: k.GL_TYPE.TEXTURE_CUBE_MAP
+        }, V[k.GL_TYPE.INT_SAMPLER_2D] = {
             Type: null,
             size: 0,
             setter: O,
             arraySetter: F,
-            bindPoint: H.GL_TYPE.TEXTURE_2D
-        }, w[H.GL_TYPE.INT_SAMPLER_3D] = {
+            bindPoint: k.GL_TYPE.TEXTURE_2D
+        }, V[k.GL_TYPE.INT_SAMPLER_3D] = {
             Type: null,
             size: 0,
             setter: O,
             arraySetter: F,
-            bindPoint: H.GL_TYPE.TEXTURE_3D
-        }, w[H.GL_TYPE.INT_SAMPLER_CUBE] = {
+            bindPoint: k.GL_TYPE.TEXTURE_3D
+        }, V[k.GL_TYPE.INT_SAMPLER_CUBE] = {
             Type: null,
             size: 0,
             setter: O,
             arraySetter: F,
-            bindPoint: H.GL_TYPE.TEXTURE_CUBE_MAP
-        }, w[H.GL_TYPE.INT_SAMPLER_2D_ARRAY] = {
+            bindPoint: k.GL_TYPE.TEXTURE_CUBE_MAP
+        }, V[k.GL_TYPE.INT_SAMPLER_2D_ARRAY] = {
             Type: null,
             size: 0,
             setter: O,
             arraySetter: F,
-            bindPoint: H.GL_TYPE.TEXTURE_2D_ARRAY
-        }, w[H.GL_TYPE.UNSIGNED_INT_SAMPLER_2D] = {
+            bindPoint: k.GL_TYPE.TEXTURE_2D_ARRAY
+        }, V[k.GL_TYPE.UNSIGNED_INT_SAMPLER_2D] = {
             Type: null,
             size: 0,
             setter: O,
             arraySetter: F,
-            bindPoint: H.GL_TYPE.TEXTURE_2D
-        }, w[H.GL_TYPE.UNSIGNED_INT_SAMPLER_3D] = {
+            bindPoint: k.GL_TYPE.TEXTURE_2D
+        }, V[k.GL_TYPE.UNSIGNED_INT_SAMPLER_3D] = {
             Type: null,
             size: 0,
             setter: O,
             arraySetter: F,
-            bindPoint: H.GL_TYPE.TEXTURE_3D
-        }, w[H.GL_TYPE.UNSIGNED_INT_SAMPLER_CUBE] = {
+            bindPoint: k.GL_TYPE.TEXTURE_3D
+        }, V[k.GL_TYPE.UNSIGNED_INT_SAMPLER_CUBE] = {
             Type: null,
             size: 0,
             setter: O,
             arraySetter: F,
-            bindPoint: H.GL_TYPE.TEXTURE_CUBE_MAP
-        }, w[H.GL_TYPE.UNSIGNED_INT_SAMPLER_2D_ARRAY] = {
+            bindPoint: k.GL_TYPE.TEXTURE_CUBE_MAP
+        }, V[k.GL_TYPE.UNSIGNED_INT_SAMPLER_2D_ARRAY] = {
             Type: null,
             size: 0,
             setter: O,
             arraySetter: F,
-            bindPoint: H.GL_TYPE.TEXTURE_2D_ARRAY
-        }, w), W = (V = {}, V[H.GL_TYPE.FLOAT] = {
+            bindPoint: k.GL_TYPE.TEXTURE_2D_ARRAY
+        }, V), j = (X = {}, X[k.GL_TYPE.FLOAT] = {
             size: 4,
             setter: b,
             itemSize: 1
-        }, V[H.GL_TYPE.FLOAT_VEC2] = {
+        }, X[k.GL_TYPE.FLOAT_VEC2] = {
             size: 8,
             setter: b,
             itemSize: 2
-        }, V[H.GL_TYPE.FLOAT_VEC3] = {
+        }, X[k.GL_TYPE.FLOAT_VEC3] = {
             size: 12,
             setter: b,
             itemSize: 3
-        }, V[H.GL_TYPE.FLOAT_VEC4] = {
+        }, X[k.GL_TYPE.FLOAT_VEC4] = {
             size: 16,
             setter: b,
             itemSize: 4
-        }, V[H.GL_TYPE.INT] = {
+        }, X[k.GL_TYPE.INT] = {
             size: 4,
             setter: I,
             itemSize: 1
-        }, V[H.GL_TYPE.INT_VEC2] = {
+        }, X[k.GL_TYPE.INT_VEC2] = {
             size: 8,
             setter: I,
             itemSize: 2
-        }, V[H.GL_TYPE.INT_VEC3] = {
+        }, X[k.GL_TYPE.INT_VEC3] = {
             size: 12,
             setter: I,
             itemSize: 3
-        }, V[H.GL_TYPE.INT_VEC4] = {
+        }, X[k.GL_TYPE.INT_VEC4] = {
             size: 16,
             setter: I,
             itemSize: 4
-        }, V[H.GL_TYPE.UNSIGNED_INT] = {
+        }, X[k.GL_TYPE.UNSIGNED_INT] = {
             size: 4,
             setter: I,
             itemSize: 1
-        }, V[H.GL_TYPE.UNSIGNED_INT_VEC2] = {
+        }, X[k.GL_TYPE.UNSIGNED_INT_VEC2] = {
             size: 8,
             setter: I,
             itemSize: 2
-        }, V[H.GL_TYPE.UNSIGNED_INT_VEC3] = {
+        }, X[k.GL_TYPE.UNSIGNED_INT_VEC3] = {
             size: 12,
             setter: I,
             itemSize: 3
-        }, V[H.GL_TYPE.UNSIGNED_INT_VEC4] = {
+        }, X[k.GL_TYPE.UNSIGNED_INT_VEC4] = {
             size: 16,
             setter: I,
             itemSize: 4
-        }, V[H.GL_TYPE.BOOL] = {
+        }, X[k.GL_TYPE.BOOL] = {
             size: 4,
             setter: I,
             itemSize: 1
-        }, V[H.GL_TYPE.BOOL_VEC2] = {
+        }, X[k.GL_TYPE.BOOL_VEC2] = {
             size: 8,
             setter: I,
             itemSize: 2
-        }, V[H.GL_TYPE.BOOL_VEC3] = {
+        }, X[k.GL_TYPE.BOOL_VEC3] = {
             size: 12,
             setter: I,
             itemSize: 3
-        }, V[H.GL_TYPE.BOOL_VEC4] = {
+        }, X[k.GL_TYPE.BOOL_VEC4] = {
             size: 16,
             setter: I,
             itemSize: 4
-        }, V[H.GL_TYPE.FLOAT_MAT2] = {
+        }, X[k.GL_TYPE.FLOAT_MAT2] = {
             size: 4,
             setter: Y,
             count: 2
-        }, V[H.GL_TYPE.FLOAT_MAT3] = {
+        }, X[k.GL_TYPE.FLOAT_MAT3] = {
             size: 9,
             setter: Y,
             count: 3
-        }, V[H.GL_TYPE.FLOAT_MAT4] = {
+        }, X[k.GL_TYPE.FLOAT_MAT4] = {
             size: 16,
             setter: Y,
             count: 4
-        }, V);
-        X = {}, X[H.GL_TYPE.BYTE] = Int8Array, X[H.GL_TYPE.UNSIGNED_BYTE] = Uint8Array, 
-        X[H.GL_TYPE.SHORT] = Int16Array, X[H.GL_TYPE.UNSIGNED_SHORT] = Uint16Array, X[H.GL_TYPE.INT] = Int32Array, 
-        X[H.GL_TYPE.UNSIGNED_INT] = Uint32Array, X[H.GL_TYPE.FLOAT] = Float32Array, X[H.GL_TYPE.UNSIGNED_SHORT_4_4_4_4] = Uint16Array, 
-        X[H.GL_TYPE.UNSIGNED_SHORT_5_5_5_1] = Uint16Array, X[H.GL_TYPE.UNSIGNED_SHORT_5_6_5] = Uint16Array, 
-        X[H.GL_TYPE.HALF_FLOAT] = Uint16Array, X[H.GL_TYPE.UNSIGNED_INT_2_10_10_10_REV] = Uint32Array, 
-        X[H.GL_TYPE.UNSIGNED_INT_10F_11F_11F_REV] = Uint32Array, X[H.GL_TYPE.UNSIGNED_INT_5_9_9_9_REV] = Uint32Array, 
-        X[H.GL_TYPE.FLOAT_32_UNSIGNED_INT_24_8_REV] = Uint32Array, X[H.GL_TYPE.UNSIGNED_INT_24_8] = Uint32Array;
+        }, X);
+        H = {}, H[k.GL_TYPE.BYTE] = Int8Array, H[k.GL_TYPE.UNSIGNED_BYTE] = Uint8Array, 
+        H[k.GL_TYPE.SHORT] = Int16Array, H[k.GL_TYPE.UNSIGNED_SHORT] = Uint16Array, H[k.GL_TYPE.INT] = Int32Array, 
+        H[k.GL_TYPE.UNSIGNED_INT] = Uint32Array, H[k.GL_TYPE.FLOAT] = Float32Array, H[k.GL_TYPE.UNSIGNED_SHORT_4_4_4_4] = Uint16Array, 
+        H[k.GL_TYPE.UNSIGNED_SHORT_5_5_5_1] = Uint16Array, H[k.GL_TYPE.UNSIGNED_SHORT_5_6_5] = Uint16Array, 
+        H[k.GL_TYPE.HALF_FLOAT] = Uint16Array, H[k.GL_TYPE.UNSIGNED_INT_2_10_10_10_REV] = Uint32Array, 
+        H[k.GL_TYPE.UNSIGNED_INT_10F_11F_11F_REV] = Uint32Array, H[k.GL_TYPE.UNSIGNED_INT_5_9_9_9_REV] = Uint32Array, 
+        H[k.GL_TYPE.FLOAT_32_UNSIGNED_INT_24_8_REV] = Uint32Array, H[k.GL_TYPE.UNSIGNED_INT_24_8] = Uint32Array;
     }, function(e, t, r) {
         "use strict";
         function n(e) {
@@ -743,21 +750,21 @@
     }, function(e, t, r) {
         "use strict";
         function n(e, t, r, n) {
-            var i, a, u = e / 2, f = t / 2, o = r || 1, _ = n || 1, T = o + 1, E = _ + 1, s = e / o, l = t / _, c = new Float32Array(T * E * 3), A = new Float32Array(T * E * 3), R = new Float32Array(T * E * 2), d = 0, P = 0;
+            var i, a, u = e / 2, f = t / 2, o = r || 1, _ = n || 1, T = o + 1, E = _ + 1, s = e / o, l = t / _, c = new Float32Array(T * E * 3), A = new Float32Array(T * E * 3), d = new Float32Array(T * E * 2), R = 0, P = 0;
             for (i = 0; i < E; i++) {
                 var L = i * l - f;
                 for (a = 0; a < T; a++) {
                     var S = a * s - u;
-                    c[d] = S, c[d + 1] = -L, A[d + 2] = 1, R[P] = a / o, R[P + 1] = 1 - i / _, d += 3, 
+                    c[R] = S, c[R + 1] = -L, A[R + 2] = 1, d[P] = a / o, d[P + 1] = 1 - i / _, R += 3, 
                     P += 2;
                 }
             }
-            d = 0;
+            R = 0;
             var m = new (c.length / 3 > 65535 ? Uint32Array : Uint16Array)(o * _ * 6);
             for (i = 0; i < _; i++) for (a = 0; a < o; a++) {
-                var G = a + T * i, p = a + T * (i + 1), y = a + 1 + T * (i + 1), N = a + 1 + T * i;
-                m[d] = G, m[d + 1] = p, m[d + 2] = N, m[d + 3] = p, m[d + 4] = y, m[d + 5] = N, 
-                d += 6;
+                var y = a + T * i, G = a + T * (i + 1), p = a + 1 + T * (i + 1), N = a + 1 + T * i;
+                m[R] = y, m[R + 1] = G, m[R + 2] = N, m[R + 3] = G, m[R + 4] = p, m[R + 5] = N, 
+                R += 6;
             }
             return {
                 attribs: {
@@ -768,7 +775,7 @@
                         buffer: A
                     },
                     uv: {
-                        buffer: R
+                        buffer: d
                     }
                 },
                 elements: {
@@ -845,13 +852,21 @@
                     t.width = i.width, t.height = i.height, t.textureConfig = {
                         count: 1,
                         type: e.UNSIGNED_BYTE
-                    }, l.g(e, t, A.defaultTextureSettings);
+                    }, l.h(e, t, A.defaultTextureSettings);
                 }), a;
             };
-            return f(1, !0), {
+            f(1, !0);
+            var R = function() {
+                u.destroy();
+                for (var r = 0, n = t; r < n.length; r++) {
+                    var i = n[r];
+                    l.d(e, i);
+                }
+            };
+            return {
                 gl: e,
                 updateDrawSettings: function(t) {
-                    return l.a(e, R({}, r, t));
+                    return l.a(e, d({}, r, t));
                 },
                 createForm: function() {
                     return _.a(e);
@@ -881,7 +896,8 @@
                     for (var r = [], n = 0; n < arguments.length; n++) r[n] = arguments[n];
                     return o(e, r, t, u);
                 },
-                resize: f
+                resize: f,
+                destroy: R
             };
         }
         function i(e, t, r, n) {
@@ -891,7 +907,7 @@
                 var c = s[E];
                 a(e, t, r, c);
             } else a(e, t, r, o);
-            T && l.e(e, T);
+            T && l.f(e, T);
         }
         function a(e, t, r, n) {
             n && f(t.shade, n, r), t.form.elements && null != t.form.elements.glType ? (e.bindBuffer(e.ELEMENT_ARRAY_BUFFER, t.form.elements.buffer), 
@@ -925,7 +941,7 @@
                     } else i(e, n, null, {
                         source: f.texture()
                     });
-                    f.data.drawSettings && l.e(e, f.data.drawSettings), _ && (r[0] = o, r[1] = u);
+                    f.data.drawSettings && l.f(e, f.data.drawSettings), _ && (r[0] = o, r[1] = u);
                 };
                 if (Array.isArray(f.uniforms)) for (var _ = a + f.uniforms.length - 1, T = 0; T < f.uniforms.length; T++) {
                     var E = u + T === _;
@@ -939,7 +955,7 @@
         Object.defineProperty(t, "__esModule", {
             value: !0
         }), t.create = n;
-        var _ = r(8), T = r(9), E = r(10), s = r(11), l = r(1), c = r(2), A = r(3), R = this && this.__assign || Object.assign || function(e) {
+        var _ = r(8), T = r(9), E = r(10), s = r(11), l = r(1), c = r(2), A = r(3), d = this && this.__assign || Object.assign || function(e) {
             for (var t, r = 1, n = arguments.length; r < n; r++) {
                 t = arguments[r];
                 for (var i in t) Object.prototype.hasOwnProperty.call(t, i) && (e[i] = t[i]);
@@ -964,11 +980,11 @@
                     null == t.elements && (t.elements = {
                         buffer: e.createBuffer(),
                         glType: null
-                    }), t.elements.glType = i.d(f), e.bindBuffer(e.ELEMENT_ARRAY_BUFFER, t.elements.buffer), 
+                    }), t.elements.glType = i.e(f), e.bindBuffer(e.ELEMENT_ARRAY_BUFFER, t.elements.buffer), 
                     e.bufferData(e.ELEMENT_ARRAY_BUFFER, f, e[(r.elements.storeType || "STATIC") + "_DRAW"]);
                 }
                 return t;
-            }, t.delete = function() {
+            }, t.destroy = function() {
                 for (var r in t.attribs) e.deleteBuffer(t.attribs[r].buffer);
                 return t.elements && e.deleteBuffer(t.elements.buffer), t;
             }, t;
@@ -996,9 +1012,8 @@
                 }
                 return t.uniformSetters = a.c(e, t.program), t.attributeSetters = a.b(e, t.program), 
                 t.fragSource = n, t.vertSource = u, t;
-            }, t.delete = function() {
-                return e.deleteProgram(t.program), e.deleteShader(t.frag), e.deleteShader(t.vert), 
-                t;
+            }, t.destroy = function() {
+                e.deleteProgram(t.program), e.deleteShader(t.frag), e.deleteShader(t.vert);
             }, t;
         }
         function i(e) {
@@ -1015,21 +1030,23 @@
             return e.update = function(t) {
                 return t.drawSettings && (e.drawSettings = t.drawSettings), t.form && (e.form = t.form), 
                 t.shade && (e.shade = t.shade), t.uniforms && (e.uniforms = t.uniforms), e;
+            }, e.destroy = function() {
+                e.form.destroy(), e.shade.destroy();
             }, e;
         }
         t.a = n;
     }, function(e, t, r) {
         "use strict";
         function n(e) {
-            var t = {};
-            t.textures = [], t.data = {}, t.texture = function(e) {
-                return void 0 === e && (e = 0), t.textures[e];
-            };
-            var r = e.createTexture();
-            return r && t.textures.push(r), t.update = function(r) {
-                return e.bindTexture(e.TEXTURE_2D, t.textures[0]), a.f(e, r, t.data), r.asset && e.texImage2D(e.TEXTURE_2D, 0, e.RGBA, e.RGBA, e.UNSIGNED_BYTE, r.asset), 
-                r.minFilter && r.minFilter.indexOf("MIPMAP") > 0 && e.generateMipmap(e.TEXTURE_2D), 
-                e.bindTexture(e.TEXTURE_2D, null), Object.assign(t.data, r), t;
+            var t = {}, r = e.createTexture();
+            return t.textures = [ r ], t.data = {}, t.texture = function() {
+                return r;
+            }, t.update = function(n) {
+                return e.bindTexture(e.TEXTURE_2D, r), a.g(e, n, t.data), n.asset && e.texImage2D(e.TEXTURE_2D, 0, e.RGBA, e.RGBA, e.UNSIGNED_BYTE, n.asset), 
+                n.minFilter && n.minFilter.indexOf("MIPMAP") > 0 && e.generateMipmap(e.TEXTURE_2D), 
+                e.bindTexture(e.TEXTURE_2D, null), Object.assign(t.data, n), t;
+            }, t.destroy = function() {
+                e.deleteTexture(r);
             }, t;
         }
         function i(e) {
@@ -1047,8 +1064,8 @@
                         type: r.textureConfig && r.textureConfig.type || e.UNSIGNED_BYTE,
                         count: r.textureConfig && r.textureConfig.count || 1
                     }
-                }, a.g(e, t.target, r, t.data), t.textures = t.target.textures) : t.target && r.width && r.height && (t.target.width = r.width, 
-                t.target.height = r.height, a.g(e, t.target, r, t.data)), r.sketches && (t.sketches = r.sketches), 
+                }, a.h(e, t.target, r, t.data), t.textures = t.target.textures) : t.target && r.width && r.height && (t.target.width = r.width, 
+                t.target.height = r.height, a.h(e, t.target, r, t.data)), r.sketches && (t.sketches = r.sketches), 
                 r.frag) {
                     var n = t.sketches && t.sketches[0];
                     n && n.shade.update({
@@ -1056,13 +1073,11 @@
                     });
                 }
                 return r.uniforms && (t.uniforms = r.uniforms), Object.assign(t.data, r), t;
-            }, t.delete = function() {
-                for (var r = 0, n = t.textures; r < n.length; r++) {
+            }, t.destroy = function() {
+                if (t.target) a.d(e, t.target); else for (var r = 0, n = t.textures; r < n.length; r++) {
                     var i = n[r];
                     e.deleteTexture(i);
                 }
-                return t.target && (e.deleteFramebuffer(t.target.frameBuffer), e.deleteRenderbuffer(t.target.depthBuffer)), 
-                t;
             }, t;
         }
         t.b = n, t.a = i;

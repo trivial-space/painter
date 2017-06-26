@@ -34,7 +34,7 @@ export function create(gl) {
         }
         return form;
     };
-    form.delete = function () {
+    form.destroy = function () {
         for (var id in form.attribs) {
             gl.deleteBuffer(form.attribs[id].buffer);
         }

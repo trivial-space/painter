@@ -473,6 +473,14 @@ export function updateRenderTarget(gl, target, data, oldData) {
     gl.bindTexture(gl.TEXTURE_2D, null);
     gl.bindRenderbuffer(gl.RENDERBUFFER, null);
 }
+export function destroyRenderTarget(gl, target) {
+    gl.deleteFramebuffer(target.frameBuffer);
+    gl.deleteRenderbuffer(target.depthBuffer);
+    for (var _i = 0, _a = target.textures; _i < _a.length; _i++) {
+        var texture = _a[_i];
+        gl.deleteTexture(texture);
+    }
+}
 // Settings
 export function applyDrawSettings(gl, settings) {
     if (settings.enable) {

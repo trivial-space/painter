@@ -3,7 +3,7 @@ import * as form from './form'
 import * as shade from './shade'
 import * as sketch from './sketch'
 import * as layer from './layer'
-import { updateRenderTarget, applyDrawSettings, revertDrawSettings } from './render-utils'
+import { updateRenderTarget, applyDrawSettings, revertDrawSettings, destroyRenderTarget } from './render-utils'
 import { resizeCanvas } from './utils/context'
 import { defaultForms, defaultShaders, defaultTextureSettings, getDefaultLayerSettings } from './asset-lib'
 
@@ -48,6 +48,13 @@ export function create (gl: WebGLRenderingContext): Painter {
 
 	resize(1, true)
 
+	const destroy = () => {
+		result.destroy()
+		for (const target of targets) {
+			destroyRenderTarget(gl, target)
+		}
+	}
+
 	return {
 		gl,
 		updateDrawSettings: (drawSettings?: DrawSettings) => applyDrawSettings(gl, {
@@ -66,7 +73,7 @@ export function create (gl: WebGLRenderingContext): Painter {
 		draw: (sketch: Sketch, globalUniforms?: Uniforms) =>
 			draw(gl, sketch, null, globalUniforms),
 		compose: (...layers: Layer[]) => composeLayers(gl, layers, targets, result),
-		resize
+		resize, destroy
 	}
 }
 

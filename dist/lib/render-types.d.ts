@@ -45,7 +45,7 @@ export interface Form {
         glType: number | null;
     };
     update: (FormData) => Form;
-    delete: () => Form;
+    destroy: () => void;
 }
 export interface ShadeData {
     vert?: string;
@@ -72,7 +72,7 @@ export interface Shade {
         [id: string]: AttribSetter;
     };
     update: (ShadeData) => Shade;
-    delete: () => Shade;
+    destroy: () => void;
 }
 export declare type Uniforms = {
     [id: string]: any;
@@ -103,6 +103,7 @@ export interface Sketch {
     shade: Shade;
     uniforms: Uniforms;
     update: (data: SketchData) => Sketch;
+    destroy: () => void;
 }
 export declare type MagFilter = 'LINEAR' | 'NEAREST';
 export declare type MinFilter = MagFilter | 'LINEAR_MIPMAP_LINEAR' | 'LINEAR_MIPMAP_NEAREST' | 'NEAREST_MIPMAP_LINEAR' | 'NEAREST_MIPMAP_NEAREST';
@@ -141,7 +142,7 @@ export interface Layer {
     sketches?: Sketch[];
     texture: (index?: number) => WebGLTexture | null;
     update: (LayerData) => Layer;
-    delete: () => Layer;
+    destroy: () => void;
 }
 export interface Painter {
     gl: GL;
@@ -156,4 +157,5 @@ export interface Painter {
     draw: (sketchApi: Sketch, globalUniforms?: Uniforms) => void;
     compose: (...layers: Layer[]) => void;
     resize: (multiplier?: number) => boolean;
+    destroy: () => void;
 }

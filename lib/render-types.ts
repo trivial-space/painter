@@ -83,7 +83,7 @@ export interface Form {
 	}
 
 	update: (FormData) => Form
-	delete: () => Form
+	destroy: () => void
 }
 
 
@@ -114,7 +114,7 @@ export interface Shade {
 	attributeSetters: { [id: string]: AttribSetter }
 
 	update: (ShadeData) => Shade
-	delete: () => Shade
+	destroy: () => void
 }
 
 
@@ -151,6 +151,7 @@ export interface Sketch {
 	uniforms: Uniforms
 
 	update: (data: SketchData) => Sketch
+	destroy: () => void
 }
 
 
@@ -204,7 +205,7 @@ export interface Layer {
 
 	texture: (index?: number) => WebGLTexture | null
 	update: (LayerData) => Layer
-	delete: () => Layer
+	destroy: () => void
 }
 
 
@@ -223,4 +224,5 @@ export interface Painter {
 	draw: (sketchApi: Sketch, globalUniforms?: Uniforms) => void
 	compose: (...layers: Layer[]) => void
 	resize: (multiplier?: number) => boolean
+	destroy: () => void
 }

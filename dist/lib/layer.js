@@ -1,18 +1,12 @@
-import { setTextureParams, updateRenderTarget } from './render-utils';
+import { setTextureParams, updateRenderTarget, destroyRenderTarget } from './render-utils';
 export function createStatic(gl) {
     var layer = {};
-    layer.textures = [],
-        layer.data = {};
-    layer.texture = function (i) {
-        if (i === void 0) { i = 0; }
-        return layer.textures[i];
-    };
     var texture = gl.createTexture();
-    if (texture) {
-        layer.textures.push(texture);
-    }
+    layer.textures = [texture],
+        layer.data = {};
+    layer.texture = function () { return texture; };
     layer.update = function (data) {
-        gl.bindTexture(gl.TEXTURE_2D, layer.textures[0]);
+        gl.bindTexture(gl.TEXTURE_2D, texture);
         setTextureParams(gl, data, layer.data);
         if (data.asset) {
             gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, data.asset);
@@ -23,6 +17,9 @@ export function createStatic(gl) {
         gl.bindTexture(gl.TEXTURE_2D, null);
         Object.assign(layer.data, data);
         return layer;
+    };
+    layer.destroy = function () {
+        gl.deleteTexture(texture);
     };
     return layer;
 }
@@ -68,16 +65,16 @@ export function createDrawing(gl) {
         Object.assign(layer.data, data);
         return layer;
     };
-    layer.delete = function () {
-        for (var _i = 0, _a = layer.textures; _i < _a.length; _i++) {
-            var texture = _a[_i];
-            gl.deleteTexture(texture);
-        }
+    layer.destroy = function () {
         if (layer.target) {
-            gl.deleteFramebuffer(layer.target.frameBuffer);
-            gl.deleteRenderbuffer(layer.target.depthBuffer);
+            destroyRenderTarget(gl, layer.target);
         }
-        return layer;
+        else {
+            for (var _i = 0, _a = layer.textures; _i < _a.length; _i++) {
+                var texture = _a[_i];
+                gl.deleteTexture(texture);
+            }
+        }
     };
     return layer;
 }

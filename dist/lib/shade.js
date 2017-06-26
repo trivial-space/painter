@@ -38,11 +38,10 @@ export function create(gl) {
         shade.vertSource = vert;
         return shade;
     };
-    shade.delete = function () {
+    shade.destroy = function () {
         gl.deleteProgram(shade.program);
         gl.deleteShader(shade.frag);
         gl.deleteShader(shade.vert);
-        return shade;
     };
     return shade;
 }

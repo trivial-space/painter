@@ -12,5 +12,6 @@ export declare function getGLTypeForTypedArray(typedArray: any): number;
 export declare function getGLTypeForTypedArrayType(typedArrayType: any): number;
 export declare function setTextureParams(gl: GL, data?: TextureData, oldData?: TextureData): void;
 export declare function updateRenderTarget(gl: GL, target: RenderTarget, data?: TextureData, oldData?: TextureData): void;
+export declare function destroyRenderTarget(gl: GL, target: RenderTarget): void;
 export declare function applyDrawSettings(gl: GL, settings: DrawSettings): void;
 export declare function revertDrawSettings(gl: GL, settings: DrawSettings): void;
