@@ -43,7 +43,7 @@ export function create (gl: WebGLRenderingContext): Painter {
 			})
 		}
 
-		return needUpdate
+		return painter
 	}
 
 	resize(1, true)
@@ -55,12 +55,12 @@ export function create (gl: WebGLRenderingContext): Painter {
 		}
 	}
 
-	return {
+	const painter = {
 		gl,
-		updateDrawSettings: (drawSettings?: DrawSettings) => applyDrawSettings(gl, {
-			...defaultSettings,
-			...drawSettings
-		}),
+		updateDrawSettings: (drawSettings?: DrawSettings) => {
+			applyDrawSettings(gl, { ...defaultSettings, ...drawSettings })
+			return painter
+		},
 		createForm: () => form.create(gl),
 		createShade: () => shade.create(gl),
 		createSketch: () => sketch.create(),
@@ -70,11 +70,18 @@ export function create (gl: WebGLRenderingContext): Painter {
 		createEffectLayer: () => layer.createDrawing(gl).update({
 			sketches: [createFlatSketch()]
 		}),
-		draw: (sketch: Sketch, globalUniforms?: Uniforms) =>
-			draw(gl, sketch, null, globalUniforms),
-		compose: (...layers: Layer[]) => composeLayers(gl, layers, targets, result),
+		draw: (sketch: Sketch, globalUniforms?: Uniforms) => {
+			draw(gl, sketch, null, globalUniforms)
+			return painter
+		},
+		compose: (...layers: Layer[]) => {
+			composeLayers(gl, layers, targets, result)
+			return painter
+		},
 		resize, destroy
 	}
+
+	return painter
 }
 
 

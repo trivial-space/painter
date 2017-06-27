@@ -41,7 +41,7 @@ export function create(gl) {
                 updateRenderTarget(gl, t, defaultTextureSettings);
             });
         }
-        return needUpdate;
+        return painter;
     };
     resize(1, true);
     var destroy = function () {
@@ -51,9 +51,12 @@ export function create(gl) {
             destroyRenderTarget(gl, target);
         }
     };
-    return {
+    var painter = {
         gl: gl,
-        updateDrawSettings: function (drawSettings) { return applyDrawSettings(gl, __assign({}, defaultSettings, drawSettings)); },
+        updateDrawSettings: function (drawSettings) {
+            applyDrawSettings(gl, __assign({}, defaultSettings, drawSettings));
+            return painter;
+        },
         createForm: function () { return form.create(gl); },
         createShade: function () { return shade.create(gl); },
         createSketch: function () { return sketch.create(); },
@@ -64,17 +67,20 @@ export function create(gl) {
             sketches: [createFlatSketch()]
         }); },
         draw: function (sketch, globalUniforms) {
-            return draw(gl, sketch, null, globalUniforms);
+            draw(gl, sketch, null, globalUniforms);
+            return painter;
         },
         compose: function () {
             var layers = [];
             for (var _i = 0; _i < arguments.length; _i++) {
                 layers[_i] = arguments[_i];
             }
-            return composeLayers(gl, layers, targets, result);
+            composeLayers(gl, layers, targets, result);
+            return painter;
         },
         resize: resize, destroy: destroy
     };
+    return painter;
 }
 function draw(gl, sketch, defaultTexture, globalUniforms) {
     var shade = sketch.shade, uniforms = sketch.uniforms, form = sketch.form, drawSettings = sketch.drawSettings;

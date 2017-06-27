@@ -213,7 +213,7 @@ export interface Layer {
 
 export interface Painter {
 	gl: GL,
-	updateDrawSettings: (drawSettings?: DrawSettings) => void
+	updateDrawSettings: (drawSettings?: DrawSettings) => Painter
 	createForm: () => Form
 	createShade: () => Shade
 	createSketch: () => Sketch
@@ -221,8 +221,8 @@ export interface Painter {
 	createStaticLayer: () => Layer
 	createDrawingLayer: () => Layer
 	createEffectLayer: () => Layer
-	draw: (sketchApi: Sketch, globalUniforms?: Uniforms) => void
-	compose: (...layers: Layer[]) => void
-	resize: (multiplier?: number) => boolean
+	draw: (sketchApi: Sketch, globalUniforms?: Uniforms) => Painter
+	compose: (...layers: Layer[]) => Painter
+	resize: (multiplier?: number) => Painter
 	destroy: () => void
 }

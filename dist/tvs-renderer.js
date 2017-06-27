@@ -847,13 +847,13 @@
                 });
             }, u = a(), f = function(r, n) {
                 void 0 === r && (r = 1), void 0 === n && (n = !1);
-                var i = e.canvas, a = c.resizeCanvas(i, r);
-                return (a || n) && t.forEach(function(t) {
+                var i = e.canvas;
+                return (c.resizeCanvas(i, r) || n) && t.forEach(function(t) {
                     t.width = i.width, t.height = i.height, t.textureConfig = {
                         count: 1,
                         type: e.UNSIGNED_BYTE
                     }, l.h(e, t, A.defaultTextureSettings);
-                }), a;
+                }), P;
             };
             f(1, !0);
             var R = function() {
@@ -862,11 +862,10 @@
                     var i = n[r];
                     l.d(e, i);
                 }
-            };
-            return {
+            }, P = {
                 gl: e,
                 updateDrawSettings: function(t) {
-                    return l.a(e, d({}, r, t));
+                    return l.a(e, d({}, r, t)), P;
                 },
                 createForm: function() {
                     return _.a(e);
@@ -890,15 +889,16 @@
                     });
                 },
                 draw: function(t, r) {
-                    return i(e, t, null, r);
+                    return i(e, t, null, r), P;
                 },
                 compose: function() {
                     for (var r = [], n = 0; n < arguments.length; n++) r[n] = arguments[n];
-                    return o(e, r, t, u);
+                    return o(e, r, t, u), P;
                 },
                 resize: f,
                 destroy: R
             };
+            return P;
         }
         function i(e, t, r, n) {
             var i = t.shade, o = t.uniforms, _ = t.form, T = t.drawSettings;
