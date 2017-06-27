@@ -3,7 +3,7 @@
 		"no-unused-expression": true,
 		"no-duplicate-variable": true,
 		"no-unused-variable": true,
-		"curly": true,
+		"curly": [true, "ignore-same-line"],
 		"class-name": true,
 		"semicolon": [
 			true,
@@ -22,6 +22,18 @@
 		"no-var-keyword": true,
 		"trailing-comma": [ true, {"multiline": "never", "singleline": "never"} ],
 		"prefer-for-of": true,
-		"prefer-const": true
+		"prefer-const": true,
+		"no-unused-expression": false,
+		"whitespace": [
+			true,
+			"check-branch",
+			"check-decl",
+			"check-module",
+			"check-operator",
+			"check-preblock",
+			"check-separator",
+			"check-type",
+			"check-typecast"
+		]
 	}
 }
