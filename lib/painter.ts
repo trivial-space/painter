@@ -174,7 +174,7 @@ function composeLayers (gl: GL, layers: Layer[], targets: RenderTarget[], result
 	for (let i = 0; i < layers.length; i++) {
 		const layer = layers[i]
 
-		const render = (uniforms, directRender: boolean) => {
+		const render = (uniforms: Uniforms | undefined, directRender: boolean) => {
 			const source = targets[0]
 			const target = targets[1]
 			const renderToStack = !directRender && layer.target == null

@@ -30,7 +30,7 @@ const layer = painter.createEffectLayer().update({
 
 const texture = painter.createStaticLayer().update({
 	minFilter: 'LINEAR',
-	magfilter: 'LINEAR'
+	magFilter: 'LINEAR'
 })
 
 

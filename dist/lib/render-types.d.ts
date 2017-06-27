@@ -44,7 +44,7 @@ export interface Form {
         buffer: WebGLBuffer | null;
         glType: number | null;
     };
-    update: (FormData) => Form;
+    update: (data: FormData) => Form;
     destroy: () => void;
 }
 export interface ShadeData {
@@ -71,7 +71,7 @@ export interface Shade {
     attributeSetters: {
         [id: string]: AttribSetter;
     };
-    update: (ShadeData) => Shade;
+    update: (data: ShadeData) => Shade;
     destroy: () => void;
 }
 export declare type Uniforms = {
@@ -141,7 +141,7 @@ export interface Layer {
     uniforms?: Uniforms;
     sketches?: Sketch[];
     texture: (index?: number) => WebGLTexture | null;
-    update: (LayerData) => Layer;
+    update: (data: LayerData) => Layer;
     destroy: () => void;
 }
 export interface Painter {

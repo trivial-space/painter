@@ -82,7 +82,7 @@ export interface Form {
 		glType: number | null
 	}
 
-	update: (FormData) => Form
+	update: (data: FormData) => Form
 	destroy: () => void
 }
 
@@ -113,7 +113,7 @@ export interface Shade {
 	uniformSetters: { [id: string]: UniformSetter }
 	attributeSetters: { [id: string]: AttribSetter }
 
-	update: (ShadeData) => Shade
+	update: (data: ShadeData) => Shade
 	destroy: () => void
 }
 
@@ -204,7 +204,7 @@ export interface Layer {
 	sketches?: Sketch[]
 
 	texture: (index?: number) => WebGLTexture | null
-	update: (LayerData) => Layer
+	update: (data: LayerData) => Layer
 	destroy: () => void
 }
 

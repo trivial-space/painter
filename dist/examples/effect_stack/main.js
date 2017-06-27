@@ -24,7 +24,7 @@ var layer = painter.createEffectLayer().update({
 });
 var texture = painter.createStaticLayer().update({
     minFilter: 'LINEAR',
-    magfilter: 'LINEAR'
+    magFilter: 'LINEAR'
 });
 var img = new Image();
 img.onload = function () {

@@ -15,7 +15,7 @@ mat4.rotateY(planMat2, planMat2, Math.PI / 2);
 // ===== Setup Render Context =====
 var texture = painter.createStaticLayer().update({
     minFilter: 'LINEAR',
-    magfilter: 'LINEAR'
+    magFilter: 'LINEAR'
 });
 var effect = painter.createEffectLayer().update({
     frag: effectFrag,

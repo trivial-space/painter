@@ -432,12 +432,12 @@ export function updateRenderTarget(gl, target, data, oldData) {
     }
     var texCount = target.textureConfig.count;
     if (texCount > 1) {
-        var glDB_1 = gl.getExtension('WEBGL_draw_buffers');
-        var bufferAttachments_1 = [];
+        var glDB = gl.getExtension('WEBGL_draw_buffers');
+        var bufferAttachments = [];
         for (var i = 0; i < texCount; i++) {
-            bufferAttachments_1.push(glDB_1["COLOR_ATTACHMENT" + i + "_WEBGL"]);
+            bufferAttachments.push(glDB["COLOR_ATTACHMENT" + i + "_WEBGL"]);
         }
-        glDB_1.drawBuffersWEBGL(bufferAttachments_1);
+        glDB.drawBuffersWEBGL(bufferAttachments);
         for (var i = 0; i < texCount; i++) {
             if (target.textures[i] == null) {
                 target.textures[i] = gl.createTexture();
@@ -446,7 +446,7 @@ export function updateRenderTarget(gl, target, data, oldData) {
             gl.bindTexture(gl.TEXTURE_2D, texture);
             gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, target.width, target.height, 0, gl.RGBA, target.textureConfig.type, null);
             setTextureParams(gl, data, oldData);
-            gl.framebufferTexture2D(gl.FRAMEBUFFER, bufferAttachments_1[i], gl.TEXTURE_2D, texture, 0);
+            gl.framebufferTexture2D(gl.FRAMEBUFFER, bufferAttachments[i], gl.TEXTURE_2D, texture, 0);
         }
     }
     else {

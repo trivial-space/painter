@@ -1,4 +1,4 @@
-import { mat4, quat } from 'gl-matrix'
+import { mat4, quat, GLVec } from 'gl-matrix'
 import { painter, gl } from '../painter'
 import { makeClear } from '../../lib/utils/context'
 
@@ -13,7 +13,13 @@ painter.updateDrawSettings({
 })
 
 
-const dimensions: any = []
+interface Dimension {
+	pos: number[]
+	scale: number[],
+	rot: GLVec
+}
+
+const dimensions: Dimension[] = []
 for (let i = 0; i < triangleCount; i++) {
 	const q = quat.create()
 	const scale = Math.random() * 5 + 1
@@ -93,4 +99,4 @@ function animate () {
 
 animate()
 
-window['gl'] = gl
+; (window as any)['gl'] = gl

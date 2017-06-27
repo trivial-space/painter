@@ -22,7 +22,7 @@ mat4.rotateY(planMat2, planMat2, Math.PI / 2)
 
 const texture = painter.createStaticLayer().update({
 	minFilter: 'LINEAR',
-	magfilter: 'LINEAR'
+	magFilter: 'LINEAR'
 })
 
 const effect = painter.createEffectLayer().update({

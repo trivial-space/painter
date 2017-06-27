@@ -80,7 +80,7 @@ var lights = [
 ];
 var texture = painter.createStaticLayer().update({
     minFilter: 'LINEAR',
-    magfilter: 'LINEAR'
+    magFilter: 'LINEAR'
 });
 var lightLayer = painter.createEffectLayer().update({
     frag: mainFrag,

@@ -97,7 +97,7 @@ const lights = [
 
 const texture = painter.createStaticLayer().update({
 	minFilter: 'LINEAR',
-	magfilter: 'LINEAR'
+	magFilter: 'LINEAR'
 })
 
 
