@@ -24,6 +24,7 @@ const geoForm = painter.createForm().update(cubeGeometry)
 
 
 // CAMERA STUFF
+
 const projMatrix = mat4.create()
 mat4.perspective(projMatrix, Math.PI / 2, gl.canvas.width / gl.canvas.height, 0.1, 10.0)
 
@@ -33,6 +34,8 @@ mat4.lookAt(viewMatrix, eyePosition, vec3.fromValues(0, 0, 0), vec3.fromValues(0
 
 const viewProjMatrix = mat4.create()
 mat4.multiply(viewProjMatrix, projMatrix, viewMatrix)
+
+
 // BOX DESCRIPTIONS FOR GEO PASS
 
 const box1 = mat4.create()
