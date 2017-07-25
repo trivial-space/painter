@@ -1,7 +1,7 @@
 # trivial space painter
 
 A library that enables to declaratively define and change WebGL scenes.
-Optimized for live reload and post processing.
+Optimized for live coding and post processing.
 
 Developed and build for usage with TypeScript.
 
@@ -17,10 +17,10 @@ within the repository. The development server with the examples runs on `localho
 
 The API is defined in [lib/painter-types.ts](https://github.com/trivial-space/painter/blob/master/lib/painter-types.ts).
 
-Painter is used primarily in the [trivial space playground](https://github.com/trivial-space/playground) to experiment with graphics inside browsers. Check it out for further examples.
+Painter is used primarily in the [trivial space playground](https://github.com/trivial-space/playground) to experiment with live coding graphics inside browsers. Check it out for further examples.
 
-## Licence
+## License
 
-MIT, see the LICENCE file in the repository.
+MIT, see the LICENSE file in the repository.
 
 Copyright (c) 2016 - 2017 Thomas Gorny
