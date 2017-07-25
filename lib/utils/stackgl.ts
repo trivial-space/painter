@@ -1,5 +1,5 @@
 import * as constants from '../contants'
-import { FormData, FormDrawType } from '../render-types'
+import { FormData, FormDrawType } from '../painter-types'
 
 
 export const STACK_GL_GEOMETRY_PROP_POSITION = 'positions'

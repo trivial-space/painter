@@ -1,2 +1,2 @@
-import { Sketch } from './render-types';
+import { Sketch } from './painter-types';
 export declare function create(): Sketch;

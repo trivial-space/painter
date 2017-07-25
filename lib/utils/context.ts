@@ -1,4 +1,4 @@
-import { GL } from '../render-types'
+import { GL } from '../painter-types'
 
 
 export function getContext (canvas: HTMLCanvasElement) {

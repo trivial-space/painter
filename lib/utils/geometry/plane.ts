@@ -1,4 +1,4 @@
-import { FormData } from '../../render-types'
+import { FormData } from '../../painter-types'
 
 
 export function plane (

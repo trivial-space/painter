@@ -1,4 +1,4 @@
-import { GL, Layer, LayerData, RenderTarget } from './render-types'
+import { GL, Layer, LayerData, RenderTarget } from './painter-types'
 import { setTextureParams, updateRenderTarget, destroyRenderTarget } from './render-utils'
 
 

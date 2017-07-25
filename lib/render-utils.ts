@@ -1,4 +1,4 @@
-import { GL, AttribContext, AttribSetter, UniformSetter, TextureData, RenderTarget, Wrap, DrawSettings } from './render-types'
+import { GL, AttribContext, AttribSetter, UniformSetter, TextureData, RenderTarget, Wrap, DrawSettings } from './painter-types'
 import { GL_TYPE } from './contants'
 
 

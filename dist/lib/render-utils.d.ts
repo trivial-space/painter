@@ -1,4 +1,4 @@
-import { GL, AttribSetter, UniformSetter, TextureData, RenderTarget, DrawSettings } from './render-types';
+import { GL, AttribSetter, UniformSetter, TextureData, RenderTarget, DrawSettings } from './painter-types';
 export declare function createUniformSetters(gl: GL, program: WebGLProgram | null): {
     [id: string]: UniformSetter;
 };

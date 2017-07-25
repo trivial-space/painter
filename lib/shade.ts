@@ -1,4 +1,4 @@
-import { ShadeData, Shade, GL } from './render-types'
+import { ShadeData, Shade, GL } from './painter-types'
 import { createUniformSetters, createAttributeSetters } from './render-utils'
 
 

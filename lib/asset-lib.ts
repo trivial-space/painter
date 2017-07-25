@@ -1,5 +1,5 @@
 import * as constants from './contants'
-import { FormStoreType, FormDrawType, TextureData, GL, DrawSettings } from './render-types'
+import { FormStoreType, FormDrawType, TextureData, GL, DrawSettings } from './painter-types'
 
 
 export const defaultTextureSettings = {

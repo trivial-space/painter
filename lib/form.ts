@@ -1,4 +1,4 @@
-import { GL, FormData, Form } from './render-types'
+import { GL, FormData, Form } from './painter-types'
 import { getGLTypeForTypedArray } from './render-utils'
 
 

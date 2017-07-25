@@ -1,4 +1,4 @@
-import { GL, Uniforms, Sketch, Shade, Form, Painter, RenderTarget, Layer, DrawSettings } from './render-types'
+import { GL, Uniforms, Sketch, Shade, Form, Painter, RenderTarget, Layer, DrawSettings } from './painter-types'
 import * as form from './form'
 import * as shade from './shade'
 import * as sketch from './sketch'

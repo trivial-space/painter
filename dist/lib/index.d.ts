@@ -4,7 +4,7 @@ import * as stackgl from './utils/stackgl';
 import * as context from './utils/context';
 import * as aLib from './asset-lib';
 import * as Painter from './painter';
-export * from './render-types';
+export * from './painter-types';
 export declare const utils: {
     geometry: {
         plane: typeof plane;

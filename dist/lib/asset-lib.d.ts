@@ -1,4 +1,4 @@
-import { FormStoreType, FormDrawType, TextureData, GL, DrawSettings } from './render-types';
+import { FormStoreType, FormDrawType, TextureData, GL, DrawSettings } from './painter-types';
 export declare const defaultTextureSettings: TextureData;
 export declare function getDefaultLayerSettings(gl: GL): DrawSettings;
 export declare const defaultForms: {

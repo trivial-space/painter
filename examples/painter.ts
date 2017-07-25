@@ -1,5 +1,5 @@
 import { create } from '../lib/painter'
-import { Painter } from '../lib/render-types'
+import { Painter } from '../lib/painter-types'
 import { getContext } from '../lib/utils/context'
 
 

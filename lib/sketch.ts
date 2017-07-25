@@ -1,4 +1,4 @@
-import { SketchData, Sketch } from './render-types'
+import { SketchData, Sketch } from './painter-types'
 
 
 export function create (): Sketch {
