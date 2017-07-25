@@ -11,7 +11,9 @@
   },
   "keywords": [
     "webgl",
-    "graphics engine"
+		"graphics engine",
+		"live coding",
+		"post processing"
   ],
   "scripts": {
     "examples": "webpack-dev-server --config webpack.examples.config.js --port 8081",
