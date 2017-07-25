@@ -1,4 +1,4 @@
-import { mat4, quat, GLVec } from 'gl-matrix'
+import { mat4, quat } from 'gl-matrix'
 import { painter, gl } from '../painter'
 import { makeClear } from '../../lib/utils/context'
 
@@ -16,7 +16,7 @@ painter.updateDrawSettings({
 interface Dimension {
 	pos: number[]
 	scale: number[],
-	rot: GLVec
+	rot: quat
 }
 
 const dimensions: Dimension[] = []

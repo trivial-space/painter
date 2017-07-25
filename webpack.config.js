@@ -8,8 +8,8 @@ module.exports = {
 
 	output: {
 		path: resolve(__dirname, "dist"),
-		filename: "tvs-renderer.js",
-		library: 'tvsRenderer',
+		filename: "tvs-painter.js",
+		library: 'tvsPainter',
 		libraryTarget: "umd"
 	},
 

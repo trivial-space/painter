@@ -1,13 +1,13 @@
 {
-  "name": "tvs-renderer",
-  "version": "0.1.13",
-  "description": "trivialspace renderer - a webgl rendering engine",
-  "main": "dist/tvs-renderer.js",
+  "name": "tvs-painter",
+  "version": "0.1.0",
+  "description": "trivialspace painter - a low level webgl rendering engine optimized for live reload and post processing",
+  "main": "dist/tvs-painter.js",
   "typings": "dist/lib/index.d.ts",
   "types": "dist/lib/index.d.ts",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/trivial-space/renderer.git"
+    "url": "git+https://github.com/trivial-space/painter.git"
   },
   "keywords": [
     "webgl",
@@ -21,21 +21,22 @@
   "author": "Thomas Gorny",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/trivial-space/renderer/issues"
+    "url": "https://github.com/trivial-space/painter/issues"
   },
-  "homepage": "https://github.com/trivial-space/renderer#readme",
+  "homepage": "https://github.com/trivial-space/painter#readme",
   "devDependencies": {
-    "@types/node": "^8.0.2",
+    "@types/gl-matrix": "^2.2.34",
+    "@types/node": "^8.0.16",
     "gl-matrix": "^2.3.2",
     "glsl-fast-gaussian-blur": "^1.0.2",
     "glslify-loader": "^1.0.2",
     "primitive-cube": "^2.0.1",
     "primitive-sphere": "^3.0.0",
     "raw-loader": "^0.5.1",
-    "ts-loader": "^2.2.1",
-    "tslint": "^5.4.3",
-    "typescript": "^2.4.1",
-    "webpack": "^3.0.0",
-    "webpack-dev-server": "^2.5.0"
+    "ts-loader": "^2.3.1",
+    "tslint": "^5.5.0",
+    "typescript": "^2.4.2",
+    "webpack": "^3.3.0",
+    "webpack-dev-server": "^2.6.1"
   }
 }
