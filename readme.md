@@ -17,7 +17,7 @@ within the repository. The development server with the examples runs on `localho
 
 The API is defined in [lib/painter-types.ts](https://github.com/trivial-space/painter/blob/master/lib/painter-types.ts).
 
-Painter is used primarly in the [trivial space playground](https://github.com/trivial-space/playground) to experiment with graphics inside browsers. Check it out for further examples.
+Painter is used primarily in the [trivial space playground](https://github.com/trivial-space/playground) to experiment with graphics inside browsers. Check it out for further examples.
 
 ## Licence
 
