@@ -1,7 +1,7 @@
 {
   "name": "tvs-painter",
   "version": "0.1.0",
-  "description": "trivialspace painter - a low level webgl rendering engine optimized for live reload and post processing",
+  "description": "trivialspace painter - a low level webgl rendering engine optimized for live coding and post processing",
   "main": "dist/tvs-painter.js",
   "typings": "dist/lib/index.d.ts",
   "types": "dist/lib/index.d.ts",
