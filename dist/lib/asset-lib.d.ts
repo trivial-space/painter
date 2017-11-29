@@ -4,7 +4,11 @@ export declare function getDefaultLayerSettings(gl: GL): DrawSettings;
 export declare const defaultForms: {
     renderQuad: {
         attribs: {
-            [x: string]: {
+            [constants.GEOMETRY_PROP_POSITION]: {
+                buffer: Float32Array;
+                storeType: FormStoreType;
+            };
+            [constants.GEOMETRY_PROP_UV]: {
                 buffer: Float32Array;
                 storeType: FormStoreType;
             };

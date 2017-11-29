@@ -27,18 +27,19 @@
   },
   "homepage": "https://github.com/trivial-space/painter#readme",
   "devDependencies": {
-    "@types/gl-matrix": "^2.2.34",
-    "@types/node": "^8.0.26",
-    "gl-matrix": "2.3.2",
+    "@types/gl-matrix": "^2.4.0",
+    "@types/node": "^8.0.53",
+    "gl-matrix": "2.4.0",
     "glsl-fast-gaussian-blur": "^1.0.2",
     "glslify-loader": "^1.0.2",
     "primitive-cube": "^2.0.1",
     "primitive-sphere": "^3.0.0",
     "raw-loader": "^0.5.1",
-    "ts-loader": "^2.3.4",
-    "tslint": "^5.7.0",
-    "typescript": "^2.4.2",
-    "webpack": "^3.5.5",
-    "webpack-dev-server": "^2.7.1"
+    "ts-loader": "^3.1.1",
+    "tslint": "^5.8.0",
+    "typescript": "^2.6.2",
+    "uglifyjs-webpack-plugin": "^1.1.1",
+    "webpack": "^3.8.1",
+    "webpack-dev-server": "^2.9.5"
   }
 }
