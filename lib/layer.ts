@@ -43,7 +43,6 @@ export function createStatic (gl: GL) {
 
 export function createDrawing (gl: GL) {
 
-
 	const layer = {} as Layer
 
 	layer.textures = [],

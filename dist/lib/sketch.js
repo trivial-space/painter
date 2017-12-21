@@ -16,8 +16,8 @@ export function create() {
         return sketch;
     };
     sketch.destroy = function () {
-        sketch.form.destroy();
-        sketch.shade.destroy();
+        sketch.form && sketch.form.destroy();
+        sketch.shade && sketch.shade.destroy();
     };
     return sketch;
 }

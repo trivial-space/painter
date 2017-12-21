@@ -26,8 +26,8 @@ export function create (): Sketch {
 	}
 
 	sketch.destroy = () => {
-		sketch.form.destroy()
-		sketch.shade.destroy()
+		sketch.form && sketch.form.destroy()
+		sketch.shade && sketch.shade.destroy()
 	}
 
 	return sketch
