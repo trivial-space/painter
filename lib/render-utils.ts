@@ -522,7 +522,7 @@ export function updateRenderTarget (gl: GL, target: RenderTarget, data?: Texture
 	const texCount = target.textureConfig.count
 
 	if (texCount > 1) {
-		const glDB = gl.getExtension('WEBGL_draw_buffers')
+		const glDB = gl.getExtension('WEBGL_draw_buffers') || {drawBuffersWEBGL () {}} as any
 		const bufferAttachments: number[] = []
 
 		for (let i = 0; i < texCount; i++) {

@@ -432,7 +432,7 @@ export function updateRenderTarget(gl, target, data, oldData) {
     }
     var texCount = target.textureConfig.count;
     if (texCount > 1) {
-        var glDB = gl.getExtension('WEBGL_draw_buffers');
+        var glDB = gl.getExtension('WEBGL_draw_buffers') || { drawBuffersWEBGL: function () { } };
         var bufferAttachments = [];
         for (var i = 0; i < texCount; i++) {
             bufferAttachments.push(glDB["COLOR_ATTACHMENT" + i + "_WEBGL"]);
