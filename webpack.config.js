@@ -1,9 +1,9 @@
 const { resolve } = require('path')
 const webpack = require('webpack')
-const UglifyJsPlugin = require('uglifyjs-webpack-plugin')
 
 
 module.exports = {
+	mode: 'production',
 
 	entry: resolve(__dirname, "lib", "index.ts"),
 
@@ -33,9 +33,5 @@ module.exports = {
 		modules: [
 			'node_modules'
 		],
-	},
-
-	plugins: [
-		new UglifyJsPlugin()
-	]
+	}
 }

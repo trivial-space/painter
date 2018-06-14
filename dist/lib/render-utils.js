@@ -1,3 +1,4 @@
+var _a, _b, _c;
 import { GL_TYPE } from './contants';
 // Attrib and Uniform Setters
 function getBindPointForSamplerType(type) {
@@ -540,5 +541,4 @@ export function revertDrawSettings(gl, settings) {
         }
     }
 }
-var _a, _b, _c;
 //# sourceMappingURL=render-utils.js.map

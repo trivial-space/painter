@@ -32,19 +32,19 @@
 	},
 	"devDependencies": {
 		"@types/gl-matrix": "^2.4.0",
-		"@types/node": "^9.4.0",
-		"gl-matrix": "2.4.0",
+		"@types/node": "^10.3.3",
+		"gl-matrix": "2.6.1",
 		"glsl-fast-gaussian-blur": "^1.0.2",
 		"glslify-loader": "^1.0.2",
 		"primitive-cube": "^2.0.1",
 		"primitive-sphere": "^3.0.0",
 		"raw-loader": "^0.5.1",
-		"ts-loader": "^3.4.0",
-		"tslint": "^5.9.1",
-		"typescript": "^2.7.1",
-		"uglifyjs-webpack-plugin": "^1.1.8",
-		"webpack": "^3.10.0",
-		"webpack-dev-server": "^2.11.1"
+		"ts-loader": "^4.4.1",
+		"tslint": "^5.10.0",
+		"typescript": "^2.9.2",
+		"uglifyjs-webpack-plugin": "^1.2.5",
+		"webpack": "^4.12.0",
+		"webpack-cli": "^3.0.6",
+		"webpack-dev-server": "^3.1.4"
 	}
 }
-

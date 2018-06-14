@@ -7,6 +7,8 @@ const hotCodeEntry = [
 ]
 
 module.exports = {
+	mode: 'development',
+
 	entry: {
 		'basic': [...hotCodeEntry, './basic/main.ts'],
 		'stackgl-cube': [...hotCodeEntry, './stackgl-cube/main.ts'],
@@ -57,8 +59,5 @@ module.exports = {
 	plugins: [
 		new webpack.HotModuleReplacementPlugin(),
 		// enable HMR globally
-
-		new webpack.NamedModulesPlugin(),
-		// prints more readable module names in the browser console on HMR updates
 	],
 }

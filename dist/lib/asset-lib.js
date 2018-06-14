@@ -1,3 +1,4 @@
+var _a;
 import * as constants from './contants';
 export var defaultTextureSettings = {
     wrap: 'CLAMP_TO_EDGE',
@@ -43,5 +44,4 @@ export var defaultShaders = {
         frag: "precision mediump float;\n\t\t\tuniform sampler2D " + constants.UNIFORM_SOURCE_TEXTURE + ";\n\t\t\tvarying vec2 " + constants.VARYING_UV_COORDS + ";\n\t\t\tvoid main() {\n\t\t\t\tgl_FragColor = texture2D(" + constants.UNIFORM_SOURCE_TEXTURE + ", " + constants.VARYING_UV_COORDS + ");\n\t\t\t}"
     }
 };
-var _a;
 //# sourceMappingURL=asset-lib.js.map
