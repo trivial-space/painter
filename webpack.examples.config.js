@@ -1,22 +1,18 @@
 const { resolve } = require('path')
 const webpack = require('webpack')
 
-const hotCodeEntry = [
-	'webpack-dev-server/client?http://localhost:8081',
-	'webpack/hot/only-dev-server'
-]
 
 module.exports = {
 	mode: 'development',
 
 	entry: {
-		'basic': [...hotCodeEntry, './basic/main.ts'],
-		'stackgl-cube': [...hotCodeEntry, './stackgl-cube/main.ts'],
-		'instances': [...hotCodeEntry, './instances/main.ts'],
-		'asset': [...hotCodeEntry, './asset/main.ts'],
-		'shader': [...hotCodeEntry, './shader/main.ts'],
-		'deferred_rendering': [...hotCodeEntry, './deferred_rendering/main.ts'],
-		'effect_stack': [...hotCodeEntry, './effect_stack/main.ts']
+		'basic': ['./basic/main.ts'],
+		'stackgl-cube': ['./stackgl-cube/main.ts'],
+		'instances': ['./instances/main.ts'],
+		'asset': ['./asset/main.ts'],
+		'shader': ['./shader/main.ts'],
+		'deferred_rendering': ['./deferred_rendering/main.ts'],
+		'effect_stack': ['./effect_stack/main.ts']
 	},
 
 	context: resolve(__dirname, 'examples'),
