@@ -1,74 +1,81 @@
-import { ShadeData, Shade, GL } from './painter-types'
+import { ShadeData, GL, UniformSetter, AttribSetter } from './painter-types'
 import { createUniformSetters, createAttributeSetters } from './render-utils'
 
 
-export function create (gl: GL): Shade {
-
-	const shade = {
-		program: gl.createProgram(),
-		frag: gl.createShader(gl.FRAGMENT_SHADER),
-		vert: gl.createShader(gl.VERTEX_SHADER)
-	} as Shade
-
-	gl.attachShader(shade.program, shade.vert)
-	gl.attachShader(shade.program, shade.frag)
+export class Shade {
+	program: WebGLProgram | null
+	vert: WebGLShader | null
+	frag: WebGLShader | null
+	vertSource?: string
+	fragSource?: string
+	uniformSetters!: { [id: string]: UniformSetter }
+	attributeSetters!: { [id: string]: AttribSetter }
 
 
-	shade.update = (data: ShadeData) => {
-		const frag = (data.frag && data.frag.trim()) || shade.fragSource
-		const vert = (data.vert && data.vert.trim()) || shade.vertSource
+	constructor(private gl: GL) {
+		this.program = gl.createProgram(),
+		this.frag = gl.createShader(gl.FRAGMENT_SHADER),
+		this.vert = gl.createShader(gl.VERTEX_SHADER)
+		gl.attachShader(this.program, this.vert)
+		gl.attachShader(this.program, this.frag)
+	}
 
-		if (!(frag && vert)) { return shade }
+
+	update (data: ShadeData) {
+		const gl = this.gl
+		const frag = (data.frag && data.frag.trim()) || this.fragSource
+		const vert = (data.vert && data.vert.trim()) || this.vertSource
+
+		if (!(frag && vert)) { return this }
 
 		if (frag.indexOf('GL_EXT_draw_buffers') >= 0) {
 			gl.getExtension('WEBGL_draw_buffers')
 		}
 
-		gl.shaderSource(shade.vert, vert)
-		gl.shaderSource(shade.frag, frag)
-		gl.compileShader(shade.vert)
-		gl.compileShader(shade.frag)
+		gl.shaderSource(this.vert, vert)
+		gl.shaderSource(this.frag, frag)
+		gl.compileShader(this.vert)
+		gl.compileShader(this.frag)
 
-		if (!gl.getShaderParameter(shade.vert, gl.COMPILE_STATUS)) {
+		if (!gl.getShaderParameter(this.vert, gl.COMPILE_STATUS)) {
 			console.error(
 				'Error Compiling Vertex Shader!\n',
-				gl.getShaderInfoLog(shade.vert),
+				gl.getShaderInfoLog(this.vert),
 				addLineNumbers(vert)
 			)
 		}
-		if (!gl.getShaderParameter(shade.frag, gl.COMPILE_STATUS)) {
+		if (!gl.getShaderParameter(this.frag, gl.COMPILE_STATUS)) {
 			console.error(
 				'Error Compiling Fragment Shader!\n',
-				gl.getShaderInfoLog(shade.frag),
+				gl.getShaderInfoLog(this.frag),
 				addLineNumbers(frag)
 			)
 		}
 
-		gl.linkProgram(shade.program)
+		gl.linkProgram(this.program)
 
-		const linked = gl.getProgramParameter(shade.program, gl.LINK_STATUS)
+		const linked = gl.getProgramParameter(this.program, gl.LINK_STATUS)
 		if (!linked) {
-			const lastError = gl.getProgramInfoLog(shade.program)
+			const lastError = gl.getProgramInfoLog(this.program)
 			console.error('Error in program linking:', lastError)
 		}
 
-		shade.uniformSetters = createUniformSetters(gl, shade.program)
-		shade.attributeSetters = createAttributeSetters(gl, shade.program)
+		this.uniformSetters = createUniformSetters(gl, this.program)
+		this.attributeSetters = createAttributeSetters(gl, this.program)
 
-		shade.fragSource = frag
-		shade.vertSource = vert
+		this.fragSource = frag
+		this.vertSource = vert
 
-		return shade
+		return this
 	}
 
 
-	shade.destroy = () => {
-		gl.deleteProgram(shade.program)
-		gl.deleteShader(shade.frag)
-		gl.deleteShader(shade.vert)
+	destroy () {
+		this.gl.deleteProgram(this.program)
+		this.gl.deleteShader(this.frag)
+		this.gl.deleteShader(this.vert)
 	}
 
-	return shade
 }
 
 

@@ -1,87 +1,81 @@
-import { GL, Uniforms, Sketch, Shade, Form, Painter, RenderTarget, Layer, DrawSettings } from './painter-types'
-import * as form from './form'
-import * as shade from './shade'
-import * as sketch from './sketch'
-import * as layer from './layer'
+import { GL, Uniforms, RenderTarget, Layer, DrawSettings } from './painter-types'
 import { updateRenderTarget, applyDrawSettings, revertDrawSettings, destroyRenderTarget } from './render-utils'
 import { resizeCanvas } from './utils/context'
 import { defaultForms, defaultShaders, defaultTextureSettings, getDefaultLayerSettings } from './asset-lib'
+import { Form } from './form'
+import { Shade } from './shade'
+import { Sketch } from './sketch'
+import { StaticLayer, DrawingLayer } from './layer'
 
 
-
-export function create (gl: WebGLRenderingContext): Painter {
-
-	const targets = [
-		{ } as RenderTarget,
-		{ } as RenderTarget
+export class Painter {
+	targets = [
+		{} as RenderTarget,
+		{} as RenderTarget
 	]
+	renderQuad: Form
+	result: Sketch
 
-	const defaultSettings = getDefaultLayerSettings(gl)
+	constructor(public gl: GL) {
+		this.resize(1, true)
+		this.renderQuad = this.createForm().update(defaultForms.renderQuad)
+		this.result = this.createFlatSketch()
+	}
 
-	const renderQuad = form.create(gl).update(defaultForms.renderQuad)
-
-	const createFlatSketch = () => sketch.create().update({
-		form: renderQuad,
-		shade: shade.create(gl).update(defaultShaders.basicEffect)
-	})
-
-	const result = createFlatSketch()
-
-	const resize = (multiplier = 1, forceUpdateTargets = false) => {
-		const canvas = gl.canvas
+	resize (multiplier = 1, forceUpdateTargets = false) {
+		const canvas = this.gl.canvas
 		const needUpdate = resizeCanvas(canvas, multiplier)
 
 		if (needUpdate || forceUpdateTargets) {
-			targets.forEach(t => {
+			this.targets.forEach(t => {
 				t.width = canvas.width
 				t.height = canvas.height
 				t.textureConfig = {
 					count: 1,
-					type: gl.UNSIGNED_BYTE
+					type: this.gl.UNSIGNED_BYTE
 				}
-				updateRenderTarget(gl, t, defaultTextureSettings)
+				updateRenderTarget(this.gl, t, defaultTextureSettings)
 			})
 		}
 
-		return painter
+		return this
 	}
 
-	resize(1, true)
-
-	const destroy = () => {
-		result.destroy()
-		for (const target of targets) {
-			destroyRenderTarget(gl, target)
+	destroy () {
+		this.result.destroy()
+		for (const target of this.targets) {
+			destroyRenderTarget(this.gl, target)
 		}
 	}
 
-	const painter = {
-		gl,
-		updateDrawSettings: (drawSettings?: DrawSettings) => {
-			applyDrawSettings(gl, { ...defaultSettings, ...drawSettings })
-			return painter
-		},
-		createForm: () => form.create(gl),
-		createShade: () => shade.create(gl),
-		createSketch: () => sketch.create(),
-		createFlatSketch,
-		createStaticLayer: () => layer.createStatic(gl),
-		createDrawingLayer: () => layer.createDrawing(gl),
-		createEffectLayer: () => layer.createDrawing(gl).update({
-			sketches: [createFlatSketch()]
-		}),
-		draw: (sketch: Sketch, globalUniforms?: Uniforms) => {
-			draw(gl, sketch, null, globalUniforms)
-			return painter
-		},
-		compose: (...layers: Layer[]) => {
-			composeLayers(gl, layers, targets, result)
-			return painter
-		},
-		resize, destroy
+	updateDrawSettings (drawSettings?: DrawSettings) {
+		applyDrawSettings(this.gl, { ...getDefaultLayerSettings(this.gl), ...drawSettings })
+		return this
 	}
-
-	return painter
+	createForm () { return new Form(this.gl) }
+	createShade () { return new Shade(this.gl) }
+	createSketch () { return new Sketch() }
+	createFlatSketch () {
+		return this.createSketch().update({
+			form: this.renderQuad,
+			shade: this.createShade().update(defaultShaders.basicEffect)
+		})
+	}
+	createStaticLayer () { return new StaticLayer(this.gl) }
+	createDrawingLayer () { return new DrawingLayer(this.gl) }
+	createEffectLayer () {
+		return this.createDrawingLayer().update({
+			sketches: [this.createFlatSketch()]
+		})
+	}
+	draw (sketch: Sketch, globalUniforms?: Uniforms) {
+		draw(this.gl, sketch, null, globalUniforms)
+		return this
+	}
+	compose (...layers: Layer[]) {
+		composeLayers(this.gl, layers, this.targets, this.result)
+		return this
+	}
 }
 
 

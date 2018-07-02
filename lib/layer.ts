@@ -1,115 +1,117 @@
-import { GL, Layer, LayerData, RenderTarget } from './painter-types'
+import { GL, Layer, LayerData, RenderTarget, Uniforms } from './painter-types'
 import { setTextureParams, updateRenderTarget, destroyRenderTarget } from './render-utils'
+import { Sketch } from './sketch'
 
 
-export function createStatic (gl: GL) {
+export class StaticLayer implements Layer {
+	gl: GL
+	textures: (WebGLTexture | null)[]
+	data: LayerData = {}
 
-	const layer = {} as Layer
+	constructor(gl: GL) {
+		this.gl = gl
+		this.textures = [gl.createTexture()]
+	}
 
-	const texture = gl.createTexture()
+	texture () {
+		return this.textures[0]
+	}
 
-	layer.textures = [texture],
-	layer.data = {}
+	update (data: LayerData) {
+		this.gl.bindTexture(this.gl.TEXTURE_2D, this.texture())
 
-	layer.texture = () => texture
-
-	layer.update = (data: LayerData) => {
-		gl.bindTexture(gl.TEXTURE_2D, texture)
-
-		setTextureParams(gl, data, layer.data)
+		setTextureParams(this.gl, data, this.data)
 
 		if (data.asset) {
-			gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, data.asset)
+			this.gl.texImage2D(this.gl.TEXTURE_2D, 0, this.gl.RGBA, this.gl.RGBA, this.gl.UNSIGNED_BYTE, data.asset)
 		}
 
 		if (data.minFilter && data.minFilter.indexOf('MIPMAP') > 0) {
-			gl.generateMipmap(gl.TEXTURE_2D)
+			this.gl.generateMipmap(this.gl.TEXTURE_2D)
 		}
 
-		gl.bindTexture(gl.TEXTURE_2D, null)
+		this.gl.bindTexture(this.gl.TEXTURE_2D, null)
 
-		Object.assign(layer.data, data)
+		Object.assign(this.data, data)
 
-		return layer
+		return this
 	}
 
-	layer.destroy = () => {
-		gl.deleteTexture(texture)
+	destroy () {
+		this.gl.deleteTexture(this.texture())
 	}
-
-	return layer
 }
 
 
-export function createDrawing (gl: GL) {
+export class DrawingLayer implements Layer {
+	textures: (WebGLTexture | null)[] = []
+	data: LayerData = {}
+	target?: RenderTarget
+	uniforms?: Uniforms
+	sketches?: Sketch[]
 
-	const layer = {} as Layer
+	constructor(private gl: GL) { }
 
-	layer.textures = [],
-	layer.data = {}
+	texture (i = 0) { return this.textures[i] }
 
-	layer.texture = (i = 0) => layer.textures[i]
-
-	layer.update = (data: LayerData) => {
-		if (data.buffered && !layer.target) {
-			layer.target = {
-				width: data.width || gl.canvas.width,
-				height: data.height || gl.canvas.height,
+	update (data: LayerData) {
+		if (data.buffered && !this.target) {
+			this.target = {
+				width: data.width || this.gl.canvas.width,
+				height: data.height || this.gl.canvas.height,
 				frameBuffer: null, textures: [], depthBuffer: null,
 				textureConfig: {
-					type: (data.textureConfig && data.textureConfig.type) || gl.UNSIGNED_BYTE,
+					type: (data.textureConfig && data.textureConfig.type) || this.gl.UNSIGNED_BYTE,
 					count: (data.textureConfig && data.textureConfig.count) || 1
 				}
 			} as RenderTarget
 
-			updateRenderTarget(gl, layer.target, data, layer.data)
+			updateRenderTarget(this.gl, this.target, data, this.data)
 
-			layer.textures = layer.target.textures
+			this.textures = this.target.textures
 
-		} else if (layer.target && data.width && data.height) {
-			layer.target.width = data.width
-			layer.target.height = data.height
+		} else if (this.target && data.width && data.height) {
+			this.target.width = data.width
+			this.target.height = data.height
 
-			updateRenderTarget(gl, layer.target, data, layer.data)
+			updateRenderTarget(this.gl, this.target, data, this.data)
 		}
 
 		if (data.sketches) {
-			layer.sketches = data.sketches
+			this.sketches = data.sketches
 		}
 
 		if (data.frag) {
-			const sketch = layer.sketches && layer.sketches[0]
+			const sketch = this.sketches && this.sketches[0]
 			if (sketch) {
 				sketch.shade.update({ frag: data.frag })
 			}
 		}
 
 		if (data.uniforms) {
-			layer.uniforms = data.uniforms
+			this.uniforms = data.uniforms
 		}
 
-		Object.assign(layer.data, data)
+		Object.assign(this.data, data)
 
-		return layer
+		return this
 	}
 
-	layer.destroy = () => {
-		if (layer.sketches) {
-			for (const sketch of layer.sketches) {
+	destroy () {
+		if (this.sketches) {
+			for (const sketch of this.sketches) {
 				sketch.destroy()
 			}
 		}
 
-		if (layer.target) {
-			destroyRenderTarget(gl, layer.target)
+		if (this.target) {
+			destroyRenderTarget(this.gl, this.target)
 
 		} else {
-			for (const texture of layer.textures) {
-				gl.deleteTexture(texture)
+			for (const texture of this.textures) {
+				this.gl.deleteTexture(texture)
 			}
 		}
 	}
-
-	return layer
 }
 

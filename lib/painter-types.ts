@@ -1,3 +1,7 @@
+import { Form } from './form'
+import { Shade } from './shade'
+import { Sketch } from './sketch'
+
 export type GL = WebGLRenderingContext
 export type Color = [number, number, number, number]
 
@@ -73,19 +77,6 @@ export interface AttribContext {
 	normalize?: boolean
 }
 
-export interface Form {
-	drawType: number
-	itemCount: number
-	attribs: { [id: string]: AttribContext }
-	elements?: {
-		buffer: WebGLBuffer | null
-		glType: number | null
-	}
-
-	update: (data: FormData) => Form
-	destroy: () => void
-}
-
 
 // Shade
 
@@ -102,19 +93,6 @@ export interface UniformSetter {
 export interface AttribSetter {
 	location: number
 	setter: (ctx: AttribContext) => void
-}
-
-export interface Shade {
-	program: WebGLProgram | null
-	vert: WebGLShader | null
-	frag: WebGLShader | null
-	vertSource?: string
-	fragSource?: string
-	uniformSetters: { [id: string]: UniformSetter }
-	attributeSetters: { [id: string]: AttribSetter }
-
-	update: (data: ShadeData) => Shade
-	destroy: () => void
 }
 
 
@@ -142,16 +120,6 @@ export interface SketchData {
 	shade?: Shade,
 	uniforms?: Uniforms,
 	drawSettings?: DrawSettings
-}
-
-export interface Sketch {
-	drawSettings?: DrawSettings
-	form: Form
-	shade: Shade
-	uniforms: Uniforms
-
-	update: (data: SketchData) => Sketch
-	destroy: () => void
 }
 
 
@@ -205,24 +173,5 @@ export interface Layer {
 
 	texture: (index?: number) => WebGLTexture | null
 	update: (data: LayerData) => Layer
-	destroy: () => void
-}
-
-
-// Painter
-
-export interface Painter {
-	gl: GL,
-	updateDrawSettings: (drawSettings?: DrawSettings) => Painter
-	createForm: () => Form
-	createShade: () => Shade
-	createSketch: () => Sketch
-	createFlatSketch: () => Sketch
-	createStaticLayer: () => Layer
-	createDrawingLayer: () => Layer
-	createEffectLayer: () => Layer
-	draw: (sketchApi: Sketch, globalUniforms?: Uniforms) => Painter
-	compose: (...layers: Layer[]) => Painter
-	resize: (multiplier?: number) => Painter
 	destroy: () => void
 }

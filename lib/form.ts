@@ -1,71 +1,70 @@
-import { GL, FormData, Form } from './painter-types'
+import { GL, FormData, AttribContext } from './painter-types'
 import { getGLTypeForTypedArray } from './render-utils'
 
 
-export function create (gl: GL): Form {
+export class Form {
+	drawType!: number
+	itemCount!: number
+	attribs!: { [id: string]: AttribContext }
+	elements?: {
+		buffer: WebGLBuffer | null
+		glType: number | null
+	}
 
-	const form = {} as Form
+	constructor (private gl: GL) { }
 
-	form.update = (data: FormData) => {
-
+	update (data: FormData) {
+		const gl = this.gl
 		if (data.drawType) {
-			form.drawType = gl[data.drawType]
+			this.drawType = gl[data.drawType]
 		}
 
 		if (data.itemCount) {
-			form.itemCount = data.itemCount
+			this.itemCount = data.itemCount
 		}
 
-		const attribs = form.attribs || {}
+		this.attribs = this.attribs || {}
 
 		for (const id in data.attribs) {
 			const attribData = data.attribs[id]
 
-			if (attribs[id] == null) {
-				attribs[id] = {
+			if (this.attribs[id] == null) {
+				this.attribs[id] = {
 					buffer: gl.createBuffer()
 				}
 			}
 
-			gl.bindBuffer(gl.ARRAY_BUFFER, attribs[id].buffer)
+			gl.bindBuffer(gl.ARRAY_BUFFER, this.attribs[id].buffer)
 			gl.bufferData(gl.ARRAY_BUFFER, attribData.buffer,
 				(gl as any)[(attribData.storeType || 'STATIC') + '_DRAW'])
 		}
 
-		form.attribs = attribs
-
 		if (data.elements) {
 			const buffer = data.elements.buffer
 
-			if (form.elements == null) {
-				form.elements = {
+			if (this.elements == null) {
+				this.elements = {
 					buffer: gl.createBuffer(),
 					glType: null
 				}
 			}
 
-			form.elements.glType = getGLTypeForTypedArray(buffer)
+			this.elements.glType = getGLTypeForTypedArray(buffer)
 
-			gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, form.elements.buffer)
+			gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.elements.buffer)
 			gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, buffer,
 				(gl as any)[(data.elements.storeType || 'STATIC') + '_DRAW'])
 		}
 
-		return form
+		return this
 	}
 
-
-	form.destroy = () => {
-		for (const id in form.attribs) {
-			gl.deleteBuffer(form.attribs[id].buffer)
+	destroy () {
+		for (const id in this.attribs) {
+			this.gl.deleteBuffer(this.attribs[id].buffer)
 		}
-		if (form.elements) {
-			gl.deleteBuffer(form.elements.buffer)
+		if (this.elements) {
+			this.gl.deleteBuffer(this.elements.buffer)
 		}
-
-		return form
 	}
-
-
-	return form
 }

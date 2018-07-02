@@ -16,6 +16,7 @@ export function makeClear (gl: GL, ...clearArray: string[]): number {
 	)
 }
 
+
 export function setBlendFunc (gl: GL, blendOpts: string[]) {
 	gl.blendFunc.apply(gl, blendOpts.map(
 		opt => (gl as any)[opt.toUpperCase()]
@@ -34,8 +35,8 @@ export function resizeCanvas (canvas: HTMLCanvasElement, multiplier = 1) {
 	const width = canvas.clientWidth * multiplier | 0
 	const height = canvas.clientHeight * multiplier | 0
 
-	if (canvas.width !== width ||
-		canvas.height !== height) {
+	if (canvas.width !== width
+		|| canvas.height !== height) {
 		canvas.width = width
 		canvas.height = height
 		return true
