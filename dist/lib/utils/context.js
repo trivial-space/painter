@@ -25,8 +25,8 @@ export function resizeCanvas(canvas, multiplier) {
     multiplier = Math.max(1, multiplier);
     var width = canvas.clientWidth * multiplier | 0;
     var height = canvas.clientHeight * multiplier | 0;
-    if (canvas.width !== width ||
-        canvas.height !== height) {
+    if (canvas.width !== width
+        || canvas.height !== height) {
         canvas.width = width;
         canvas.height = height;
         return true;

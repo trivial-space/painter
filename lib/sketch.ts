@@ -1,4 +1,4 @@
-import { SketchData, Uniforms, DrawSettings } from './painter-types'
+import { SketchData, DrawSettings, UniformsData } from './painter-types'
 import { Form } from './form'
 import { Shade } from './shade'
 
@@ -7,7 +7,7 @@ export class Sketch {
 	drawSettings?: DrawSettings
 	form!: Form
 	shade!: Shade
-	uniforms!: Uniforms
+	uniforms!: UniformsData
 
 	update (data: SketchData) {
 		if (data.drawSettings) {

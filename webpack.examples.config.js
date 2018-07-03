@@ -12,7 +12,8 @@ module.exports = {
 		'asset': ['./asset/main.ts'],
 		'shader': ['./shader/main.ts'],
 		'deferred_rendering': ['./deferred_rendering/main.ts'],
-		'effect_stack': ['./effect_stack/main.ts']
+		'effect_stack': ['./effect_stack/main.ts'],
+		'uniform-function': ['./uniform-function/main.ts']
 	},
 
 	context: resolve(__dirname, 'examples'),

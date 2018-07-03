@@ -6,84 +6,91 @@ var __assign = (this && this.__assign) || Object.assign || function(t) {
     }
     return t;
 };
-import * as form from './form';
-import * as shade from './shade';
-import * as sketch from './sketch';
-import * as layer from './layer';
 import { updateRenderTarget, applyDrawSettings, revertDrawSettings, destroyRenderTarget } from './render-utils';
 import { resizeCanvas } from './utils/context';
 import { defaultForms, defaultShaders, defaultTextureSettings, getDefaultLayerSettings } from './asset-lib';
-export function create(gl) {
-    var targets = [
-        {},
-        {}
-    ];
-    var defaultSettings = getDefaultLayerSettings(gl);
-    var renderQuad = form.create(gl).update(defaultForms.renderQuad);
-    var createFlatSketch = function () { return sketch.create().update({
-        form: renderQuad,
-        shade: shade.create(gl).update(defaultShaders.basicEffect)
-    }); };
-    var result = createFlatSketch();
-    var resize = function (multiplier, forceUpdateTargets) {
+import { Form } from './form';
+import { Shade } from './shade';
+import { Sketch } from './sketch';
+import { StaticLayer, DrawingLayer } from './layer';
+var Painter = /** @class */ (function () {
+    function Painter(gl) {
+        this.gl = gl;
+        this.targets = [
+            {},
+            {}
+        ];
+        this.resize(1, true);
+        this.renderQuad = this.createForm().update(defaultForms.renderQuad);
+        this.result = this.createFlatSketch();
+    }
+    Painter.prototype.resize = function (multiplier, forceUpdateTargets) {
+        var _this = this;
         if (multiplier === void 0) { multiplier = 1; }
         if (forceUpdateTargets === void 0) { forceUpdateTargets = false; }
-        var canvas = gl.canvas;
+        var canvas = this.gl.canvas;
         var needUpdate = resizeCanvas(canvas, multiplier);
         if (needUpdate || forceUpdateTargets) {
-            targets.forEach(function (t) {
+            this.targets.forEach(function (t) {
                 t.width = canvas.width;
                 t.height = canvas.height;
                 t.textureConfig = {
                     count: 1,
-                    type: gl.UNSIGNED_BYTE
+                    type: _this.gl.UNSIGNED_BYTE
                 };
-                updateRenderTarget(gl, t, defaultTextureSettings);
+                updateRenderTarget(_this.gl, t, defaultTextureSettings);
             });
         }
-        return painter;
+        return this;
     };
-    resize(1, true);
-    var destroy = function () {
-        result.destroy();
-        for (var _i = 0, targets_1 = targets; _i < targets_1.length; _i++) {
-            var target = targets_1[_i];
-            destroyRenderTarget(gl, target);
+    Painter.prototype.destroy = function () {
+        this.result.destroy();
+        for (var _i = 0, _a = this.targets; _i < _a.length; _i++) {
+            var target = _a[_i];
+            destroyRenderTarget(this.gl, target);
         }
     };
-    var painter = {
-        gl: gl,
-        updateDrawSettings: function (drawSettings) {
-            applyDrawSettings(gl, __assign({}, defaultSettings, drawSettings));
-            return painter;
-        },
-        createForm: function () { return form.create(gl); },
-        createShade: function () { return shade.create(gl); },
-        createSketch: function () { return sketch.create(); },
-        createFlatSketch: createFlatSketch,
-        createStaticLayer: function () { return layer.createStatic(gl); },
-        createDrawingLayer: function () { return layer.createDrawing(gl); },
-        createEffectLayer: function () { return layer.createDrawing(gl).update({
-            sketches: [createFlatSketch()]
-        }); },
-        draw: function (sketch, globalUniforms) {
-            draw(gl, sketch, null, globalUniforms);
-            return painter;
-        },
-        compose: function () {
-            var layers = [];
-            for (var _i = 0; _i < arguments.length; _i++) {
-                layers[_i] = arguments[_i];
-            }
-            composeLayers(gl, layers, targets, result);
-            return painter;
-        },
-        resize: resize, destroy: destroy
+    Painter.prototype.updateDrawSettings = function (drawSettings) {
+        applyDrawSettings(this.gl, __assign({}, getDefaultLayerSettings(this.gl), drawSettings));
+        return this;
     };
-    return painter;
-}
+    Painter.prototype.createForm = function () { return new Form(this.gl); };
+    Painter.prototype.createShade = function () { return new Shade(this.gl); };
+    Painter.prototype.createSketch = function () { return new Sketch(); };
+    Painter.prototype.createFlatSketch = function () {
+        return this.createSketch().update({
+            form: this.renderQuad,
+            shade: this.createShade().update(defaultShaders.basicEffect)
+        });
+    };
+    Painter.prototype.createStaticLayer = function () { return new StaticLayer(this.gl); };
+    Painter.prototype.createDrawingLayer = function () { return new DrawingLayer(this.gl); };
+    Painter.prototype.createEffectLayer = function () {
+        return this.createDrawingLayer().update({
+            sketches: [this.createFlatSketch()]
+        });
+    };
+    Painter.prototype.draw = function (sketch, globalUniforms) {
+        if (typeof globalUniforms === 'function') {
+            globalUniforms = globalUniforms();
+        }
+        draw(this.gl, sketch, null, globalUniforms);
+        return this;
+    };
+    Painter.prototype.compose = function () {
+        var layers = [];
+        for (var _i = 0; _i < arguments.length; _i++) {
+            layers[_i] = arguments[_i];
+        }
+        composeLayers(this.gl, layers, this.targets, this.result);
+        return this;
+    };
+    return Painter;
+}());
+export { Painter };
 function draw(gl, sketch, defaultTexture, globalUniforms) {
-    var shade = sketch.shade, uniforms = sketch.uniforms, form = sketch.form, drawSettings = sketch.drawSettings;
+    var shade = sketch.shade, form = sketch.form, drawSettings = sketch.drawSettings;
+    var uniforms = sketch.uniforms;
     if (!(shade && form)) {
         throw Error('cannot draw, shader or geometry are not set');
     }
@@ -94,6 +101,9 @@ function draw(gl, sketch, defaultTexture, globalUniforms) {
     }
     if (drawSettings) {
         applyDrawSettings(gl, drawSettings);
+    }
+    if (typeof uniforms === 'function') {
+        uniforms = uniforms();
     }
     if (Array.isArray(uniforms)) {
         for (var _i = 0, uniforms_1 = uniforms; _i < uniforms_1.length; _i++) {
@@ -145,54 +155,58 @@ function shadeUniforms(shade, uniforms, defaultTexture) {
 function composeLayers(gl, layers, targets, result) {
     var last = layers.length - 1;
     var _loop_1 = function (i) {
-        var layer_1 = layers[i];
+        var layer = layers[i];
         var render = function (uniforms, directRender) {
             var source = targets[0];
             var target = targets[1];
-            var renderToStack = !directRender && layer_1.target == null;
+            var renderToStack = !directRender && layer.target == null;
             if (directRender) {
                 gl.bindFramebuffer(gl.FRAMEBUFFER, null);
                 gl.viewport(0, 0, gl.drawingBufferWidth, gl.drawingBufferHeight);
             }
-            else if (layer_1.target) {
-                gl.bindFramebuffer(gl.FRAMEBUFFER, layer_1.target.frameBuffer);
-                gl.viewport(0, 0, layer_1.target.width, layer_1.target.height);
+            else if (layer.target) {
+                gl.bindFramebuffer(gl.FRAMEBUFFER, layer.target.frameBuffer);
+                gl.viewport(0, 0, layer.target.width, layer.target.height);
             }
             else {
                 gl.bindFramebuffer(gl.FRAMEBUFFER, target.frameBuffer);
                 gl.viewport(0, 0, gl.drawingBufferWidth, gl.drawingBufferHeight);
             }
-            if (layer_1.data.drawSettings) {
-                applyDrawSettings(gl, layer_1.data.drawSettings);
+            if (layer.data.drawSettings) {
+                applyDrawSettings(gl, layer.data.drawSettings);
             }
-            if (layer_1.sketches) {
-                for (var _i = 0, _a = layer_1.sketches; _i < _a.length; _i++) {
-                    var sketch_1 = _a[_i];
-                    draw(gl, sketch_1, source.textures[0], uniforms);
+            if (layer.sketches) {
+                for (var _i = 0, _a = layer.sketches; _i < _a.length; _i++) {
+                    var sketch = _a[_i];
+                    draw(gl, sketch, source.textures[0], uniforms);
                 }
             }
             else {
                 // Display static texture
-                draw(gl, result, null, { source: layer_1.texture() });
+                draw(gl, result, null, { source: layer.texture() });
             }
-            if (layer_1.data.drawSettings) {
-                revertDrawSettings(gl, layer_1.data.drawSettings);
+            if (layer.data.drawSettings) {
+                revertDrawSettings(gl, layer.data.drawSettings);
             }
             if (renderToStack) {
                 targets[0] = target;
                 targets[1] = source;
             }
         };
-        if (Array.isArray(layer_1.uniforms)) {
-            var newLast = last + layer_1.uniforms.length - 1;
-            for (var j = 0; j < layer_1.uniforms.length; j++) {
+        var uniforms = layer.uniforms;
+        if (typeof uniforms === 'function') {
+            uniforms = uniforms();
+        }
+        if (Array.isArray(uniforms)) {
+            var newLast = last + uniforms.length - 1;
+            for (var j = 0; j < uniforms.length; j++) {
                 var directRender = i + j === newLast;
-                render(layer_1.uniforms[j], directRender);
+                render(uniforms[j], directRender);
             }
         }
         else {
             var directRender = i === last;
-            render(layer_1.uniforms, directRender);
+            render(uniforms, directRender);
         }
     };
     for (var i = 0; i < layers.length; i++) {

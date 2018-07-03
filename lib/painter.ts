@@ -1,4 +1,4 @@
-import { GL, Uniforms, RenderTarget, Layer, DrawSettings } from './painter-types'
+import { GL, Uniforms, RenderTarget, Layer, DrawSettings, UniformsData } from './painter-types'
 import { updateRenderTarget, applyDrawSettings, revertDrawSettings, destroyRenderTarget } from './render-utils'
 import { resizeCanvas } from './utils/context'
 import { defaultForms, defaultShaders, defaultTextureSettings, getDefaultLayerSettings } from './asset-lib'
@@ -68,7 +68,10 @@ export class Painter {
 			sketches: [this.createFlatSketch()]
 		})
 	}
-	draw (sketch: Sketch, globalUniforms?: Uniforms) {
+	draw (sketch: Sketch, globalUniforms?: UniformsData) {
+		if (typeof globalUniforms === 'function') {
+			globalUniforms = globalUniforms()
+		}
 		draw(this.gl, sketch, null, globalUniforms)
 		return this
 	}
@@ -86,7 +89,8 @@ function draw (
 	globalUniforms?: Uniforms
 ) {
 
-	const { shade, uniforms, form, drawSettings } = sketch
+	const { shade, form, drawSettings } = sketch
+	let { uniforms } = sketch
 
 	if (!(shade && form)) {
 		throw Error('cannot draw, shader or geometry are not set')
@@ -103,6 +107,9 @@ function draw (
 		applyDrawSettings(gl, drawSettings)
 	}
 
+	if (typeof uniforms === 'function') {
+		uniforms = uniforms()
+	}
 	if (Array.isArray(uniforms)) {
 		for (const instanceUniforms of uniforms) {
 			drawInstance(gl, sketch, defaultTexture, instanceUniforms)
@@ -209,17 +216,22 @@ function composeLayers (gl: GL, layers: Layer[], targets: RenderTarget[], result
 			}
 		}
 
-		if (Array.isArray(layer.uniforms)) {
-			const newLast = last + layer.uniforms.length - 1
+		let uniforms = layer.uniforms
+		if (typeof uniforms === 'function') {
+			uniforms = uniforms()
+		}
 
-			for (let j = 0; j < layer.uniforms.length; j++) {
+		if (Array.isArray(uniforms)) {
+			const newLast = last + uniforms.length - 1
+
+			for (let j = 0; j < uniforms.length; j++) {
 				const directRender = i + j === newLast
-				render(layer.uniforms[j], directRender)
+				render(uniforms[j], directRender)
 			}
 
 		} else {
 			const directRender = i === last
-			render(layer.uniforms, directRender)
+			render(uniforms, directRender)
 		}
 
 	}

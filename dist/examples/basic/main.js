@@ -65,4 +65,7 @@ var effect = painter.createEffectLayer().update({
     }
 });
 painter.compose(textureLayer, planeLayer, effect);
+if (module.hot) {
+    module.hot.accept();
+}
 //# sourceMappingURL=main.js.map

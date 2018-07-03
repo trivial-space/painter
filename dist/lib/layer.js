@@ -1,87 +1,94 @@
 import { setTextureParams, updateRenderTarget, destroyRenderTarget } from './render-utils';
-export function createStatic(gl) {
-    var layer = {};
-    var texture = gl.createTexture();
-    layer.textures = [texture],
-        layer.data = {};
-    layer.texture = function () { return texture; };
-    layer.update = function (data) {
-        gl.bindTexture(gl.TEXTURE_2D, texture);
-        setTextureParams(gl, data, layer.data);
+var StaticLayer = /** @class */ (function () {
+    function StaticLayer(gl) {
+        this.data = {};
+        this.gl = gl;
+        this.textures = [gl.createTexture()];
+    }
+    StaticLayer.prototype.texture = function () {
+        return this.textures[0];
+    };
+    StaticLayer.prototype.update = function (data) {
+        this.gl.bindTexture(this.gl.TEXTURE_2D, this.texture());
+        setTextureParams(this.gl, data, this.data);
         if (data.asset) {
-            gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, data.asset);
+            this.gl.texImage2D(this.gl.TEXTURE_2D, 0, this.gl.RGBA, this.gl.RGBA, this.gl.UNSIGNED_BYTE, data.asset);
         }
         if (data.minFilter && data.minFilter.indexOf('MIPMAP') > 0) {
-            gl.generateMipmap(gl.TEXTURE_2D);
+            this.gl.generateMipmap(this.gl.TEXTURE_2D);
         }
-        gl.bindTexture(gl.TEXTURE_2D, null);
-        Object.assign(layer.data, data);
-        return layer;
+        this.gl.bindTexture(this.gl.TEXTURE_2D, null);
+        Object.assign(this.data, data);
+        return this;
     };
-    layer.destroy = function () {
-        gl.deleteTexture(texture);
+    StaticLayer.prototype.destroy = function () {
+        this.gl.deleteTexture(this.texture());
     };
-    return layer;
-}
-export function createDrawing(gl) {
-    var layer = {};
-    layer.textures = [],
-        layer.data = {};
-    layer.texture = function (i) {
+    return StaticLayer;
+}());
+export { StaticLayer };
+var DrawingLayer = /** @class */ (function () {
+    function DrawingLayer(gl) {
+        this.gl = gl;
+        this.textures = [];
+        this.data = {};
+    }
+    DrawingLayer.prototype.texture = function (i) {
         if (i === void 0) { i = 0; }
-        return layer.textures[i];
+        return this.textures[i];
     };
-    layer.update = function (data) {
-        if (data.buffered && !layer.target) {
-            layer.target = {
-                width: data.width || gl.canvas.width,
-                height: data.height || gl.canvas.height,
+    DrawingLayer.prototype.update = function (data) {
+        if (data.buffered && !this.target) {
+            this.target = {
+                width: data.width || this.gl.canvas.width,
+                height: data.height || this.gl.canvas.height,
                 frameBuffer: null, textures: [], depthBuffer: null,
                 textureConfig: {
-                    type: (data.textureConfig && data.textureConfig.type) || gl.UNSIGNED_BYTE,
+                    type: (data.textureConfig && data.textureConfig.type) || this.gl.UNSIGNED_BYTE,
                     count: (data.textureConfig && data.textureConfig.count) || 1
                 }
             };
-            updateRenderTarget(gl, layer.target, data, layer.data);
-            layer.textures = layer.target.textures;
+            updateRenderTarget(this.gl, this.target, data, this.data);
+            this.textures = this.target.textures;
         }
-        else if (layer.target && data.width && data.height) {
-            layer.target.width = data.width;
-            layer.target.height = data.height;
-            updateRenderTarget(gl, layer.target, data, layer.data);
+        else if (this.target && data.width && data.height) {
+            this.target.width = data.width;
+            this.target.height = data.height;
+            updateRenderTarget(this.gl, this.target, data, this.data);
         }
         if (data.sketches) {
-            layer.sketches = data.sketches;
+            this.sketches = data.sketches;
         }
         if (data.frag) {
-            var sketch = layer.sketches && layer.sketches[0];
+            var sketch = this.sketches && this.sketches[0];
             if (sketch) {
                 sketch.shade.update({ frag: data.frag });
             }
         }
         if (data.uniforms) {
-            layer.uniforms = data.uniforms;
+            this.uniforms = data.uniforms;
         }
-        Object.assign(layer.data, data);
-        return layer;
+        Object.assign(this.data, data);
+        return this;
     };
-    layer.destroy = function () {
-        if (layer.sketches) {
-            for (var _i = 0, _a = layer.sketches; _i < _a.length; _i++) {
+    DrawingLayer.prototype.destroy = function () {
+        if (this.sketches) {
+            for (var _i = 0, _a = this.sketches; _i < _a.length; _i++) {
                 var sketch = _a[_i];
                 sketch.destroy();
             }
         }
-        if (layer.target) {
-            destroyRenderTarget(gl, layer.target);
+        if (this.target) {
+            destroyRenderTarget(this.gl, this.target);
         }
         else {
-            for (var _b = 0, _c = layer.textures; _b < _c.length; _b++) {
+            for (var _b = 0, _c = this.textures; _b < _c.length; _b++) {
                 var texture = _c[_b];
-                gl.deleteTexture(texture);
+                this.gl.deleteTexture(texture);
             }
         }
     };
-    return layer;
-}
+    return DrawingLayer;
+}());
+export { DrawingLayer };
 //# sourceMappingURL=layer.js.map

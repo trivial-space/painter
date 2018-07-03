@@ -1,3 +1,6 @@
+import { Form } from './form';
+import { Shade } from './shade';
+import { Sketch } from './sketch';
 export declare type GL = WebGLRenderingContext;
 export declare type Color = [number, number, number, number];
 export declare type TypedArray = Uint8Array | Uint16Array | Uint32Array | Int8Array | Int16Array | Int32Array | Float32Array | Float64Array;
@@ -34,19 +37,6 @@ export interface AttribContext {
     offset?: number;
     normalize?: boolean;
 }
-export interface Form {
-    drawType: number;
-    itemCount: number;
-    attribs: {
-        [id: string]: AttribContext;
-    };
-    elements?: {
-        buffer: WebGLBuffer | null;
-        glType: number | null;
-    };
-    update: (data: FormData) => Form;
-    destroy: () => void;
-}
 export interface ShadeData {
     vert?: string;
     frag?: string;
@@ -59,24 +49,10 @@ export interface AttribSetter {
     location: number;
     setter: (ctx: AttribContext) => void;
 }
-export interface Shade {
-    program: WebGLProgram | null;
-    vert: WebGLShader | null;
-    frag: WebGLShader | null;
-    vertSource?: string;
-    fragSource?: string;
-    uniformSetters: {
-        [id: string]: UniformSetter;
-    };
-    attributeSetters: {
-        [id: string]: AttribSetter;
-    };
-    update: (data: ShadeData) => Shade;
-    destroy: () => void;
-}
 export declare type Uniforms = {
     [id: string]: any;
 };
+export declare type UniformsData = Uniforms | (() => Uniforms);
 export interface DrawSettings {
     clearColor?: Color;
     clearDepth?: number;
@@ -94,16 +70,8 @@ export interface DrawSettings {
 export interface SketchData {
     form?: Form;
     shade?: Shade;
-    uniforms?: Uniforms;
+    uniforms?: UniformsData;
     drawSettings?: DrawSettings;
-}
-export interface Sketch {
-    drawSettings?: DrawSettings;
-    form: Form;
-    shade: Shade;
-    uniforms: Uniforms;
-    update: (data: SketchData) => Sketch;
-    destroy: () => void;
 }
 export declare type MagFilter = 'LINEAR' | 'NEAREST';
 export declare type MinFilter = MagFilter | 'LINEAR_MIPMAP_LINEAR' | 'LINEAR_MIPMAP_NEAREST' | 'NEAREST_MIPMAP_LINEAR' | 'NEAREST_MIPMAP_NEAREST';
@@ -129,33 +97,16 @@ export interface LayerData extends TextureData {
     };
     asset?: Asset;
     sketches?: Sketch[];
-    uniforms?: {
-        [id: string]: any;
-    };
+    uniforms?: UniformsData;
     frag?: string;
 }
 export interface Layer {
     textures: (WebGLTexture | null)[];
     data: LayerData;
     target?: RenderTarget;
-    uniforms?: Uniforms;
+    uniforms?: UniformsData;
     sketches?: Sketch[];
     texture: (index?: number) => WebGLTexture | null;
     update: (data: LayerData) => Layer;
-    destroy: () => void;
-}
-export interface Painter {
-    gl: GL;
-    updateDrawSettings: (drawSettings?: DrawSettings) => Painter;
-    createForm: () => Form;
-    createShade: () => Shade;
-    createSketch: () => Sketch;
-    createFlatSketch: () => Sketch;
-    createStaticLayer: () => Layer;
-    createDrawingLayer: () => Layer;
-    createEffectLayer: () => Layer;
-    draw: (sketchApi: Sketch, globalUniforms?: Uniforms) => Painter;
-    compose: (...layers: Layer[]) => Painter;
-    resize: (multiplier?: number) => Painter;
     destroy: () => void;
 }

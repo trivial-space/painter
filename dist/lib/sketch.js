@@ -1,24 +1,26 @@
-export function create() {
-    var sketch = {};
-    sketch.update = function (data) {
+var Sketch = /** @class */ (function () {
+    function Sketch() {
+    }
+    Sketch.prototype.update = function (data) {
         if (data.drawSettings) {
-            sketch.drawSettings = data.drawSettings;
+            this.drawSettings = data.drawSettings;
         }
         if (data.form) {
-            sketch.form = data.form;
+            this.form = data.form;
         }
         if (data.shade) {
-            sketch.shade = data.shade;
+            this.shade = data.shade;
         }
         if (data.uniforms) {
-            sketch.uniforms = data.uniforms;
+            this.uniforms = data.uniforms;
         }
-        return sketch;
+        return this;
     };
-    sketch.destroy = function () {
-        sketch.form && sketch.form.destroy();
-        sketch.shade && sketch.shade.destroy();
+    Sketch.prototype.destroy = function () {
+        this.form && this.form.destroy();
+        this.shade && this.shade.destroy();
     };
-    return sketch;
-}
+    return Sketch;
+}());
+export { Sketch };
 //# sourceMappingURL=sketch.js.map

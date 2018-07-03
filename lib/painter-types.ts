@@ -99,6 +99,7 @@ export interface AttribSetter {
 // Sketch
 
 export type Uniforms = { [id: string]: any }
+export type UniformsData = Uniforms | (() => Uniforms)
 
 export interface DrawSettings {
 	clearColor?: Color
@@ -118,7 +119,7 @@ export interface DrawSettings {
 export interface SketchData {
 	form?: Form,
 	shade?: Shade,
-	uniforms?: Uniforms,
+	uniforms?: UniformsData
 	drawSettings?: DrawSettings
 }
 
@@ -160,7 +161,7 @@ export interface LayerData extends TextureData {
 
 	asset?: Asset // AssetLayer specific
 	sketches?: Sketch[]
-	uniforms?: { [id: string]: any } // ShaderLayer specific
+	uniforms?: UniformsData // ShaderLayer specific
 	frag?: string
 }
 
@@ -168,7 +169,7 @@ export interface Layer {
 	textures: (WebGLTexture | null)[]
 	data: LayerData
 	target?: RenderTarget
-	uniforms?: Uniforms
+	uniforms?: UniformsData
 	sketches?: Sketch[]
 
 	texture: (index?: number) => WebGLTexture | null
