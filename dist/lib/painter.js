@@ -71,9 +71,6 @@ var Painter = /** @class */ (function () {
         });
     };
     Painter.prototype.draw = function (sketch, globalUniforms) {
-        if (typeof globalUniforms === 'function') {
-            globalUniforms = globalUniforms();
-        }
         draw(this.gl, sketch, null, globalUniforms);
         return this;
     };
@@ -101,9 +98,6 @@ function draw(gl, sketch, defaultTexture, globalUniforms) {
     }
     if (drawSettings) {
         applyDrawSettings(gl, drawSettings);
-    }
-    if (typeof uniforms === 'function') {
-        uniforms = uniforms();
     }
     if (Array.isArray(uniforms)) {
         for (var _i = 0, uniforms_1 = uniforms; _i < uniforms_1.length; _i++) {
@@ -143,6 +137,9 @@ function shadeUniforms(shade, uniforms, defaultTexture) {
         var setter = shade.uniformSetters[name_2];
         if (setter) {
             var value = uniforms[name_2];
+            if (typeof value === 'function') {
+                value = value();
+            }
             if (value === null || typeof value === 'string') {
                 setter.setter(defaultTexture);
             }
@@ -152,65 +149,58 @@ function shadeUniforms(shade, uniforms, defaultTexture) {
         }
     }
 }
+function renderLayer(gl, layer, targets, uniforms, resultSketch, directRender) {
+    var source = targets[0];
+    var target = targets[1];
+    var renderToStack = !directRender && layer.target == null;
+    if (directRender) {
+        gl.bindFramebuffer(gl.FRAMEBUFFER, null);
+        gl.viewport(0, 0, gl.drawingBufferWidth, gl.drawingBufferHeight);
+    }
+    else if (layer.target) {
+        gl.bindFramebuffer(gl.FRAMEBUFFER, layer.target.frameBuffer);
+        gl.viewport(0, 0, layer.target.width, layer.target.height);
+    }
+    else {
+        gl.bindFramebuffer(gl.FRAMEBUFFER, target.frameBuffer);
+        gl.viewport(0, 0, gl.drawingBufferWidth, gl.drawingBufferHeight);
+    }
+    if (layer.data.drawSettings) {
+        applyDrawSettings(gl, layer.data.drawSettings);
+    }
+    if (layer.sketches) {
+        for (var _i = 0, _a = layer.sketches; _i < _a.length; _i++) {
+            var sketch = _a[_i];
+            draw(gl, sketch, source.textures[0], uniforms);
+        }
+    }
+    else {
+        // Display static texture
+        draw(gl, resultSketch, null, { source: layer.texture() });
+    }
+    if (layer.data.drawSettings) {
+        revertDrawSettings(gl, layer.data.drawSettings);
+    }
+    if (renderToStack) {
+        targets[0] = target;
+        targets[1] = source;
+    }
+}
 function composeLayers(gl, layers, targets, result) {
     var last = layers.length - 1;
-    var _loop_1 = function (i) {
+    for (var i = 0; i < layers.length; i++) {
         var layer = layers[i];
-        var render = function (uniforms, directRender) {
-            var source = targets[0];
-            var target = targets[1];
-            var renderToStack = !directRender && layer.target == null;
-            if (directRender) {
-                gl.bindFramebuffer(gl.FRAMEBUFFER, null);
-                gl.viewport(0, 0, gl.drawingBufferWidth, gl.drawingBufferHeight);
-            }
-            else if (layer.target) {
-                gl.bindFramebuffer(gl.FRAMEBUFFER, layer.target.frameBuffer);
-                gl.viewport(0, 0, layer.target.width, layer.target.height);
-            }
-            else {
-                gl.bindFramebuffer(gl.FRAMEBUFFER, target.frameBuffer);
-                gl.viewport(0, 0, gl.drawingBufferWidth, gl.drawingBufferHeight);
-            }
-            if (layer.data.drawSettings) {
-                applyDrawSettings(gl, layer.data.drawSettings);
-            }
-            if (layer.sketches) {
-                for (var _i = 0, _a = layer.sketches; _i < _a.length; _i++) {
-                    var sketch = _a[_i];
-                    draw(gl, sketch, source.textures[0], uniforms);
-                }
-            }
-            else {
-                // Display static texture
-                draw(gl, result, null, { source: layer.texture() });
-            }
-            if (layer.data.drawSettings) {
-                revertDrawSettings(gl, layer.data.drawSettings);
-            }
-            if (renderToStack) {
-                targets[0] = target;
-                targets[1] = source;
-            }
-        };
-        var uniforms = layer.uniforms;
-        if (typeof uniforms === 'function') {
-            uniforms = uniforms();
-        }
-        if (Array.isArray(uniforms)) {
-            var newLast = last + uniforms.length - 1;
-            for (var j = 0; j < uniforms.length; j++) {
+        if (Array.isArray(layer.uniforms)) {
+            var newLast = last + layer.uniforms.length - 1;
+            for (var j = 0; j < layer.uniforms.length; j++) {
                 var directRender = i + j === newLast;
-                render(uniforms[j], directRender);
+                renderLayer(gl, layer, targets, layer.uniforms[j], result, directRender);
             }
         }
         else {
             var directRender = i === last;
-            render(uniforms, directRender);
+            renderLayer(gl, layer, targets, layer.uniforms, result, directRender);
         }
-    };
-    for (var i = 0; i < layers.length; i++) {
-        _loop_1(i);
     }
 }
 //# sourceMappingURL=painter.js.map

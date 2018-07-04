@@ -52,7 +52,6 @@ export interface AttribSetter {
 export declare type Uniforms = {
     [id: string]: any;
 };
-export declare type UniformsData = Uniforms | (() => Uniforms);
 export interface DrawSettings {
     clearColor?: Color;
     clearDepth?: number;
@@ -70,7 +69,7 @@ export interface DrawSettings {
 export interface SketchData {
     form?: Form;
     shade?: Shade;
-    uniforms?: UniformsData;
+    uniforms?: Uniforms;
     drawSettings?: DrawSettings;
 }
 export declare type MagFilter = 'LINEAR' | 'NEAREST';
@@ -97,14 +96,14 @@ export interface LayerData extends TextureData {
     };
     asset?: Asset;
     sketches?: Sketch[];
-    uniforms?: UniformsData;
+    uniforms?: Uniforms;
     frag?: string;
 }
 export interface Layer {
     textures: (WebGLTexture | null)[];
     data: LayerData;
     target?: RenderTarget;
-    uniforms?: UniformsData;
+    uniforms?: Uniforms;
     sketches?: Sketch[];
     texture: (index?: number) => WebGLTexture | null;
     update: (data: LayerData) => Layer;

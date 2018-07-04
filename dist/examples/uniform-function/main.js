@@ -18,18 +18,18 @@ var shade = painter.createShade().update({
 });
 var sketch = painter.createSketch().update({
     form: form, shade: shade,
-    uniforms: function () { return ({
-        transform: mat4.rotateY(planMat, planMat, rotation)
-    }); }
+    uniforms: {
+        transform: function () { return mat4.rotateY(planMat, planMat, rotation); }
+    }
 });
 var planeLayer = painter.createDrawingLayer().update({
     sketches: [sketch],
-    uniforms: function () {
-        colorHSL.h = adjustHue(colorHSL.h + 0.001);
-        return {
-            color: hslToRGB(colorHSL),
-            projection: projection
-        };
+    uniforms: {
+        color: function () {
+            colorHSL.h = adjustHue(colorHSL.h + 0.001);
+            return hslToRGB(colorHSL);
+        },
+        projection: projection
     },
     drawSettings: {
         clearColor: [0.0, 1.0, 0.0, 1.0],

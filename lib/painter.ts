@@ -165,67 +165,66 @@ function shadeUniforms (shade: Shade, uniforms: Uniforms, defaultTexture: WebGLT
 }
 
 
-function composeLayers (gl: GL, layers: Layer[], targets: RenderTarget[], result: Sketch) {
+function renderLayer (gl: GL, layer: Layer, targets: RenderTarget[], uniforms: Uniforms | undefined, resultSketch: Sketch, directRender: boolean) {
+	const source = targets[0]
+	const target = targets[1]
+	const renderToStack = !directRender && layer.target == null
 
+	if (directRender) {
+		gl.bindFramebuffer(gl.FRAMEBUFFER, null)
+		gl.viewport(0, 0, gl.drawingBufferWidth, gl.drawingBufferHeight)
+
+	} else if (layer.target) {
+		gl.bindFramebuffer(gl.FRAMEBUFFER, layer.target.frameBuffer)
+		gl.viewport(0, 0, layer.target.width, layer.target.height)
+
+	} else {
+		gl.bindFramebuffer(gl.FRAMEBUFFER, target.frameBuffer)
+		gl.viewport(0, 0, gl.drawingBufferWidth, gl.drawingBufferHeight)
+	}
+
+	if (layer.data.drawSettings) {
+		applyDrawSettings(gl, layer.data.drawSettings)
+	}
+
+	if (layer.sketches) {
+		for (const sketch of layer.sketches) {
+			draw(gl, sketch, source.textures[0], uniforms)
+		}
+	} else {
+		// Display static texture
+		draw(gl, resultSketch, null, { source: layer.texture() })
+	}
+
+	if (layer.data.drawSettings) {
+		revertDrawSettings(gl, layer.data.drawSettings)
+	}
+
+	if (renderToStack) {
+		targets[0] = target
+		targets[1] = source
+	}
+}
+
+
+function composeLayers (gl: GL, layers: Layer[], targets: RenderTarget[], result: Sketch) {
 	const last = layers.length - 1
 
 	for (let i = 0; i < layers.length; i++) {
 		const layer = layers[i]
-
-		const render = (uniforms: Uniforms | undefined, directRender: boolean) => {
-			const source = targets[0]
-			const target = targets[1]
-			const renderToStack = !directRender && layer.target == null
-
-			if (directRender) {
-				gl.bindFramebuffer(gl.FRAMEBUFFER, null)
-				gl.viewport(0, 0, gl.drawingBufferWidth, gl.drawingBufferHeight)
-
-			} else if (layer.target) {
-				gl.bindFramebuffer(gl.FRAMEBUFFER, layer.target.frameBuffer)
-				gl.viewport(0, 0, layer.target.width, layer.target.height)
-
-			} else {
-				gl.bindFramebuffer(gl.FRAMEBUFFER, target.frameBuffer)
-				gl.viewport(0, 0, gl.drawingBufferWidth, gl.drawingBufferHeight)
-			}
-
-			if (layer.data.drawSettings) {
-				applyDrawSettings(gl, layer.data.drawSettings)
-			}
-
-			if (layer.sketches) {
-				for (const sketch of layer.sketches) {
-					draw(gl, sketch, source.textures[0], uniforms)
-				}
-			} else {
-				// Display static texture
-				draw(gl, result, null, { source: layer.texture() })
-			}
-
-			if (layer.data.drawSettings) {
-				revertDrawSettings(gl, layer.data.drawSettings)
-			}
-
-			if (renderToStack) {
-				targets[0] = target
-				targets[1] = source
-			}
-		}
 
 		if (Array.isArray(layer.uniforms)) {
 			const newLast = last + layer.uniforms.length - 1
 
 			for (let j = 0; j < layer.uniforms.length; j++) {
 				const directRender = i + j === newLast
-				render(layer.uniforms[j], directRender)
+				renderLayer(gl, layer, targets, layer.uniforms[j], result, directRender)
 			}
 
 		} else {
 			const directRender = i === last
-			render(layer.uniforms, directRender)
+			renderLayer(gl, layer, targets, layer.uniforms, result, directRender)
 		}
-
 	}
 }
 

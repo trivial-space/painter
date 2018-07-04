@@ -1,4 +1,4 @@
-import { GL, RenderTarget, Layer, DrawSettings, UniformsData } from './painter-types';
+import { GL, Uniforms, RenderTarget, Layer, DrawSettings } from './painter-types';
 import { Form } from './form';
 import { Shade } from './shade';
 import { Sketch } from './sketch';
@@ -19,6 +19,6 @@ export declare class Painter {
     createStaticLayer(): StaticLayer;
     createDrawingLayer(): DrawingLayer;
     createEffectLayer(): DrawingLayer;
-    draw(sketch: Sketch, globalUniforms?: UniformsData): this;
+    draw(sketch: Sketch, globalUniforms?: Uniforms): this;
     compose(...layers: Layer[]): this;
 }
