@@ -1,4 +1,4 @@
-import { GL, Layer, LayerData, RenderTarget, UniformsData } from './painter-types'
+import { GL, Layer, LayerData, RenderTarget, Uniforms } from './painter-types'
 import { setTextureParams, updateRenderTarget, destroyRenderTarget } from './render-utils'
 import { Sketch } from './sketch'
 
@@ -47,7 +47,7 @@ export class DrawingLayer implements Layer {
 	textures: (WebGLTexture | null)[] = []
 	data: LayerData = {}
 	target?: RenderTarget
-	uniforms?: UniformsData
+	uniforms?: Uniforms
 	sketches?: Sketch[]
 
 	constructor(private gl: GL) { }

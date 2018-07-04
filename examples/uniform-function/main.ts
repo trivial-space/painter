@@ -13,7 +13,7 @@ painter.resize(window.devicePixelRatio)
 const planMat = mat4.fromTranslation(mat4.create(), [0, 0, -3])
 const rotation = 0.01
 const projection = mat4.perspective(mat4.create(), 45, 1, 0.01, 10)
-const colorHSL = {h: 0, s: 0.5, l: 0.5}
+const colorHSL = { h: 0, s: 0.5, l: 0.5 }
 
 
 // ===== Setup Render Context =====
@@ -27,20 +27,20 @@ const shade = painter.createShade().update({
 
 const sketch = painter.createSketch().update({
 	form, shade,
-	uniforms: () => ({
-		transform: mat4.rotateY(planMat, planMat, rotation)
-	})
+	uniforms: {
+		transform: () => mat4.rotateY(planMat, planMat, rotation)
+	}
 })
 
 
 const planeLayer = painter.createDrawingLayer().update({
 	sketches: [sketch],
-	uniforms: () => {
-		colorHSL.h = adjustHue(colorHSL.h + 0.001)
-		return {
-			color: hslToRGB(colorHSL),
-			projection
-		}
+	uniforms: {
+		color: () => {
+			colorHSL.h = adjustHue(colorHSL.h + 0.001)
+			return hslToRGB(colorHSL)
+		},
+		projection
 	},
 	drawSettings: {
 		clearColor: [0.0, 1.0, 0.0, 1.0],
