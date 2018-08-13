@@ -1,20 +1,21 @@
 import { GL, Layer, LayerData, RenderTarget, Uniforms } from './painter-types'
 import { setTextureParams, updateRenderTarget, destroyRenderTarget } from './render-utils'
 import { Sketch } from './sketch'
+import { times } from 'tvs-libs/dist/lib/utils/sequence'
 
 
 export class StaticLayer implements Layer {
 	gl: GL
-	textures: (WebGLTexture | null)[]
+	_texture: WebGLTexture | null
 	data: LayerData = {}
 
 	constructor(gl: GL) {
 		this.gl = gl
-		this.textures = [gl.createTexture()]
+		this._texture = gl.createTexture()
 	}
 
 	texture () {
-		return this.textures[0]
+		return this._texture
 	}
 
 	update (data: LayerData) {
@@ -44,19 +45,18 @@ export class StaticLayer implements Layer {
 
 
 export class DrawingLayer implements Layer {
-	textures: (WebGLTexture | null)[] = []
 	data: LayerData = {}
-	target?: RenderTarget
+	targets?: [RenderTarget, RenderTarget]
 	uniforms?: Uniforms
 	sketches?: Sketch[]
 
 	constructor(private gl: GL) { }
 
-	texture (i = 0) { return this.textures[i] }
+	texture (i = 0) { return (this.targets && this.targets[0].textures[i]) || null }
 
 	update (data: LayerData) {
-		if (data.buffered && !this.target) {
-			this.target = {
+		if (data.buffered && !this.targets) {
+			this.targets = times<RenderTarget>(() => ({
 				width: data.width || this.gl.canvas.width,
 				height: data.height || this.gl.canvas.height,
 				frameBuffer: null, textures: [], depthBuffer: null,
@@ -64,17 +64,16 @@ export class DrawingLayer implements Layer {
 					type: (data.textureConfig && data.textureConfig.type) || this.gl.UNSIGNED_BYTE,
 					count: (data.textureConfig && data.textureConfig.count) || 1
 				}
-			} as RenderTarget
+			}), 2) as [RenderTarget, RenderTarget]
 
-			updateRenderTarget(this.gl, this.target, data, this.data)
+			this.targets.forEach(t => updateRenderTarget(this.gl, t, data, this.data))
 
-			this.textures = this.target.textures
-
-		} else if (this.target && data.width && data.height) {
-			this.target.width = data.width
-			this.target.height = data.height
-
-			updateRenderTarget(this.gl, this.target, data, this.data)
+		} else if (this.targets && data.width && data.height) {
+			this.targets.forEach(t => {
+				t.width = data.width as number
+				t.height = data.height as number
+				updateRenderTarget(this.gl, t, data, this.data)
+			})
 		}
 
 		if (data.sketches) {
@@ -104,13 +103,9 @@ export class DrawingLayer implements Layer {
 			}
 		}
 
-		if (this.target) {
-			destroyRenderTarget(this.gl, this.target)
-
-		} else {
-			for (const texture of this.textures) {
-				this.gl.deleteTexture(texture)
-			}
+		if (this.targets) {
+			this.targets.forEach(t => destroyRenderTarget(this.gl, t))
+			this.targets = undefined
 		}
 	}
 }

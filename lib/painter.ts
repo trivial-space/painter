@@ -147,7 +147,7 @@ function shadeForm (shade: Shade, form: Form) {
 }
 
 
-function shadeUniforms (shade: Shade, uniforms: Uniforms, defaultTexture: WebGLTexture | null) {
+function shadeUniforms (shade: Shade, uniforms: Uniforms, defaultTexture?: WebGLTexture | null) {
 	for (const name in uniforms) {
 		const setter = shade.uniformSetters[name]
 		if (setter) {
@@ -168,15 +168,14 @@ function shadeUniforms (shade: Shade, uniforms: Uniforms, defaultTexture: WebGLT
 function renderLayer (gl: GL, layer: Layer, targets: RenderTarget[], uniforms: Uniforms | undefined, resultSketch: Sketch, directRender: boolean) {
 	const source = targets[0]
 	const target = targets[1]
-	const renderToStack = !directRender && layer.target == null
 
 	if (directRender) {
 		gl.bindFramebuffer(gl.FRAMEBUFFER, null)
 		gl.viewport(0, 0, gl.drawingBufferWidth, gl.drawingBufferHeight)
 
-	} else if (layer.target) {
-		gl.bindFramebuffer(gl.FRAMEBUFFER, layer.target.frameBuffer)
-		gl.viewport(0, 0, layer.target.width, layer.target.height)
+	} else if (layer.targets) {
+		gl.bindFramebuffer(gl.FRAMEBUFFER, layer.targets[1].frameBuffer)
+		gl.viewport(0, 0, layer.targets[0].width, layer.targets[1].height)
 
 	} else {
 		gl.bindFramebuffer(gl.FRAMEBUFFER, target.frameBuffer)
@@ -189,7 +188,7 @@ function renderLayer (gl: GL, layer: Layer, targets: RenderTarget[], uniforms: U
 
 	if (layer.sketches) {
 		for (const sketch of layer.sketches) {
-			draw(gl, sketch, source.textures[0], uniforms)
+			draw(gl, sketch, (layer.looping && layer.texture()) || source.textures[0], uniforms)
 		}
 	} else {
 		// Display static texture
@@ -200,9 +199,16 @@ function renderLayer (gl: GL, layer: Layer, targets: RenderTarget[], uniforms: U
 		revertDrawSettings(gl, layer.data.drawSettings)
 	}
 
-	if (renderToStack) {
-		targets[0] = target
-		targets[1] = source
+	if (!directRender) {
+		if (!layer.targets) {
+			targets[0] = target
+			targets[1] = source
+		} else {
+			const tmp = layer.targets[0]
+			layer.targets[0] = layer.targets[1]
+			layer.targets[1] = tmp
+			layer.looping = true
+		}
 	}
 }
 
@@ -215,6 +221,7 @@ function composeLayers (gl: GL, layers: Layer[], targets: RenderTarget[], result
 
 		if (Array.isArray(layer.uniforms)) {
 			const newLast = last + layer.uniforms.length - 1
+			layer.looping = false
 
 			for (let j = 0; j < layer.uniforms.length; j++) {
 				const directRender = i + j === newLast

@@ -98,17 +98,10 @@ const lights = [
 ]
 
 
-const texture = painter.createStaticLayer().update({
-	minFilter: 'LINEAR',
-	magFilter: 'LINEAR'
-})
-
-
 const lightLayer = painter.createEffectLayer().update({
 	frag: mainFrag,
 	uniforms: {
 		uEyePosition: eyePosition,
-		uTextureMap: texture.texture(),
 		uPositionBuffer: geoLayer.texture(0),
 		uNormalBuffer: geoLayer.texture(1),
 		uUVBuffer: geoLayer.texture(2)
@@ -130,10 +123,10 @@ const rotationY = 0.02
 
 function animate () {
 
-	for (let i = 0, len = boxes.length; i < len; ++i) {
-		mat4.rotateX(boxes[i].uModelMatrix, boxes[i].uModelMatrix, rotationX)
-		mat4.rotateY(boxes[i].uModelMatrix, boxes[i].uModelMatrix, rotationY)
-		mat4.multiply(boxes[i].uMVP, viewProjMatrix, boxes[i].uModelMatrix)
+	for (const box of boxes) {
+		mat4.rotateX(box.uModelMatrix, box.uModelMatrix, rotationX)
+		mat4.rotateY(box.uModelMatrix, box.uModelMatrix, rotationY)
+		mat4.multiply(box.uMVP, viewProjMatrix, box.uModelMatrix)
 	}
 
 	painter.compose(geoLayer, lightLayer)
@@ -142,4 +135,3 @@ function animate () {
 }
 
 animate()
-

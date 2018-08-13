@@ -1,4 +1,4 @@
-import { painter, gl } from '../painter'
+import { painter } from '../painter'
 import shaderCode from './shader.glsl'
 
 
@@ -11,18 +11,23 @@ while (strength >= 1) {
 		direction: 0,
 		strength: strength,
 		source: null,
-		size: [gl.canvas.width, gl.canvas.height]
+		size: [256, 256]
 	})
 	passes.push({
 		direction: 1,
 		strength: strength,
 		source: null,
-		size: [gl.canvas.width, gl.canvas.height]
+		size: [256, 256]
 	})
 	strength /= 2
 }
 
 const layer = painter.createEffectLayer().update({
+	buffered: true,
+	width: 256,
+	height: 256,
+	minFilter: 'LINEAR',
+	magFilter: 'LINEAR',
 	frag: shaderCode,
 	uniforms: passes
 })

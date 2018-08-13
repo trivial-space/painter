@@ -10,7 +10,6 @@ uniform vec3 uEyePosition;
 uniform sampler2D uPositionBuffer;
 uniform sampler2D uNormalBuffer;
 uniform sampler2D uUVBuffer;
-// uniform sampler2D uTextureMap;
 
 varying vec2 coords;
 
@@ -19,7 +18,6 @@ void main() {
 	vec3 normal = normalize(texture2D(uNormalBuffer, coords).xyz);
 	vec2 uv = texture2D(uUVBuffer, coords).xy;
 
-	// vec4 baseColor = texture2D(uTextureMap, uv);
 	vec4 baseColor = vec4(1.0, 1.0, 1.0, 1.0);
 
 

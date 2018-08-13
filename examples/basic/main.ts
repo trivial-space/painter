@@ -81,7 +81,7 @@ const planeLayer = painter.createDrawingLayer().update({
 		form: plane,
 		shade: paintTexture,
 		uniforms: {
-			fufu: textureLayer.texture()
+			fufu: () => textureLayer.texture()
 		}
 	})],
 	drawSettings: {

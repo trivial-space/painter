@@ -118,7 +118,7 @@ export interface DrawSettings {
 export interface SketchData {
 	form?: Form,
 	shade?: Shade,
-	uniforms?: Uniforms
+	uniforms?: Uniforms | Uniforms[]
 	drawSettings?: DrawSettings
 }
 
@@ -160,15 +160,15 @@ export interface LayerData extends TextureData {
 
 	asset?: Asset // AssetLayer specific
 	sketches?: Sketch[]
-	uniforms?: Uniforms // ShaderLayer specific
+	uniforms?: Uniforms | Uniforms[] // ShaderLayer specific
 	frag?: string
 }
 
 export interface Layer {
-	textures: (WebGLTexture | null)[]
 	data: LayerData
-	target?: RenderTarget
-	uniforms?: Uniforms
+	targets?: [RenderTarget, RenderTarget]
+	looping?: boolean
+	uniforms?: Uniforms | Uniforms[]
 	sketches?: Sketch[]
 
 	texture: (index?: number) => WebGLTexture | null
