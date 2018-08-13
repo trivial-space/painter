@@ -50,7 +50,7 @@ var planeLayer = painter.createDrawingLayer().update({
             form: plane,
             shade: paintTexture,
             uniforms: {
-                fufu: textureLayer.texture()
+                fufu: function () { return textureLayer.texture(); }
             }
         })],
     drawSettings: {

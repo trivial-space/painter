@@ -78,15 +78,10 @@ var lights = [
         uLightColor: vec3.fromValues(0.0, 0.8, 0.8)
     }
 ];
-var texture = painter.createStaticLayer().update({
-    minFilter: 'LINEAR',
-    magFilter: 'LINEAR'
-});
 var lightLayer = painter.createEffectLayer().update({
     frag: mainFrag,
     uniforms: {
         uEyePosition: eyePosition,
-        uTextureMap: texture.texture(),
         uPositionBuffer: geoLayer.texture(0),
         uNormalBuffer: geoLayer.texture(1),
         uUVBuffer: geoLayer.texture(2)
@@ -104,10 +99,11 @@ if (lightLayer.sketches) {
 var rotationX = 0.01;
 var rotationY = 0.02;
 function animate() {
-    for (var i = 0, len = boxes.length; i < len; ++i) {
-        mat4.rotateX(boxes[i].uModelMatrix, boxes[i].uModelMatrix, rotationX);
-        mat4.rotateY(boxes[i].uModelMatrix, boxes[i].uModelMatrix, rotationY);
-        mat4.multiply(boxes[i].uMVP, viewProjMatrix, boxes[i].uModelMatrix);
+    for (var _i = 0, boxes_1 = boxes; _i < boxes_1.length; _i++) {
+        var box = boxes_1[_i];
+        mat4.rotateX(box.uModelMatrix, box.uModelMatrix, rotationX);
+        mat4.rotateY(box.uModelMatrix, box.uModelMatrix, rotationY);
+        mat4.multiply(box.uMVP, viewProjMatrix, box.uModelMatrix);
     }
     painter.compose(geoLayer, lightLayer);
     requestAnimationFrame(animate);

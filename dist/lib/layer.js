@@ -1,12 +1,13 @@
 import { setTextureParams, updateRenderTarget, destroyRenderTarget } from './render-utils';
+import { times } from 'tvs-libs/dist/lib/utils/sequence';
 var StaticLayer = /** @class */ (function () {
     function StaticLayer(gl) {
         this.data = {};
         this.gl = gl;
-        this.textures = [gl.createTexture()];
+        this._texture = gl.createTexture();
     }
     StaticLayer.prototype.texture = function () {
-        return this.textures[0];
+        return this._texture;
     };
     StaticLayer.prototype.update = function (data) {
         this.gl.bindTexture(this.gl.TEXTURE_2D, this.texture());
@@ -30,31 +31,32 @@ export { StaticLayer };
 var DrawingLayer = /** @class */ (function () {
     function DrawingLayer(gl) {
         this.gl = gl;
-        this.textures = [];
         this.data = {};
     }
     DrawingLayer.prototype.texture = function (i) {
         if (i === void 0) { i = 0; }
-        return this.textures[i];
+        return (this.targets && this.targets[0].textures[i]) || null;
     };
     DrawingLayer.prototype.update = function (data) {
-        if (data.buffered && !this.target) {
-            this.target = {
-                width: data.width || this.gl.canvas.width,
-                height: data.height || this.gl.canvas.height,
+        var _this = this;
+        if (data.buffered && !this.targets) {
+            this.targets = times(function () { return ({
+                width: data.width || _this.gl.canvas.width,
+                height: data.height || _this.gl.canvas.height,
                 frameBuffer: null, textures: [], depthBuffer: null,
                 textureConfig: {
-                    type: (data.textureConfig && data.textureConfig.type) || this.gl.UNSIGNED_BYTE,
+                    type: (data.textureConfig && data.textureConfig.type) || _this.gl.UNSIGNED_BYTE,
                     count: (data.textureConfig && data.textureConfig.count) || 1
                 }
-            };
-            updateRenderTarget(this.gl, this.target, data, this.data);
-            this.textures = this.target.textures;
+            }); }, 2);
+            this.targets.forEach(function (t) { return updateRenderTarget(_this.gl, t, data, _this.data); });
         }
-        else if (this.target && data.width && data.height) {
-            this.target.width = data.width;
-            this.target.height = data.height;
-            updateRenderTarget(this.gl, this.target, data, this.data);
+        else if (this.targets && data.width && data.height) {
+            this.targets.forEach(function (t) {
+                t.width = data.width;
+                t.height = data.height;
+                updateRenderTarget(_this.gl, t, data, _this.data);
+            });
         }
         if (data.sketches) {
             this.sketches = data.sketches;
@@ -72,20 +74,16 @@ var DrawingLayer = /** @class */ (function () {
         return this;
     };
     DrawingLayer.prototype.destroy = function () {
+        var _this = this;
         if (this.sketches) {
             for (var _i = 0, _a = this.sketches; _i < _a.length; _i++) {
                 var sketch = _a[_i];
                 sketch.destroy();
             }
         }
-        if (this.target) {
-            destroyRenderTarget(this.gl, this.target);
-        }
-        else {
-            for (var _b = 0, _c = this.textures; _b < _c.length; _b++) {
-                var texture = _c[_b];
-                this.gl.deleteTexture(texture);
-            }
+        if (this.targets) {
+            this.targets.forEach(function (t) { return destroyRenderTarget(_this.gl, t); });
+            this.targets = undefined;
         }
     };
     return DrawingLayer;

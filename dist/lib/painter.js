@@ -152,14 +152,13 @@ function shadeUniforms(shade, uniforms, defaultTexture) {
 function renderLayer(gl, layer, targets, uniforms, resultSketch, directRender) {
     var source = targets[0];
     var target = targets[1];
-    var renderToStack = !directRender && layer.target == null;
     if (directRender) {
         gl.bindFramebuffer(gl.FRAMEBUFFER, null);
         gl.viewport(0, 0, gl.drawingBufferWidth, gl.drawingBufferHeight);
     }
-    else if (layer.target) {
-        gl.bindFramebuffer(gl.FRAMEBUFFER, layer.target.frameBuffer);
-        gl.viewport(0, 0, layer.target.width, layer.target.height);
+    else if (layer.targets) {
+        gl.bindFramebuffer(gl.FRAMEBUFFER, layer.targets[1].frameBuffer);
+        gl.viewport(0, 0, layer.targets[0].width, layer.targets[1].height);
     }
     else {
         gl.bindFramebuffer(gl.FRAMEBUFFER, target.frameBuffer);
@@ -171,7 +170,7 @@ function renderLayer(gl, layer, targets, uniforms, resultSketch, directRender) {
     if (layer.sketches) {
         for (var _i = 0, _a = layer.sketches; _i < _a.length; _i++) {
             var sketch = _a[_i];
-            draw(gl, sketch, source.textures[0], uniforms);
+            draw(gl, sketch, (layer.looping && layer.texture()) || source.textures[0], uniforms);
         }
     }
     else {
@@ -181,9 +180,17 @@ function renderLayer(gl, layer, targets, uniforms, resultSketch, directRender) {
     if (layer.data.drawSettings) {
         revertDrawSettings(gl, layer.data.drawSettings);
     }
-    if (renderToStack) {
-        targets[0] = target;
-        targets[1] = source;
+    if (!directRender) {
+        if (!layer.targets) {
+            targets[0] = target;
+            targets[1] = source;
+        }
+        else {
+            var tmp = layer.targets[0];
+            layer.targets[0] = layer.targets[1];
+            layer.targets[1] = tmp;
+            layer.looping = true;
+        }
     }
 }
 function composeLayers(gl, layers, targets, result) {
@@ -192,6 +199,7 @@ function composeLayers(gl, layers, targets, result) {
         var layer = layers[i];
         if (Array.isArray(layer.uniforms)) {
             var newLast = last + layer.uniforms.length - 1;
+            layer.looping = false;
             for (var j = 0; j < layer.uniforms.length; j++) {
                 var directRender = i + j === newLast;
                 renderLayer(gl, layer, targets, layer.uniforms[j], result, directRender);

@@ -69,7 +69,7 @@ export interface DrawSettings {
 export interface SketchData {
     form?: Form;
     shade?: Shade;
-    uniforms?: Uniforms;
+    uniforms?: Uniforms | Uniforms[];
     drawSettings?: DrawSettings;
 }
 export declare type MagFilter = 'LINEAR' | 'NEAREST';
@@ -96,14 +96,14 @@ export interface LayerData extends TextureData {
     };
     asset?: Asset;
     sketches?: Sketch[];
-    uniforms?: Uniforms;
+    uniforms?: Uniforms | Uniforms[];
     frag?: string;
 }
 export interface Layer {
-    textures: (WebGLTexture | null)[];
     data: LayerData;
-    target?: RenderTarget;
-    uniforms?: Uniforms;
+    targets?: [RenderTarget, RenderTarget];
+    looping?: boolean;
+    uniforms?: Uniforms | Uniforms[];
     sketches?: Sketch[];
     texture: (index?: number) => WebGLTexture | null;
     update: (data: LayerData) => Layer;
