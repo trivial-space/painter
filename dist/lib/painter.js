@@ -158,7 +158,7 @@ function renderLayer(gl, layer, targets, uniforms, resultSketch, directRender) {
     }
     else if (layer.targets) {
         gl.bindFramebuffer(gl.FRAMEBUFFER, layer.targets[1].frameBuffer);
-        gl.viewport(0, 0, layer.targets[0].width, layer.targets[1].height);
+        gl.viewport(0, 0, layer.targets[1].width, layer.targets[1].height);
     }
     else {
         gl.bindFramebuffer(gl.FRAMEBUFFER, target.frameBuffer);

@@ -175,7 +175,7 @@ function renderLayer (gl: GL, layer: Layer, targets: RenderTarget[], uniforms: U
 
 	} else if (layer.targets) {
 		gl.bindFramebuffer(gl.FRAMEBUFFER, layer.targets[1].frameBuffer)
-		gl.viewport(0, 0, layer.targets[0].width, layer.targets[1].height)
+		gl.viewport(0, 0, layer.targets[1].width, layer.targets[1].height)
 
 	} else {
 		gl.bindFramebuffer(gl.FRAMEBUFFER, target.frameBuffer)
