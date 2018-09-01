@@ -9,6 +9,7 @@ import { StaticLayer, DrawingLayer } from './layer'
 
 
 export class Painter {
+	static debug = false
 	targets = [
 		{id: 'MainTarget_1'} as RenderTarget,
 		{id: 'MainTarget_2'} as RenderTarget
@@ -172,21 +173,21 @@ function renderLayer (gl: GL, layer: Layer, targets: RenderTarget[], uniforms: U
 	const target = targets[1]
 
 	if (directRender) {
-		if (process.env.NODE_ENV !== 'production' && process.env.DEBUG_PAINTER) {
+		if (process.env.NODE_ENV !== 'production' && Painter.debug) {
 			console.log(`PAINTER: Rendering directly to viewport`)
 		}
 		gl.bindFramebuffer(gl.FRAMEBUFFER, null)
 		gl.viewport(0, 0, gl.drawingBufferWidth, gl.drawingBufferHeight)
 
 	} else if (layer.targets) {
-		if (process.env.NODE_ENV !== 'production' && process.env.DEBUG_PAINTER) {
+		if (process.env.NODE_ENV !== 'production' && Painter.debug) {
 			console.log(`PAINTER: Rendering to layer target ${layer.targets[1].id}`)
 		}
 		gl.bindFramebuffer(gl.FRAMEBUFFER, layer.targets[1].frameBuffer)
 		gl.viewport(0, 0, layer.targets[1].width, layer.targets[1].height)
 
 	} else {
-		if (process.env.NODE_ENV !== 'production' && process.env.DEBUG_PAINTER) {
+		if (process.env.NODE_ENV !== 'production' && Painter.debug) {
 			console.log(`PAINTER: Rendering to target ${target.id}`)
 		}
 		gl.bindFramebuffer(gl.FRAMEBUFFER, target.frameBuffer)
@@ -205,7 +206,7 @@ function renderLayer (gl: GL, layer: Layer, targets: RenderTarget[], uniforms: U
 		// Display static texture
 		draw(gl, resultSketch, null, { source: layer.texture() })
 	}
-	if (process.env.NODE_ENV !== 'production' && process.env.DEBUG_PAINTER) {
+	if (process.env.NODE_ENV !== 'production' && Painter.debug) {
 		console.log(`PAINTER: Render success!`)
 	}
 
@@ -233,7 +234,7 @@ function composeLayers (gl: GL, layers: Layer[], targets: RenderTarget[], result
 	for (let i = 0; i < layers.length; i++) {
 		const layer = layers[i]
 
-		if (process.env.NODE_ENV !== 'production' && process.env.DEBUG_PAINTER) {
+		if (process.env.NODE_ENV !== 'production' && Painter.debug) {
 			console.log(`PAINTER: Rendering layer ${layer.id}`)
 		}
 
@@ -242,7 +243,7 @@ function composeLayers (gl: GL, layers: Layer[], targets: RenderTarget[], result
 			layer.looping = false
 
 			for (let j = 0; j < layer.uniforms.length; j++) {
-				if (process.env.NODE_ENV !== 'production' && process.env.DEBUG_PAINTER) {
+				if (process.env.NODE_ENV !== 'production' && Painter.debug) {
 					console.log(`PAINTER: Layer pass ${j + 1}`)
 				}
 				const directRender = i + j === newLast

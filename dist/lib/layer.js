@@ -1,5 +1,6 @@
 import { setTextureParams, updateRenderTarget, destroyRenderTarget } from './render-utils';
 import { times } from 'tvs-libs/dist/lib/utils/sequence';
+import { Painter } from './painter';
 let staticLayerCount = 1;
 export class StaticLayer {
     constructor(gl, id = 'StaticLayer' + staticLayerCount++) {
@@ -36,7 +37,7 @@ export class DrawingLayer {
         this.data = {};
     }
     texture(i = 0) {
-        if (process.env.NODE_ENV !== 'production' && process.env.DEBUG_PAINTER) {
+        if (process.env.NODE_ENV !== 'production' && Painter.debug) {
             if (this.targets) {
                 console.log(`PAINTER: Using buffer texture ${this.targets[0].id}`);
             }

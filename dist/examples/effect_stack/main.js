@@ -1,5 +1,7 @@
 import { painter } from '../painter';
 import shaderCode from './shader.glsl';
+import { Painter } from '../../lib/painter';
+Painter.debug = true;
 // effect
 let strength = 10;
 const passes = [];

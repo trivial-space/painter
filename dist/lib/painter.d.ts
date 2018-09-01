@@ -5,6 +5,7 @@ import { Sketch } from './sketch';
 import { StaticLayer, DrawingLayer } from './layer';
 export declare class Painter {
     gl: GL;
+    static debug: boolean;
     targets: RenderTarget[];
     renderQuad: Form;
     result: Sketch;

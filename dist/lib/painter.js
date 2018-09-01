@@ -69,6 +69,7 @@ export class Painter {
         return this;
     }
 }
+Painter.debug = false;
 function draw(gl, sketch, defaultTexture, globalUniforms) {
     const { shade, form, drawSettings } = sketch;
     const { uniforms } = sketch;
@@ -136,21 +137,21 @@ function renderLayer(gl, layer, targets, uniforms, resultSketch, directRender) {
     const source = targets[0];
     const target = targets[1];
     if (directRender) {
-        if (process.env.NODE_ENV !== 'production' && process.env.DEBUG_PAINTER) {
+        if (process.env.NODE_ENV !== 'production' && Painter.debug) {
             console.log(`PAINTER: Rendering directly to viewport`);
         }
         gl.bindFramebuffer(gl.FRAMEBUFFER, null);
         gl.viewport(0, 0, gl.drawingBufferWidth, gl.drawingBufferHeight);
     }
     else if (layer.targets) {
-        if (process.env.NODE_ENV !== 'production' && process.env.DEBUG_PAINTER) {
+        if (process.env.NODE_ENV !== 'production' && Painter.debug) {
             console.log(`PAINTER: Rendering to layer target ${layer.targets[1].id}`);
         }
         gl.bindFramebuffer(gl.FRAMEBUFFER, layer.targets[1].frameBuffer);
         gl.viewport(0, 0, layer.targets[1].width, layer.targets[1].height);
     }
     else {
-        if (process.env.NODE_ENV !== 'production' && process.env.DEBUG_PAINTER) {
+        if (process.env.NODE_ENV !== 'production' && Painter.debug) {
             console.log(`PAINTER: Rendering to target ${target.id}`);
         }
         gl.bindFramebuffer(gl.FRAMEBUFFER, target.frameBuffer);
@@ -168,7 +169,7 @@ function renderLayer(gl, layer, targets, uniforms, resultSketch, directRender) {
         // Display static texture
         draw(gl, resultSketch, null, { source: layer.texture() });
     }
-    if (process.env.NODE_ENV !== 'production' && process.env.DEBUG_PAINTER) {
+    if (process.env.NODE_ENV !== 'production' && Painter.debug) {
         console.log(`PAINTER: Render success!`);
     }
     if (layer.data.drawSettings) {
@@ -191,14 +192,14 @@ function composeLayers(gl, layers, targets, result) {
     const last = layers.length - 1;
     for (let i = 0; i < layers.length; i++) {
         const layer = layers[i];
-        if (process.env.NODE_ENV !== 'production' && process.env.DEBUG_PAINTER) {
+        if (process.env.NODE_ENV !== 'production' && Painter.debug) {
             console.log(`PAINTER: Rendering layer ${layer.id}`);
         }
         if (Array.isArray(layer.uniforms)) {
             const newLast = last + layer.uniforms.length - 1;
             layer.looping = false;
             for (let j = 0; j < layer.uniforms.length; j++) {
-                if (process.env.NODE_ENV !== 'production' && process.env.DEBUG_PAINTER) {
+                if (process.env.NODE_ENV !== 'production' && Painter.debug) {
                     console.log(`PAINTER: Layer pass ${j + 1}`);
                 }
                 const directRender = i + j === newLast;

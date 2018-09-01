@@ -2,6 +2,7 @@ import { GL, Layer, LayerData, RenderTarget, Uniforms } from './painter-types'
 import { setTextureParams, updateRenderTarget, destroyRenderTarget } from './render-utils'
 import { Sketch } from './sketch'
 import { times } from 'tvs-libs/dist/lib/utils/sequence'
+import { Painter } from './painter'
 
 let staticLayerCount = 1
 
@@ -53,7 +54,7 @@ export class DrawingLayer implements Layer {
 	constructor(private gl: GL, public id = 'DrawingLayer' + drawingLayerCount++) { }
 
 	texture (i = 0) {
-		if (process.env.NODE_ENV !== 'production' && process.env.DEBUG_PAINTER) {
+		if (process.env.NODE_ENV !== 'production' && Painter.debug) {
 			if (this.targets) {
 				console.log(`PAINTER: Using buffer texture ${this.targets[0].id}`)
 			}
