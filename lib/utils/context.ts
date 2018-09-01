@@ -31,9 +31,8 @@ export function setBlendFunc (gl: GL, blendOpts: string[]) {
  */
 export function resizeCanvas (canvas: HTMLCanvasElement, multiplier = 1) {
 
-	multiplier = Math.max(1, multiplier)
-	const width = canvas.clientWidth * multiplier | 0
-	const height = canvas.clientHeight * multiplier | 0
+	const width = (canvas.clientWidth * multiplier) | 0
+	const height = (canvas.clientHeight * multiplier) | 0
 
 	if (canvas.width !== width
 		|| canvas.height !== height) {
