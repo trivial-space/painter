@@ -89,8 +89,7 @@ function draw (
 	globalUniforms?: Uniforms
 ) {
 
-	const { shade, form, drawSettings } = sketch
-	const { uniforms } = sketch
+	const { shade, form, drawSettings, uniforms } = sketch
 
 	if (!(shade && form)) {
 		throw Error('cannot draw, shader or geometry are not set')
