@@ -3,14 +3,13 @@ import { setTextureParams, updateRenderTarget, destroyRenderTarget } from './ren
 import { Sketch } from './sketch'
 import { times } from 'tvs-libs/dist/lib/utils/sequence'
 
+let staticLayerCount = 1
 
 export class StaticLayer implements Layer {
-	gl: GL
 	_texture: WebGLTexture | null
 	data: LayerData = {}
 
-	constructor(gl: GL) {
-		this.gl = gl
+	constructor(private gl: GL, public id = 'StaticLayer' + staticLayerCount++ ) {
 		this._texture = gl.createTexture()
 	}
 
@@ -43,6 +42,7 @@ export class StaticLayer implements Layer {
 	}
 }
 
+let drawingLayerCount = 1
 
 export class DrawingLayer implements Layer {
 	data: LayerData = {}
@@ -50,13 +50,21 @@ export class DrawingLayer implements Layer {
 	uniforms?: Uniforms
 	sketches?: Sketch[]
 
-	constructor(private gl: GL) { }
+	constructor(private gl: GL, public id = 'DrawingLayer' + drawingLayerCount++) { }
 
-	texture (i = 0) { return (this.targets && this.targets[0].textures[i]) || null }
+	texture (i = 0) {
+		if (process.env.NODE_ENV !== 'production' && process.env.DEBUG_PAINTER) {
+			if (this.targets) {
+				console.log(`PAINTER: Using buffer texture ${this.targets[0].id}`)
+			}
+		}
+		return (this.targets && this.targets[0].textures[i]) || null
+	}
 
 	update (data: LayerData) {
 		if (data.buffered && !this.targets) {
-			this.targets = times<RenderTarget>(() => ({
+			this.targets = times<RenderTarget>(i => ({
+				id: this.id + '_target' + (i + 1),
 				width: data.width || this.gl.canvas.width,
 				height: data.height || this.gl.canvas.height,
 				frameBuffer: null, textures: [], depthBuffer: null,

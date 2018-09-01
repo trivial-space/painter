@@ -9,8 +9,8 @@ export class Painter {
     constructor(gl) {
         this.gl = gl;
         this.targets = [
-            {},
-            {}
+            { id: 'MainTarget_1' },
+            { id: 'MainTarget_2' }
         ];
         this.resize(1, true);
         this.renderQuad = this.createForm().update(defaultForms.renderQuad);
@@ -42,20 +42,22 @@ export class Painter {
         applyDrawSettings(this.gl, Object.assign({}, getDefaultLayerSettings(this.gl), drawSettings));
         return this;
     }
-    createForm() { return new Form(this.gl); }
-    createShade() { return new Shade(this.gl); }
-    createSketch() { return new Sketch(); }
-    createFlatSketch() {
-        return this.createSketch().update({
+    createForm(id) { return new Form(this.gl, id); }
+    createShade(id) { return new Shade(this.gl, id); }
+    createSketch(id) { return new Sketch(id); }
+    createFlatSketch(id) {
+        const s = this.createSketch(id);
+        return s.update({
             form: this.renderQuad,
-            shade: this.createShade().update(defaultShaders.basicEffect)
+            shade: this.createShade(s.id + '_defaultShade').update(defaultShaders.basicEffect)
         });
     }
-    createStaticLayer() { return new StaticLayer(this.gl); }
-    createDrawingLayer() { return new DrawingLayer(this.gl); }
-    createEffectLayer() {
-        return this.createDrawingLayer().update({
-            sketches: [this.createFlatSketch()]
+    createStaticLayer(id) { return new StaticLayer(this.gl, id); }
+    createDrawingLayer(id) { return new DrawingLayer(this.gl, id); }
+    createEffectLayer(id) {
+        const l = this.createDrawingLayer(id);
+        return l.update({
+            sketches: [this.createFlatSketch(l.id + '_effectSketch')]
         });
     }
     draw(sketch, globalUniforms) {
@@ -134,14 +136,23 @@ function renderLayer(gl, layer, targets, uniforms, resultSketch, directRender) {
     const source = targets[0];
     const target = targets[1];
     if (directRender) {
+        if (process.env.NODE_ENV !== 'production' && process.env.DEBUG_PAINTER) {
+            console.log(`PAINTER: Rendering directly to viewport`);
+        }
         gl.bindFramebuffer(gl.FRAMEBUFFER, null);
         gl.viewport(0, 0, gl.drawingBufferWidth, gl.drawingBufferHeight);
     }
     else if (layer.targets) {
+        if (process.env.NODE_ENV !== 'production' && process.env.DEBUG_PAINTER) {
+            console.log(`PAINTER: Rendering to layer target ${layer.targets[1].id}`);
+        }
         gl.bindFramebuffer(gl.FRAMEBUFFER, layer.targets[1].frameBuffer);
         gl.viewport(0, 0, layer.targets[1].width, layer.targets[1].height);
     }
     else {
+        if (process.env.NODE_ENV !== 'production' && process.env.DEBUG_PAINTER) {
+            console.log(`PAINTER: Rendering to target ${target.id}`);
+        }
         gl.bindFramebuffer(gl.FRAMEBUFFER, target.frameBuffer);
         gl.viewport(0, 0, gl.drawingBufferWidth, gl.drawingBufferHeight);
     }
@@ -156,6 +167,9 @@ function renderLayer(gl, layer, targets, uniforms, resultSketch, directRender) {
     else {
         // Display static texture
         draw(gl, resultSketch, null, { source: layer.texture() });
+    }
+    if (process.env.NODE_ENV !== 'production' && process.env.DEBUG_PAINTER) {
+        console.log(`PAINTER: Render success!`);
     }
     if (layer.data.drawSettings) {
         revertDrawSettings(gl, layer.data.drawSettings);
@@ -177,10 +191,16 @@ function composeLayers(gl, layers, targets, result) {
     const last = layers.length - 1;
     for (let i = 0; i < layers.length; i++) {
         const layer = layers[i];
+        if (process.env.NODE_ENV !== 'production' && process.env.DEBUG_PAINTER) {
+            console.log(`PAINTER: Rendering layer ${layer.id}`);
+        }
         if (Array.isArray(layer.uniforms)) {
             const newLast = last + layer.uniforms.length - 1;
             layer.looping = false;
             for (let j = 0; j < layer.uniforms.length; j++) {
+                if (process.env.NODE_ENV !== 'production' && process.env.DEBUG_PAINTER) {
+                    console.log(`PAINTER: Layer pass ${j + 1}`);
+                }
                 const directRender = i + j === newLast;
                 renderLayer(gl, layer, targets, layer.uniforms[j], result, directRender);
             }

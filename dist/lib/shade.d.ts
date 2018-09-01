@@ -1,6 +1,7 @@
 import { ShadeData, GL, UniformSetter, AttribSetter } from './painter-types';
 export declare class Shade {
     private gl;
+    id: string;
     program: WebGLProgram | null;
     vert: WebGLShader | null;
     frag: WebGLShader | null;
@@ -12,7 +13,7 @@ export declare class Shade {
     attributeSetters: {
         [id: string]: AttribSetter;
     };
-    constructor(gl: GL);
+    constructor(gl: GL, id?: string);
     update(data: ShadeData): this;
     destroy(): void;
 }

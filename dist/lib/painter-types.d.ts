@@ -7,6 +7,7 @@ export declare type TypedArray = Uint8Array | Uint16Array | Uint32Array | Int8Ar
 export declare type TypedArrayConstructor = Uint8ArrayConstructor | Uint16ArrayConstructor | Uint32ArrayConstructor | Int8ArrayConstructor | Int16ArrayConstructor | Int32ArrayConstructor | Float32ArrayConstructor | Float64ArrayConstructor;
 export declare type TypedArrayTypes = 'Uint8Array' | 'Uint16Array' | 'Uint32Array' | 'Int8Array' | 'Int16Array' | 'Int32Array' | 'Float32Array' | 'Float64Array';
 export interface RenderTarget {
+    id: string;
     frameBuffer: WebGLFramebuffer | null;
     textures: (WebGLTexture | null)[];
     depthBuffer: WebGLRenderbuffer | null;
@@ -100,6 +101,7 @@ export interface LayerData extends TextureData {
     frag?: string;
 }
 export interface Layer {
+    id: string;
     data: LayerData;
     targets?: [RenderTarget, RenderTarget];
     looping?: boolean;

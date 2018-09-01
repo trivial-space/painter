@@ -2,6 +2,8 @@ import { ShadeData, GL, UniformSetter, AttribSetter } from './painter-types'
 import { createUniformSetters, createAttributeSetters } from './render-utils'
 
 
+let shadeCounter = 1
+
 export class Shade {
 	program: WebGLProgram | null
 	vert: WebGLShader | null
@@ -12,7 +14,7 @@ export class Shade {
 	attributeSetters!: { [id: string]: AttribSetter }
 
 
-	constructor(private gl: GL) {
+	constructor(private gl: GL, public id = 'Shade' + shadeCounter++) {
 		this.program = gl.createProgram(),
 		this.frag = gl.createShader(gl.FRAGMENT_SHADER),
 		this.vert = gl.createShader(gl.VERTEX_SHADER)

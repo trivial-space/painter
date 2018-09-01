@@ -1,6 +1,7 @@
 import { GL, FormData, AttribContext } from './painter-types';
 export declare class Form {
     private gl;
+    id: string;
     drawType: number;
     itemCount: number;
     attribs: {
@@ -10,7 +11,7 @@ export declare class Form {
         buffer: WebGLBuffer | null;
         glType: number | null;
     };
-    constructor(gl: GL);
+    constructor(gl: GL, id?: string);
     update(data: FormData): this;
     destroy(): void;
 }

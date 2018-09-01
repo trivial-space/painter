@@ -56,5 +56,8 @@ module.exports = {
 	plugins: [
 		new webpack.HotModuleReplacementPlugin(),
 		// enable HMR globally
+		new webpack.DefinePlugin({
+			"process.env.DEBUG_PAINTER": JSON.stringify(true)
+		})
 	],
 }

@@ -1,7 +1,9 @@
 import { createUniformSetters, createAttributeSetters } from './render-utils';
+let shadeCounter = 1;
 export class Shade {
-    constructor(gl) {
+    constructor(gl, id = 'Shade' + shadeCounter++) {
         this.gl = gl;
+        this.id = id;
         this.program = gl.createProgram(),
             this.frag = gl.createShader(gl.FRAGMENT_SHADER),
             this.vert = gl.createShader(gl.VERTEX_SHADER);

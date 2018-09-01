@@ -10,8 +10,8 @@ import { StaticLayer, DrawingLayer } from './layer'
 
 export class Painter {
 	targets = [
-		{} as RenderTarget,
-		{} as RenderTarget
+		{id: 'MainTarget_1'} as RenderTarget,
+		{id: 'MainTarget_2'} as RenderTarget
 	]
 	renderQuad: Form
 	result: Sketch
@@ -52,20 +52,22 @@ export class Painter {
 		applyDrawSettings(this.gl, { ...getDefaultLayerSettings(this.gl), ...drawSettings })
 		return this
 	}
-	createForm () { return new Form(this.gl) }
-	createShade () { return new Shade(this.gl) }
-	createSketch () { return new Sketch() }
-	createFlatSketch () {
-		return this.createSketch().update({
+	createForm (id?: string) { return new Form(this.gl, id) }
+	createShade (id?: string) { return new Shade(this.gl, id) }
+	createSketch (id?: string) { return new Sketch(id) }
+	createFlatSketch (id?: string) {
+		const s = this.createSketch(id)
+		return s.update({
 			form: this.renderQuad,
-			shade: this.createShade().update(defaultShaders.basicEffect)
+			shade: this.createShade(s.id + '_defaultShade').update(defaultShaders.basicEffect)
 		})
 	}
-	createStaticLayer () { return new StaticLayer(this.gl) }
-	createDrawingLayer () { return new DrawingLayer(this.gl) }
-	createEffectLayer () {
-		return this.createDrawingLayer().update({
-			sketches: [this.createFlatSketch()]
+	createStaticLayer (id?: string) { return new StaticLayer(this.gl, id) }
+	createDrawingLayer (id?: string) { return new DrawingLayer(this.gl, id) }
+	createEffectLayer (id?: string) {
+		const l = this.createDrawingLayer(id)
+		return l.update({
+			sketches: [this.createFlatSketch(l.id + '_effectSketch')]
 		})
 	}
 	draw (sketch: Sketch, globalUniforms?: Uniforms) {
@@ -170,14 +172,23 @@ function renderLayer (gl: GL, layer: Layer, targets: RenderTarget[], uniforms: U
 	const target = targets[1]
 
 	if (directRender) {
+		if (process.env.NODE_ENV !== 'production' && process.env.DEBUG_PAINTER) {
+			console.log(`PAINTER: Rendering directly to viewport`)
+		}
 		gl.bindFramebuffer(gl.FRAMEBUFFER, null)
 		gl.viewport(0, 0, gl.drawingBufferWidth, gl.drawingBufferHeight)
 
 	} else if (layer.targets) {
+		if (process.env.NODE_ENV !== 'production' && process.env.DEBUG_PAINTER) {
+			console.log(`PAINTER: Rendering to layer target ${layer.targets[1].id}`)
+		}
 		gl.bindFramebuffer(gl.FRAMEBUFFER, layer.targets[1].frameBuffer)
 		gl.viewport(0, 0, layer.targets[1].width, layer.targets[1].height)
 
 	} else {
+		if (process.env.NODE_ENV !== 'production' && process.env.DEBUG_PAINTER) {
+			console.log(`PAINTER: Rendering to target ${target.id}`)
+		}
 		gl.bindFramebuffer(gl.FRAMEBUFFER, target.frameBuffer)
 		gl.viewport(0, 0, gl.drawingBufferWidth, gl.drawingBufferHeight)
 	}
@@ -193,6 +204,9 @@ function renderLayer (gl: GL, layer: Layer, targets: RenderTarget[], uniforms: U
 	} else {
 		// Display static texture
 		draw(gl, resultSketch, null, { source: layer.texture() })
+	}
+	if (process.env.NODE_ENV !== 'production' && process.env.DEBUG_PAINTER) {
+		console.log(`PAINTER: Render success!`)
 	}
 
 	if (layer.data.drawSettings) {
@@ -219,11 +233,18 @@ function composeLayers (gl: GL, layers: Layer[], targets: RenderTarget[], result
 	for (let i = 0; i < layers.length; i++) {
 		const layer = layers[i]
 
+		if (process.env.NODE_ENV !== 'production' && process.env.DEBUG_PAINTER) {
+			console.log(`PAINTER: Rendering layer ${layer.id}`)
+		}
+
 		if (Array.isArray(layer.uniforms)) {
 			const newLast = last + layer.uniforms.length - 1
 			layer.looping = false
 
 			for (let j = 0; j < layer.uniforms.length; j++) {
+				if (process.env.NODE_ENV !== 'production' && process.env.DEBUG_PAINTER) {
+					console.log(`PAINTER: Layer pass ${j + 1}`)
+				}
 				const directRender = i + j === newLast
 				renderLayer(gl, layer, targets, layer.uniforms[j], result, directRender)
 			}

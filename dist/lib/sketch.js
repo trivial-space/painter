@@ -1,4 +1,8 @@
+let sketchCounter = 1;
 export class Sketch {
+    constructor(id = 'Sketch' + sketchCounter++) {
+        this.id = id;
+    }
     update(data) {
         if (data.drawSettings) {
             this.drawSettings = data.drawSettings;

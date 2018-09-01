@@ -12,13 +12,13 @@ export declare class Painter {
     resize(multiplier?: number, forceUpdateTargets?: boolean): this;
     destroy(): void;
     updateDrawSettings(drawSettings?: DrawSettings): this;
-    createForm(): Form;
-    createShade(): Shade;
-    createSketch(): Sketch;
-    createFlatSketch(): Sketch;
-    createStaticLayer(): StaticLayer;
-    createDrawingLayer(): DrawingLayer;
-    createEffectLayer(): DrawingLayer;
+    createForm(id?: string): Form;
+    createShade(id?: string): Shade;
+    createSketch(id?: string): Sketch;
+    createFlatSketch(id?: string): Sketch;
+    createStaticLayer(id?: string): StaticLayer;
+    createDrawingLayer(id?: string): DrawingLayer;
+    createEffectLayer(id?: string): DrawingLayer;
     draw(sketch: Sketch, globalUniforms?: Uniforms): this;
     compose(...layers: Layer[]): this;
 }

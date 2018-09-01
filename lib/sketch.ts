@@ -3,11 +3,15 @@ import { Form } from './form'
 import { Shade } from './shade'
 
 
+let sketchCounter = 1
+
 export class Sketch {
 	drawSettings?: DrawSettings
 	form!: Form
 	shade!: Shade
 	uniforms!: Uniforms
+
+	constructor (public id = 'Sketch' + sketchCounter++) {}
 
 	update (data: SketchData) {
 		if (data.drawSettings) {

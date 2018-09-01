@@ -33,6 +33,7 @@ export type TypedArrayTypes = 'Uint8Array' |
 							'Float64Array'
 
 export interface RenderTarget {
+	id: string
 	frameBuffer: WebGLFramebuffer | null
 	textures: (WebGLTexture | null)[]
 	depthBuffer: WebGLRenderbuffer | null
@@ -165,6 +166,7 @@ export interface LayerData extends TextureData {
 }
 
 export interface Layer {
+	id: string
 	data: LayerData
 	targets?: [RenderTarget, RenderTarget]
 	looping?: boolean

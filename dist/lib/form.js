@@ -1,7 +1,9 @@
 import { getGLTypeForTypedArray } from './render-utils';
+let formCounter = 1;
 export class Form {
-    constructor(gl) {
+    constructor(gl, id = 'Form' + formCounter++) {
         this.gl = gl;
+        this.id = id;
     }
     update(data) {
         const gl = this.gl;

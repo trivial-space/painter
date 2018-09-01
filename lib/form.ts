@@ -1,6 +1,7 @@
 import { GL, FormData, AttribContext } from './painter-types'
 import { getGLTypeForTypedArray } from './render-utils'
 
+let formCounter = 1
 
 export class Form {
 	drawType!: number
@@ -11,7 +12,7 @@ export class Form {
 		glType: number | null
 	}
 
-	constructor (private gl: GL) { }
+	constructor (private gl: GL, public id = 'Form' + formCounter++) {}
 
 	update (data: FormData) {
 		const gl = this.gl
