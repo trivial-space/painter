@@ -1,9 +1,9 @@
-export var GEOMETRY_PROP_POSITION = 'position';
-export var GEOMETRY_PROP_NORMAL = 'normal';
-export var GEOMETRY_PROP_UV = 'uv';
-export var UNIFORM_SOURCE_TEXTURE = 'source';
-export var VARYING_UV_COORDS = 'coords';
-export var GL_TYPE = {
+export const GEOMETRY_PROP_POSITION = 'position';
+export const GEOMETRY_PROP_NORMAL = 'normal';
+export const GEOMETRY_PROP_UV = 'uv';
+export const UNIFORM_SOURCE_TEXTURE = 'source';
+export const VARYING_UV_COORDS = 'coords';
+export const GL_TYPE = {
     FLOAT: 0x1406,
     FLOAT_VEC2: 0x8B50,
     FLOAT_VEC3: 0x8B51,

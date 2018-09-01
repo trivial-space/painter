@@ -1,6 +1,5 @@
-var _a;
 import * as constants from './contants';
-export var defaultTextureSettings = {
+export const defaultTextureSettings = {
     wrap: 'CLAMP_TO_EDGE',
     minFilter: 'LINEAR',
     magFilter: 'NEAREST'
@@ -12,10 +11,10 @@ export function getDefaultLayerSettings(gl) {
         blendFunc: [gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA]
     };
 }
-export var defaultForms = {
+export const defaultForms = {
     renderQuad: {
-        attribs: (_a = {},
-            _a[constants.GEOMETRY_PROP_POSITION] = {
+        attribs: {
+            [constants.GEOMETRY_PROP_POSITION]: {
                 buffer: new Float32Array([
                     -1, 1,
                     -1, -1,
@@ -24,7 +23,7 @@ export var defaultForms = {
                 ]),
                 storeType: 'STATIC'
             },
-            _a[constants.GEOMETRY_PROP_UV] = {
+            [constants.GEOMETRY_PROP_UV]: {
                 buffer: new Float32Array([
                     0, 1,
                     0, 0,
@@ -32,16 +31,28 @@ export var defaultForms = {
                     1, 0
                 ]),
                 storeType: 'STATIC'
-            },
-            _a),
+            }
+        },
         drawType: 'TRIANGLE_STRIP',
         itemCount: 4
     }
 };
-export var defaultShaders = {
+export const defaultShaders = {
     basicEffect: {
-        vert: "\n\t\t\tattribute vec2 " + constants.GEOMETRY_PROP_POSITION + ";\n\t\t\tattribute vec2 " + constants.GEOMETRY_PROP_UV + ";\n\t\t\tvarying vec2 " + constants.VARYING_UV_COORDS + ";\n\t\t\tvoid main() {\n\t\t\t\t" + constants.VARYING_UV_COORDS + " = " + constants.GEOMETRY_PROP_UV + ";\n\t\t\t\tgl_Position = vec4(" + constants.GEOMETRY_PROP_POSITION + ", 0.0, 1.0);\n\t\t\t}",
-        frag: "precision mediump float;\n\t\t\tuniform sampler2D " + constants.UNIFORM_SOURCE_TEXTURE + ";\n\t\t\tvarying vec2 " + constants.VARYING_UV_COORDS + ";\n\t\t\tvoid main() {\n\t\t\t\tgl_FragColor = texture2D(" + constants.UNIFORM_SOURCE_TEXTURE + ", " + constants.VARYING_UV_COORDS + ");\n\t\t\t}"
+        vert: `
+			attribute vec2 ${constants.GEOMETRY_PROP_POSITION};
+			attribute vec2 ${constants.GEOMETRY_PROP_UV};
+			varying vec2 ${constants.VARYING_UV_COORDS};
+			void main() {
+				${constants.VARYING_UV_COORDS} = ${constants.GEOMETRY_PROP_UV};
+				gl_Position = vec4(${constants.GEOMETRY_PROP_POSITION}, 0.0, 1.0);
+			}`,
+        frag: `precision mediump float;
+			uniform sampler2D ${constants.UNIFORM_SOURCE_TEXTURE};
+			varying vec2 ${constants.VARYING_UV_COORDS};
+			void main() {
+				gl_FragColor = texture2D(${constants.UNIFORM_SOURCE_TEXTURE}, ${constants.VARYING_UV_COORDS});
+			}`
     }
 };
 //# sourceMappingURL=asset-lib.js.map

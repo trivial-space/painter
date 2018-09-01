@@ -1,21 +1,21 @@
 import * as constants from '../contants';
 import { flatten } from 'tvs-libs/dist/lib/utils/sequence';
-export var STACK_GL_GEOMETRY_PROP_POSITION = 'positions';
-export var STACK_GL_GEOMETRY_PROP_NORMAL = 'normals';
-export var STACK_GL_GEOMETRY_PROP_UV = 'uvs';
-export var STACK_GL_GEOMETRY_PROP_ELEMENTS = 'cells';
+export const STACK_GL_GEOMETRY_PROP_POSITION = 'positions';
+export const STACK_GL_GEOMETRY_PROP_NORMAL = 'normals';
+export const STACK_GL_GEOMETRY_PROP_UV = 'uvs';
+export const STACK_GL_GEOMETRY_PROP_ELEMENTS = 'cells';
 export function convertStackGLGeometry(stackglGeometry) {
-    var geometry = {
+    const geometry = {
         drawType: 'TRIANGLES',
         attribs: {},
         itemCount: 0
     };
-    for (var prop in stackglGeometry) {
-        var arr = stackglGeometry[prop];
+    for (const prop in stackglGeometry) {
+        const arr = stackglGeometry[prop];
         if (prop === STACK_GL_GEOMETRY_PROP_ELEMENTS) {
-            var buffer = new (arr.length > 65535 ? Uint32Array : Uint16Array)(flatten(arr));
+            const buffer = new (arr.length > 65535 ? Uint32Array : Uint16Array)(flatten(arr));
             Object.assign(geometry, {
-                elements: { buffer: buffer },
+                elements: { buffer },
                 itemCount: buffer.length
             });
         }

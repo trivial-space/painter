@@ -1,4 +1,3 @@
-var _a, _b, _c;
 import { GL_TYPE } from './contants';
 // Attrib and Uniform Setters
 function getBindPointForSamplerType(type) {
@@ -125,7 +124,7 @@ function floatMat43Setter(gl, location) {
     };
 }
 function samplerSetter(gl, type, unit, location) {
-    var bindPoint = getBindPointForSamplerType(type);
+    const bindPoint = getBindPointForSamplerType(type);
     return function (texture) {
         gl.uniform1i(location, unit);
         gl.activeTexture(gl.TEXTURE0 + unit);
@@ -133,14 +132,14 @@ function samplerSetter(gl, type, unit, location) {
     };
 }
 function samplerArraySetter(gl, type, unit, location, size) {
-    var bindPoint = getBindPointForSamplerType(type);
-    var units = new Int32Array(size);
-    for (var i = 0; i < size; ++i) {
+    const bindPoint = getBindPointForSamplerType(type);
+    const units = new Int32Array(size);
+    for (let i = 0; i < size; ++i) {
         units[i] = unit + i;
     }
     return function (textures) {
         gl.uniform1iv(location, units);
-        for (var index in textures) {
+        for (const index in textures) {
             gl.activeTexture(gl.TEXTURE0 + units[index]);
             gl.bindTexture(bindPoint, textures[index]);
         }
@@ -149,48 +148,48 @@ function samplerArraySetter(gl, type, unit, location, size) {
 function isSamplerInfo(info) {
     return info.Type === null;
 }
-var typeMap = (_a = {},
-    _a[GL_TYPE.FLOAT] = { Type: Float32Array, size: 4, setter: floatSetter, arraySetter: floatArraySetter },
-    _a[GL_TYPE.FLOAT_VEC2] = { Type: Float32Array, size: 8, setter: floatVec2Setter },
-    _a[GL_TYPE.FLOAT_VEC3] = { Type: Float32Array, size: 12, setter: floatVec3Setter },
-    _a[GL_TYPE.FLOAT_VEC4] = { Type: Float32Array, size: 16, setter: floatVec4Setter },
-    _a[GL_TYPE.INT] = { Type: Int32Array, size: 4, setter: intSetter, arraySetter: intArraySetter },
-    _a[GL_TYPE.INT_VEC2] = { Type: Int32Array, size: 8, setter: intVec2Setter },
-    _a[GL_TYPE.INT_VEC3] = { Type: Int32Array, size: 12, setter: intVec3Setter },
-    _a[GL_TYPE.INT_VEC4] = { Type: Int32Array, size: 16, setter: intVec4Setter },
-    _a[GL_TYPE.UNSIGNED_INT] = { Type: Uint32Array, size: 4, setter: uintSetter, arraySetter: uintArraySetter },
-    _a[GL_TYPE.UNSIGNED_INT_VEC2] = { Type: Uint32Array, size: 8, setter: uintVec2Setter },
-    _a[GL_TYPE.UNSIGNED_INT_VEC3] = { Type: Uint32Array, size: 12, setter: uintVec3Setter },
-    _a[GL_TYPE.UNSIGNED_INT_VEC4] = { Type: Uint32Array, size: 16, setter: uintVec4Setter },
-    _a[GL_TYPE.BOOL] = { Type: Uint32Array, size: 4, setter: intSetter, arraySetter: intArraySetter },
-    _a[GL_TYPE.BOOL_VEC2] = { Type: Uint32Array, size: 8, setter: intVec2Setter },
-    _a[GL_TYPE.BOOL_VEC3] = { Type: Uint32Array, size: 12, setter: intVec3Setter },
-    _a[GL_TYPE.BOOL_VEC4] = { Type: Uint32Array, size: 16, setter: intVec4Setter },
-    _a[GL_TYPE.FLOAT_MAT2] = { Type: Float32Array, size: 16, setter: floatMat2Setter },
-    _a[GL_TYPE.FLOAT_MAT3] = { Type: Float32Array, size: 36, setter: floatMat3Setter },
-    _a[GL_TYPE.FLOAT_MAT4] = { Type: Float32Array, size: 64, setter: floatMat4Setter },
-    _a[GL_TYPE.FLOAT_MAT2X3] = { Type: Float32Array, size: 24, setter: floatMat23Setter },
-    _a[GL_TYPE.FLOAT_MAT2X4] = { Type: Float32Array, size: 32, setter: floatMat24Setter },
-    _a[GL_TYPE.FLOAT_MAT3X2] = { Type: Float32Array, size: 24, setter: floatMat32Setter },
-    _a[GL_TYPE.FLOAT_MAT3X4] = { Type: Float32Array, size: 48, setter: floatMat34Setter },
-    _a[GL_TYPE.FLOAT_MAT4X2] = { Type: Float32Array, size: 32, setter: floatMat42Setter },
-    _a[GL_TYPE.FLOAT_MAT4X3] = { Type: Float32Array, size: 48, setter: floatMat43Setter },
-    _a[GL_TYPE.SAMPLER_2D] = { Type: null, size: 0, setter: samplerSetter, arraySetter: samplerArraySetter, bindPoint: GL_TYPE.TEXTURE_2D },
-    _a[GL_TYPE.SAMPLER_CUBE] = { Type: null, size: 0, setter: samplerSetter, arraySetter: samplerArraySetter, bindPoint: GL_TYPE.TEXTURE_CUBE_MAP },
-    _a[GL_TYPE.SAMPLER_3D] = { Type: null, size: 0, setter: samplerSetter, arraySetter: samplerArraySetter, bindPoint: GL_TYPE.TEXTURE_3D },
-    _a[GL_TYPE.SAMPLER_2D_SHADOW] = { Type: null, size: 0, setter: samplerSetter, arraySetter: samplerArraySetter, bindPoint: GL_TYPE.TEXTURE_2D },
-    _a[GL_TYPE.SAMPLER_2D_ARRAY] = { Type: null, size: 0, setter: samplerSetter, arraySetter: samplerArraySetter, bindPoint: GL_TYPE.TEXTURE_2D_ARRAY },
-    _a[GL_TYPE.SAMPLER_2D_ARRAY_SHADOW] = { Type: null, size: 0, setter: samplerSetter, arraySetter: samplerArraySetter, bindPoint: GL_TYPE.TEXTURE_2D_ARRAY },
-    _a[GL_TYPE.SAMPLER_CUBE_SHADOW] = { Type: null, size: 0, setter: samplerSetter, arraySetter: samplerArraySetter, bindPoint: GL_TYPE.TEXTURE_CUBE_MAP },
-    _a[GL_TYPE.INT_SAMPLER_2D] = { Type: null, size: 0, setter: samplerSetter, arraySetter: samplerArraySetter, bindPoint: GL_TYPE.TEXTURE_2D },
-    _a[GL_TYPE.INT_SAMPLER_3D] = { Type: null, size: 0, setter: samplerSetter, arraySetter: samplerArraySetter, bindPoint: GL_TYPE.TEXTURE_3D },
-    _a[GL_TYPE.INT_SAMPLER_CUBE] = { Type: null, size: 0, setter: samplerSetter, arraySetter: samplerArraySetter, bindPoint: GL_TYPE.TEXTURE_CUBE_MAP },
-    _a[GL_TYPE.INT_SAMPLER_2D_ARRAY] = { Type: null, size: 0, setter: samplerSetter, arraySetter: samplerArraySetter, bindPoint: GL_TYPE.TEXTURE_2D_ARRAY },
-    _a[GL_TYPE.UNSIGNED_INT_SAMPLER_2D] = { Type: null, size: 0, setter: samplerSetter, arraySetter: samplerArraySetter, bindPoint: GL_TYPE.TEXTURE_2D },
-    _a[GL_TYPE.UNSIGNED_INT_SAMPLER_3D] = { Type: null, size: 0, setter: samplerSetter, arraySetter: samplerArraySetter, bindPoint: GL_TYPE.TEXTURE_3D },
-    _a[GL_TYPE.UNSIGNED_INT_SAMPLER_CUBE] = { Type: null, size: 0, setter: samplerSetter, arraySetter: samplerArraySetter, bindPoint: GL_TYPE.TEXTURE_CUBE_MAP },
-    _a[GL_TYPE.UNSIGNED_INT_SAMPLER_2D_ARRAY] = { Type: null, size: 0, setter: samplerSetter, arraySetter: samplerArraySetter, bindPoint: GL_TYPE.TEXTURE_2D_ARRAY },
-    _a);
+const typeMap = {
+    [GL_TYPE.FLOAT]: { Type: Float32Array, size: 4, setter: floatSetter, arraySetter: floatArraySetter },
+    [GL_TYPE.FLOAT_VEC2]: { Type: Float32Array, size: 8, setter: floatVec2Setter },
+    [GL_TYPE.FLOAT_VEC3]: { Type: Float32Array, size: 12, setter: floatVec3Setter },
+    [GL_TYPE.FLOAT_VEC4]: { Type: Float32Array, size: 16, setter: floatVec4Setter },
+    [GL_TYPE.INT]: { Type: Int32Array, size: 4, setter: intSetter, arraySetter: intArraySetter },
+    [GL_TYPE.INT_VEC2]: { Type: Int32Array, size: 8, setter: intVec2Setter },
+    [GL_TYPE.INT_VEC3]: { Type: Int32Array, size: 12, setter: intVec3Setter },
+    [GL_TYPE.INT_VEC4]: { Type: Int32Array, size: 16, setter: intVec4Setter },
+    [GL_TYPE.UNSIGNED_INT]: { Type: Uint32Array, size: 4, setter: uintSetter, arraySetter: uintArraySetter },
+    [GL_TYPE.UNSIGNED_INT_VEC2]: { Type: Uint32Array, size: 8, setter: uintVec2Setter },
+    [GL_TYPE.UNSIGNED_INT_VEC3]: { Type: Uint32Array, size: 12, setter: uintVec3Setter },
+    [GL_TYPE.UNSIGNED_INT_VEC4]: { Type: Uint32Array, size: 16, setter: uintVec4Setter },
+    [GL_TYPE.BOOL]: { Type: Uint32Array, size: 4, setter: intSetter, arraySetter: intArraySetter },
+    [GL_TYPE.BOOL_VEC2]: { Type: Uint32Array, size: 8, setter: intVec2Setter },
+    [GL_TYPE.BOOL_VEC3]: { Type: Uint32Array, size: 12, setter: intVec3Setter },
+    [GL_TYPE.BOOL_VEC4]: { Type: Uint32Array, size: 16, setter: intVec4Setter },
+    [GL_TYPE.FLOAT_MAT2]: { Type: Float32Array, size: 16, setter: floatMat2Setter },
+    [GL_TYPE.FLOAT_MAT3]: { Type: Float32Array, size: 36, setter: floatMat3Setter },
+    [GL_TYPE.FLOAT_MAT4]: { Type: Float32Array, size: 64, setter: floatMat4Setter },
+    [GL_TYPE.FLOAT_MAT2X3]: { Type: Float32Array, size: 24, setter: floatMat23Setter },
+    [GL_TYPE.FLOAT_MAT2X4]: { Type: Float32Array, size: 32, setter: floatMat24Setter },
+    [GL_TYPE.FLOAT_MAT3X2]: { Type: Float32Array, size: 24, setter: floatMat32Setter },
+    [GL_TYPE.FLOAT_MAT3X4]: { Type: Float32Array, size: 48, setter: floatMat34Setter },
+    [GL_TYPE.FLOAT_MAT4X2]: { Type: Float32Array, size: 32, setter: floatMat42Setter },
+    [GL_TYPE.FLOAT_MAT4X3]: { Type: Float32Array, size: 48, setter: floatMat43Setter },
+    [GL_TYPE.SAMPLER_2D]: { Type: null, size: 0, setter: samplerSetter, arraySetter: samplerArraySetter, bindPoint: GL_TYPE.TEXTURE_2D },
+    [GL_TYPE.SAMPLER_CUBE]: { Type: null, size: 0, setter: samplerSetter, arraySetter: samplerArraySetter, bindPoint: GL_TYPE.TEXTURE_CUBE_MAP },
+    [GL_TYPE.SAMPLER_3D]: { Type: null, size: 0, setter: samplerSetter, arraySetter: samplerArraySetter, bindPoint: GL_TYPE.TEXTURE_3D },
+    [GL_TYPE.SAMPLER_2D_SHADOW]: { Type: null, size: 0, setter: samplerSetter, arraySetter: samplerArraySetter, bindPoint: GL_TYPE.TEXTURE_2D },
+    [GL_TYPE.SAMPLER_2D_ARRAY]: { Type: null, size: 0, setter: samplerSetter, arraySetter: samplerArraySetter, bindPoint: GL_TYPE.TEXTURE_2D_ARRAY },
+    [GL_TYPE.SAMPLER_2D_ARRAY_SHADOW]: { Type: null, size: 0, setter: samplerSetter, arraySetter: samplerArraySetter, bindPoint: GL_TYPE.TEXTURE_2D_ARRAY },
+    [GL_TYPE.SAMPLER_CUBE_SHADOW]: { Type: null, size: 0, setter: samplerSetter, arraySetter: samplerArraySetter, bindPoint: GL_TYPE.TEXTURE_CUBE_MAP },
+    [GL_TYPE.INT_SAMPLER_2D]: { Type: null, size: 0, setter: samplerSetter, arraySetter: samplerArraySetter, bindPoint: GL_TYPE.TEXTURE_2D },
+    [GL_TYPE.INT_SAMPLER_3D]: { Type: null, size: 0, setter: samplerSetter, arraySetter: samplerArraySetter, bindPoint: GL_TYPE.TEXTURE_3D },
+    [GL_TYPE.INT_SAMPLER_CUBE]: { Type: null, size: 0, setter: samplerSetter, arraySetter: samplerArraySetter, bindPoint: GL_TYPE.TEXTURE_CUBE_MAP },
+    [GL_TYPE.INT_SAMPLER_2D_ARRAY]: { Type: null, size: 0, setter: samplerSetter, arraySetter: samplerArraySetter, bindPoint: GL_TYPE.TEXTURE_2D_ARRAY },
+    [GL_TYPE.UNSIGNED_INT_SAMPLER_2D]: { Type: null, size: 0, setter: samplerSetter, arraySetter: samplerArraySetter, bindPoint: GL_TYPE.TEXTURE_2D },
+    [GL_TYPE.UNSIGNED_INT_SAMPLER_3D]: { Type: null, size: 0, setter: samplerSetter, arraySetter: samplerArraySetter, bindPoint: GL_TYPE.TEXTURE_3D },
+    [GL_TYPE.UNSIGNED_INT_SAMPLER_CUBE]: { Type: null, size: 0, setter: samplerSetter, arraySetter: samplerArraySetter, bindPoint: GL_TYPE.TEXTURE_CUBE_MAP },
+    [GL_TYPE.UNSIGNED_INT_SAMPLER_2D_ARRAY]: { Type: null, size: 0, setter: samplerSetter, arraySetter: samplerArraySetter, bindPoint: GL_TYPE.TEXTURE_2D_ARRAY }
+};
 function floatAttribSetter(gl, location, typeInfo) {
     return function (b) {
         gl.bindBuffer(gl.ARRAY_BUFFER, b.buffer);
@@ -206,61 +205,61 @@ function intAttribSetter(gl, location, typeInfo) {
     };
 }
 function matAttribSetter(gl, location, typeInfo) {
-    var defaultSize = typeInfo.size;
-    var count = typeInfo.count;
+    const defaultSize = typeInfo.size;
+    const count = typeInfo.count;
     return function (b) {
         gl.bindBuffer(gl.ARRAY_BUFFER, b.buffer);
-        var numComponents = defaultSize;
-        var size = numComponents / count;
-        var typeInfo = typeMap[GL_TYPE.FLOAT];
-        var stride = typeInfo.size * numComponents;
-        var normalize = b.normalize || false;
-        var offset = b.offset || 0;
-        var rowOffset = stride / count;
-        for (var i = 0; i < count; ++i) {
+        const numComponents = defaultSize;
+        const size = numComponents / count;
+        const typeInfo = typeMap[GL_TYPE.FLOAT];
+        const stride = typeInfo.size * numComponents;
+        const normalize = b.normalize || false;
+        const offset = b.offset || 0;
+        const rowOffset = stride / count;
+        for (let i = 0; i < count; ++i) {
             gl.enableVertexAttribArray(location + i);
             gl.vertexAttribPointer(location + i, size, GL_TYPE.FLOAT, normalize, stride, offset + rowOffset * i);
         }
     };
 }
-var attrTypeMap = (_b = {},
-    _b[GL_TYPE.FLOAT] = { size: 4, setter: floatAttribSetter, itemSize: 1 },
-    _b[GL_TYPE.FLOAT_VEC2] = { size: 8, setter: floatAttribSetter, itemSize: 2 },
-    _b[GL_TYPE.FLOAT_VEC3] = { size: 12, setter: floatAttribSetter, itemSize: 3 },
-    _b[GL_TYPE.FLOAT_VEC4] = { size: 16, setter: floatAttribSetter, itemSize: 4 },
-    _b[GL_TYPE.INT] = { size: 4, setter: intAttribSetter, itemSize: 1 },
-    _b[GL_TYPE.INT_VEC2] = { size: 8, setter: intAttribSetter, itemSize: 2 },
-    _b[GL_TYPE.INT_VEC3] = { size: 12, setter: intAttribSetter, itemSize: 3 },
-    _b[GL_TYPE.INT_VEC4] = { size: 16, setter: intAttribSetter, itemSize: 4 },
-    _b[GL_TYPE.UNSIGNED_INT] = { size: 4, setter: intAttribSetter, itemSize: 1 },
-    _b[GL_TYPE.UNSIGNED_INT_VEC2] = { size: 8, setter: intAttribSetter, itemSize: 2 },
-    _b[GL_TYPE.UNSIGNED_INT_VEC3] = { size: 12, setter: intAttribSetter, itemSize: 3 },
-    _b[GL_TYPE.UNSIGNED_INT_VEC4] = { size: 16, setter: intAttribSetter, itemSize: 4 },
-    _b[GL_TYPE.BOOL] = { size: 4, setter: intAttribSetter, itemSize: 1 },
-    _b[GL_TYPE.BOOL_VEC2] = { size: 8, setter: intAttribSetter, itemSize: 2 },
-    _b[GL_TYPE.BOOL_VEC3] = { size: 12, setter: intAttribSetter, itemSize: 3 },
-    _b[GL_TYPE.BOOL_VEC4] = { size: 16, setter: intAttribSetter, itemSize: 4 },
-    _b[GL_TYPE.FLOAT_MAT2] = { size: 4, setter: matAttribSetter, count: 2 },
-    _b[GL_TYPE.FLOAT_MAT3] = { size: 9, setter: matAttribSetter, count: 3 },
-    _b[GL_TYPE.FLOAT_MAT4] = { size: 16, setter: matAttribSetter, count: 4 },
-    _b);
+const attrTypeMap = {
+    [GL_TYPE.FLOAT]: { size: 4, setter: floatAttribSetter, itemSize: 1 },
+    [GL_TYPE.FLOAT_VEC2]: { size: 8, setter: floatAttribSetter, itemSize: 2 },
+    [GL_TYPE.FLOAT_VEC3]: { size: 12, setter: floatAttribSetter, itemSize: 3 },
+    [GL_TYPE.FLOAT_VEC4]: { size: 16, setter: floatAttribSetter, itemSize: 4 },
+    [GL_TYPE.INT]: { size: 4, setter: intAttribSetter, itemSize: 1 },
+    [GL_TYPE.INT_VEC2]: { size: 8, setter: intAttribSetter, itemSize: 2 },
+    [GL_TYPE.INT_VEC3]: { size: 12, setter: intAttribSetter, itemSize: 3 },
+    [GL_TYPE.INT_VEC4]: { size: 16, setter: intAttribSetter, itemSize: 4 },
+    [GL_TYPE.UNSIGNED_INT]: { size: 4, setter: intAttribSetter, itemSize: 1 },
+    [GL_TYPE.UNSIGNED_INT_VEC2]: { size: 8, setter: intAttribSetter, itemSize: 2 },
+    [GL_TYPE.UNSIGNED_INT_VEC3]: { size: 12, setter: intAttribSetter, itemSize: 3 },
+    [GL_TYPE.UNSIGNED_INT_VEC4]: { size: 16, setter: intAttribSetter, itemSize: 4 },
+    [GL_TYPE.BOOL]: { size: 4, setter: intAttribSetter, itemSize: 1 },
+    [GL_TYPE.BOOL_VEC2]: { size: 8, setter: intAttribSetter, itemSize: 2 },
+    [GL_TYPE.BOOL_VEC3]: { size: 12, setter: intAttribSetter, itemSize: 3 },
+    [GL_TYPE.BOOL_VEC4]: { size: 16, setter: intAttribSetter, itemSize: 4 },
+    [GL_TYPE.FLOAT_MAT2]: { size: 4, setter: matAttribSetter, count: 2 },
+    [GL_TYPE.FLOAT_MAT3]: { size: 9, setter: matAttribSetter, count: 3 },
+    [GL_TYPE.FLOAT_MAT4]: { size: 16, setter: matAttribSetter, count: 4 }
+};
 export function createUniformSetters(gl, program) {
-    var textureUnit = 0;
+    let textureUnit = 0;
     function createUniformSetter(program, uniformInfo) {
-        var location = gl.getUniformLocation(program, uniformInfo.name);
-        var isArray = (uniformInfo.size > 1 && uniformInfo.name.substr(-3) === '[0]');
-        var type = uniformInfo.type;
-        var typeInfo = typeMap[type];
+        const location = gl.getUniformLocation(program, uniformInfo.name);
+        const isArray = (uniformInfo.size > 1 && uniformInfo.name.substr(-3) === '[0]');
+        const type = uniformInfo.type;
+        const typeInfo = typeMap[type];
         if (!typeInfo) {
             throw ('unknown type: 0x' + type.toString(16)); // we should never get here.
         }
         if (location == null) {
             return;
         }
-        var setter;
+        let setter;
         if (isSamplerInfo(typeInfo)) {
             // it's a sampler
-            var unit = textureUnit;
+            const unit = textureUnit;
             textureUnit += uniformInfo.size;
             if (isArray) {
                 setter = typeInfo.arraySetter(gl, type, unit, location, uniformInfo.size);
@@ -277,63 +276,63 @@ export function createUniformSetters(gl, program) {
                 setter = typeInfo.setter(gl, location);
             }
         }
-        return { setter: setter, location: location };
+        return { setter, location };
     }
-    var uniformSetters = {};
-    var numUniforms = gl.getProgramParameter(program, gl.ACTIVE_UNIFORMS);
-    for (var i = 0; i < numUniforms; ++i) {
-        var uniformInfo = gl.getActiveUniform(program, i);
+    const uniformSetters = {};
+    const numUniforms = gl.getProgramParameter(program, gl.ACTIVE_UNIFORMS);
+    for (let i = 0; i < numUniforms; ++i) {
+        const uniformInfo = gl.getActiveUniform(program, i);
         if (!uniformInfo) {
             break;
         }
-        var name_1 = uniformInfo.name;
+        let name = uniformInfo.name;
         // remove the array suffix.
-        if (name_1.substr(-3) === '[0]') {
-            name_1 = name_1.substr(0, name_1.length - 3);
+        if (name.substr(-3) === '[0]') {
+            name = name.substr(0, name.length - 3);
         }
         if (program) {
-            var setter = createUniformSetter(program, uniformInfo);
+            const setter = createUniformSetter(program, uniformInfo);
             if (setter) {
-                uniformSetters[name_1] = setter;
+                uniformSetters[name] = setter;
             }
         }
     }
     return uniformSetters;
 }
 export function createAttributeSetters(gl, program) {
-    var attribSetters = {};
-    var numAttribs = gl.getProgramParameter(program, gl.ACTIVE_ATTRIBUTES);
-    for (var i = 0; i < numAttribs; i++) {
-        var attribInfo = gl.getActiveAttrib(program, i);
+    const attribSetters = {};
+    const numAttribs = gl.getProgramParameter(program, gl.ACTIVE_ATTRIBUTES);
+    for (let i = 0; i < numAttribs; i++) {
+        const attribInfo = gl.getActiveAttrib(program, i);
         if (!attribInfo) {
             break;
         }
-        var location_1 = gl.getAttribLocation(program, attribInfo.name);
-        var typeInfo = attrTypeMap[attribInfo.type];
-        var setter = typeInfo.setter(gl, location_1, typeInfo);
-        attribSetters[attribInfo.name] = { setter: setter, location: location_1 };
+        const location = gl.getAttribLocation(program, attribInfo.name);
+        const typeInfo = attrTypeMap[attribInfo.type];
+        const setter = typeInfo.setter(gl, location, typeInfo);
+        attribSetters[attribInfo.name] = { setter, location };
     }
     return attribSetters;
 }
 // Type helpers
-export var glTypeToTypedArray = (_c = {},
-    _c[GL_TYPE.BYTE] = Int8Array,
-    _c[GL_TYPE.UNSIGNED_BYTE] = Uint8Array,
-    _c[GL_TYPE.SHORT] = Int16Array,
-    _c[GL_TYPE.UNSIGNED_SHORT] = Uint16Array,
-    _c[GL_TYPE.INT] = Int32Array,
-    _c[GL_TYPE.UNSIGNED_INT] = Uint32Array,
-    _c[GL_TYPE.FLOAT] = Float32Array,
-    _c[GL_TYPE.UNSIGNED_SHORT_4_4_4_4] = Uint16Array,
-    _c[GL_TYPE.UNSIGNED_SHORT_5_5_5_1] = Uint16Array,
-    _c[GL_TYPE.UNSIGNED_SHORT_5_6_5] = Uint16Array,
-    _c[GL_TYPE.HALF_FLOAT] = Uint16Array,
-    _c[GL_TYPE.UNSIGNED_INT_2_10_10_10_REV] = Uint32Array,
-    _c[GL_TYPE.UNSIGNED_INT_10F_11F_11F_REV] = Uint32Array,
-    _c[GL_TYPE.UNSIGNED_INT_5_9_9_9_REV] = Uint32Array,
-    _c[GL_TYPE.FLOAT_32_UNSIGNED_INT_24_8_REV] = Uint32Array,
-    _c[GL_TYPE.UNSIGNED_INT_24_8] = Uint32Array,
-    _c);
+export const glTypeToTypedArray = {
+    [GL_TYPE.BYTE]: Int8Array,
+    [GL_TYPE.UNSIGNED_BYTE]: Uint8Array,
+    [GL_TYPE.SHORT]: Int16Array,
+    [GL_TYPE.UNSIGNED_SHORT]: Uint16Array,
+    [GL_TYPE.INT]: Int32Array,
+    [GL_TYPE.UNSIGNED_INT]: Uint32Array,
+    [GL_TYPE.FLOAT]: Float32Array,
+    [GL_TYPE.UNSIGNED_SHORT_4_4_4_4]: Uint16Array,
+    [GL_TYPE.UNSIGNED_SHORT_5_5_5_1]: Uint16Array,
+    [GL_TYPE.UNSIGNED_SHORT_5_6_5]: Uint16Array,
+    [GL_TYPE.HALF_FLOAT]: Uint16Array,
+    [GL_TYPE.UNSIGNED_INT_2_10_10_10_REV]: Uint32Array,
+    [GL_TYPE.UNSIGNED_INT_10F_11F_11F_REV]: Uint32Array,
+    [GL_TYPE.UNSIGNED_INT_5_9_9_9_REV]: Uint32Array,
+    [GL_TYPE.FLOAT_32_UNSIGNED_INT_24_8_REV]: Uint32Array,
+    [GL_TYPE.UNSIGNED_INT_24_8]: Uint32Array
+};
 export function getGLTypeForTypedArray(typedArray) {
     if (typedArray instanceof Int8Array) {
         return GL_TYPE.BYTE;
@@ -389,16 +388,14 @@ export function getGLTypeForTypedArrayType(typedArrayType) {
     throw 'unsupported typed array type';
 }
 // Texture helper
-export function setTextureParams(gl, data, oldData) {
-    if (data === void 0) { data = {}; }
-    if (oldData === void 0) { oldData = {}; }
+export function setTextureParams(gl, data = {}, oldData = {}) {
     if (data.flipY != null && data.flipY !== oldData.flipY) {
         gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, data.flipY);
     }
     if ((data.wrap && data.wrap !== oldData.wrap)
         || (data.wrapS && data.wrapS !== oldData.wrapS)
         || (data.wrapT && data.wrapT !== oldData.wrapT)) {
-        var wrapS = void 0, wrapT = void 0;
+        let wrapS, wrapT;
         if (data.wrap) {
             wrapS = wrapT = data.wrap;
         }
@@ -431,19 +428,19 @@ export function updateRenderTarget(gl, target, data, oldData) {
     if (target.textureConfig.type === gl.FLOAT) {
         gl.getExtension('OES_texture_float');
     }
-    var texCount = target.textureConfig.count;
+    const texCount = target.textureConfig.count;
     if (texCount > 1) {
-        var glDB = gl.getExtension('WEBGL_draw_buffers') || { drawBuffersWEBGL: function () { } };
-        var bufferAttachments = [];
-        for (var i = 0; i < texCount; i++) {
-            bufferAttachments.push(glDB["COLOR_ATTACHMENT" + i + "_WEBGL"]);
+        const glDB = gl.getExtension('WEBGL_draw_buffers') || { drawBuffersWEBGL() { } };
+        const bufferAttachments = [];
+        for (let i = 0; i < texCount; i++) {
+            bufferAttachments.push(glDB[`COLOR_ATTACHMENT${i}_WEBGL`]);
         }
         glDB.drawBuffersWEBGL(bufferAttachments);
-        for (var i = 0; i < texCount; i++) {
+        for (let i = 0; i < texCount; i++) {
             if (target.textures[i] == null) {
                 target.textures[i] = gl.createTexture();
             }
-            var texture = target.textures[i];
+            const texture = target.textures[i];
             gl.bindTexture(gl.TEXTURE_2D, texture);
             gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, target.width, target.height, 0, gl.RGBA, target.textureConfig.type, null);
             setTextureParams(gl, data, oldData);
@@ -454,7 +451,7 @@ export function updateRenderTarget(gl, target, data, oldData) {
         if (target.textures[0] == null) {
             target.textures[0] = gl.createTexture();
         }
-        var texture = target.textures[0];
+        const texture = target.textures[0];
         gl.bindTexture(gl.TEXTURE_2D, texture);
         gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, target.width, target.height, 0, gl.RGBA, target.textureConfig.type, null);
         setTextureParams(gl, data, oldData);
@@ -466,7 +463,7 @@ export function updateRenderTarget(gl, target, data, oldData) {
     gl.bindRenderbuffer(gl.RENDERBUFFER, target.depthBuffer);
     gl.renderbufferStorage(gl.RENDERBUFFER, gl.DEPTH_COMPONENT16, target.width, target.height);
     gl.framebufferRenderbuffer(gl.FRAMEBUFFER, gl.DEPTH_ATTACHMENT, gl.RENDERBUFFER, target.depthBuffer);
-    var err = gl.checkFramebufferStatus(gl.FRAMEBUFFER);
+    const err = gl.checkFramebufferStatus(gl.FRAMEBUFFER);
     if (err !== gl.FRAMEBUFFER_COMPLETE) {
         console.error('framebuffer error', err, data);
     }
@@ -477,22 +474,19 @@ export function updateRenderTarget(gl, target, data, oldData) {
 export function destroyRenderTarget(gl, target) {
     gl.deleteFramebuffer(target.frameBuffer);
     gl.deleteRenderbuffer(target.depthBuffer);
-    for (var _i = 0, _a = target.textures; _i < _a.length; _i++) {
-        var texture = _a[_i];
+    for (const texture of target.textures) {
         gl.deleteTexture(texture);
     }
 }
 // Settings
 export function applyDrawSettings(gl, settings) {
     if (settings.enable) {
-        for (var _i = 0, _a = settings.enable; _i < _a.length; _i++) {
-            var setting = _a[_i];
+        for (const setting of settings.enable) {
             gl.enable(setting);
         }
     }
     if (settings.disable) {
-        for (var _b = 0, _c = settings.disable; _b < _c.length; _b++) {
-            var setting = _c[_b];
+        for (const setting of settings.disable) {
             gl.disable(setting);
         }
     }
@@ -529,14 +523,12 @@ export function applyDrawSettings(gl, settings) {
 }
 export function revertDrawSettings(gl, settings) {
     if (settings.enable) {
-        for (var _i = 0, _a = settings.enable; _i < _a.length; _i++) {
-            var setting = _a[_i];
+        for (const setting of settings.enable) {
             gl.disable(setting);
         }
     }
     if (settings.disable) {
-        for (var _b = 0, _c = settings.disable; _b < _c.length; _b++) {
-            var setting = _c[_b];
+        for (const setting of settings.disable) {
             gl.enable(setting);
         }
     }

@@ -1,16 +1,16 @@
 import { mat4, quat } from 'gl-matrix';
 import { painter, gl } from '../painter';
 import { makeClear } from '../../lib/utils/context';
-var rotationX = 0.01;
-var rotationZ = 0.009101;
-var triangleCount = 5000;
+const rotationX = 0.01;
+const rotationZ = 0.009101;
+const triangleCount = 5000;
 painter.updateDrawSettings({
     clearColor: [1.0, 0.5, 0.8, 1.0]
 });
-var dimensions = [];
-for (var i = 0; i < triangleCount; i++) {
-    var q = quat.create();
-    var scale = Math.random() * 5 + 1;
+const dimensions = [];
+for (let i = 0; i < triangleCount; i++) {
+    const q = quat.create();
+    const scale = Math.random() * 5 + 1;
     quat.rotateX(q, q, Math.random() * Math.PI);
     quat.rotateY(q, q, Math.random() * Math.PI);
     quat.rotateZ(q, q, Math.random() * Math.PI);
@@ -24,13 +24,13 @@ for (var i = 0; i < triangleCount; i++) {
         rot: q
     });
 }
-dimensions.sort(function (d1, d2) { return d1.pos[2] > d2.pos[2] ? 1 : d1.pos[2] < d2.pos[2] ? -1 : 0; });
-var projection = mat4.perspective(mat4.create(), 65, 1, 0.01, 1000);
-var cubes = dimensions.map(function (vals) { return ({
+dimensions.sort((d1, d2) => d1.pos[2] > d2.pos[2] ? 1 : d1.pos[2] < d2.pos[2] ? -1 : 0);
+const projection = mat4.perspective(mat4.create(), 65, 1, 0.01, 1000);
+const cubes = dimensions.map(vals => ({
     transform: mat4.fromRotationTranslationScale(mat4.create(), vals.rot, vals.pos, vals.scale),
     color: new Float32Array([Math.random(), Math.random(), Math.random(), 0.8])
-}); });
-var form = painter.createForm().update({
+}));
+const form = painter.createForm().update({
     attribs: {
         position: {
             buffer: new Float32Array([
@@ -43,12 +43,25 @@ var form = painter.createForm().update({
     drawType: 'TRIANGLES',
     itemCount: 3
 });
-var shade = painter.createShade().update({
-    vert: "\n\t\tattribute vec3 position;\n\t\tuniform mat4 camera;\n\t\tuniform mat4 transform;\n\n\t\tvoid main() {\n\t\t\tgl_Position = camera * transform * vec4(position, 1.0);\n\t\t}\n\t",
-    frag: "precision mediump float;\n\t\tuniform vec4 color;\n\t\tvoid main() {\n\t\t\tgl_FragColor = color;\n\t\t}\n\t"
+const shade = painter.createShade().update({
+    vert: `
+		attribute vec3 position;
+		uniform mat4 camera;
+		uniform mat4 transform;
+
+		void main() {
+			gl_Position = camera * transform * vec4(position, 1.0);
+		}
+	`,
+    frag: `precision mediump float;
+		uniform vec4 color;
+		void main() {
+			gl_FragColor = color;
+		}
+	`
 });
-var sketch = painter.createSketch().update({
-    shade: shade, form: form,
+const sketch = painter.createSketch().update({
+    shade, form,
     uniforms: cubes,
     drawSettings: {
         enable: [gl.BLEND],
@@ -56,8 +69,7 @@ var sketch = painter.createSketch().update({
     }
 });
 function animate() {
-    cubes.forEach(function (_a, i) {
-        var transform = _a.transform;
+    cubes.forEach(({ transform }, i) => {
         mat4.rotateY(transform, transform, rotationX);
         mat4.rotateZ(transform, transform, rotationZ * (i / triangleCount));
         mat4.rotateX(transform, transform, 1.78 * rotationZ);

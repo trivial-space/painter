@@ -1,15 +1,15 @@
 import { setTextureParams, updateRenderTarget, destroyRenderTarget } from './render-utils';
 import { times } from 'tvs-libs/dist/lib/utils/sequence';
-var StaticLayer = /** @class */ (function () {
-    function StaticLayer(gl) {
+export class StaticLayer {
+    constructor(gl) {
         this.data = {};
         this.gl = gl;
         this._texture = gl.createTexture();
     }
-    StaticLayer.prototype.texture = function () {
+    texture() {
         return this._texture;
-    };
-    StaticLayer.prototype.update = function (data) {
+    }
+    update(data) {
         this.gl.bindTexture(this.gl.TEXTURE_2D, this.texture());
         setTextureParams(this.gl, data, this.data);
         if (data.asset) {
@@ -21,48 +21,42 @@ var StaticLayer = /** @class */ (function () {
         this.gl.bindTexture(this.gl.TEXTURE_2D, null);
         Object.assign(this.data, data);
         return this;
-    };
-    StaticLayer.prototype.destroy = function () {
+    }
+    destroy() {
         this.gl.deleteTexture(this.texture());
-    };
-    return StaticLayer;
-}());
-export { StaticLayer };
-var DrawingLayer = /** @class */ (function () {
-    function DrawingLayer(gl) {
+    }
+}
+export class DrawingLayer {
+    constructor(gl) {
         this.gl = gl;
         this.data = {};
     }
-    DrawingLayer.prototype.texture = function (i) {
-        if (i === void 0) { i = 0; }
-        return (this.targets && this.targets[0].textures[i]) || null;
-    };
-    DrawingLayer.prototype.update = function (data) {
-        var _this = this;
+    texture(i = 0) { return (this.targets && this.targets[0].textures[i]) || null; }
+    update(data) {
         if (data.buffered && !this.targets) {
-            this.targets = times(function () { return ({
-                width: data.width || _this.gl.canvas.width,
-                height: data.height || _this.gl.canvas.height,
+            this.targets = times(() => ({
+                width: data.width || this.gl.canvas.width,
+                height: data.height || this.gl.canvas.height,
                 frameBuffer: null, textures: [], depthBuffer: null,
                 textureConfig: {
-                    type: (data.textureConfig && data.textureConfig.type) || _this.gl.UNSIGNED_BYTE,
+                    type: (data.textureConfig && data.textureConfig.type) || this.gl.UNSIGNED_BYTE,
                     count: (data.textureConfig && data.textureConfig.count) || 1
                 }
-            }); }, 2);
-            this.targets.forEach(function (t) { return updateRenderTarget(_this.gl, t, data, _this.data); });
+            }), 2);
+            this.targets.forEach(t => updateRenderTarget(this.gl, t, data, this.data));
         }
         else if (this.targets && data.width && data.height) {
-            this.targets.forEach(function (t) {
+            this.targets.forEach(t => {
                 t.width = data.width;
                 t.height = data.height;
-                updateRenderTarget(_this.gl, t, data, _this.data);
+                updateRenderTarget(this.gl, t, data, this.data);
             });
         }
         if (data.sketches) {
             this.sketches = data.sketches;
         }
         if (data.frag) {
-            var sketch = this.sketches && this.sketches[0];
+            const sketch = this.sketches && this.sketches[0];
             if (sketch) {
                 sketch.shade.update({ frag: data.frag });
             }
@@ -72,21 +66,17 @@ var DrawingLayer = /** @class */ (function () {
         }
         Object.assign(this.data, data);
         return this;
-    };
-    DrawingLayer.prototype.destroy = function () {
-        var _this = this;
+    }
+    destroy() {
         if (this.sketches) {
-            for (var _i = 0, _a = this.sketches; _i < _a.length; _i++) {
-                var sketch = _a[_i];
+            for (const sketch of this.sketches) {
                 sketch.destroy();
             }
         }
         if (this.targets) {
-            this.targets.forEach(function (t) { return destroyRenderTarget(_this.gl, t); });
+            this.targets.forEach(t => destroyRenderTarget(this.gl, t));
             this.targets = undefined;
         }
-    };
-    return DrawingLayer;
-}());
-export { DrawingLayer };
+    }
+}
 //# sourceMappingURL=layer.js.map

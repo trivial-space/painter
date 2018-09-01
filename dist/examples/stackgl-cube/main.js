@@ -4,24 +4,41 @@ import createCube from 'primitive-cube';
 import createSphere from 'primitive-sphere';
 import { painter } from '../painter';
 import { makeClear } from '../../lib/utils/context';
-var cubeStackgl = createCube();
-var cubeGeometry = convertStackGLGeometry(cubeStackgl);
-var sphereStackgl = createSphere();
-var sphereGeometry = convertStackGLGeometry(sphereStackgl);
+const cubeStackgl = createCube();
+const cubeGeometry = convertStackGLGeometry(cubeStackgl);
+const sphereStackgl = createSphere();
+const sphereGeometry = convertStackGLGeometry(sphereStackgl);
 //cubeGeometry.drawType = 'LINE_LOOP'
-var rotationX = 0.01;
-var rotationZ = 0.009101;
-var cubeMat = mat4.fromTranslation(mat4.create(), [1, 0, -3]);
-var sphereMat = mat4.fromTranslation(mat4.create(), [-1, 0, -3]);
-var projection = mat4.perspective(mat4.create(), 45, 1, 0.01, 10);
-var cube = painter.createForm().update(cubeGeometry);
-var sphere = painter.createForm().update(sphereGeometry);
-var shade = painter.createShade().update({
-    vert: "\n\t\tattribute vec3 position;\n\t\tattribute vec3 normal;\n\t\tuniform mat4 camera;\n\t\tuniform mat4 transform;\n\n\t\tvarying vec3 vNormal;\n\n\t\tvoid main() {\n\t\t\tvNormal = normal;\n\t\t\tgl_Position = camera * transform * vec4(position, 1.0);\n\t\t}\n\t",
-    frag: "precision mediump float;\n\t\tvarying vec3 vNormal;\n\t\tvoid main() {\n\t\t\tgl_FragColor = vec4(abs(vNormal), 1.0);\n\t\t}\n\t"
+const rotationX = 0.01;
+const rotationZ = 0.009101;
+const cubeMat = mat4.fromTranslation(mat4.create(), [1, 0, -3]);
+const sphereMat = mat4.fromTranslation(mat4.create(), [-1, 0, -3]);
+const projection = mat4.perspective(mat4.create(), 45, 1, 0.01, 10);
+const cube = painter.createForm().update(cubeGeometry);
+const sphere = painter.createForm().update(sphereGeometry);
+const shade = painter.createShade().update({
+    vert: `
+		attribute vec3 position;
+		attribute vec3 normal;
+		uniform mat4 camera;
+		uniform mat4 transform;
+
+		varying vec3 vNormal;
+
+		void main() {
+			vNormal = normal;
+			gl_Position = camera * transform * vec4(position, 1.0);
+		}
+	`,
+    frag: `precision mediump float;
+		varying vec3 vNormal;
+		void main() {
+			gl_FragColor = vec4(abs(vNormal), 1.0);
+		}
+	`
 });
-var cubeSketch = painter.createSketch().update({
-    shade: shade,
+const cubeSketch = painter.createSketch().update({
+    shade,
     form: cube,
     uniforms: {
         camera: projection,
@@ -31,8 +48,8 @@ var cubeSketch = painter.createSketch().update({
         clearBits: makeClear(painter.gl, 'color', 'depth')
     }
 });
-var sphereSketch = painter.createSketch().update({
-    shade: shade,
+const sphereSketch = painter.createSketch().update({
+    shade,
     form: sphere,
     uniforms: {
         camera: projection,

@@ -1,6 +1,6 @@
 import { painter } from '../painter';
 import shaderCode from './shader.glsl';
-var layer = painter.createEffectLayer().update({
+const layer = painter.createEffectLayer().update({
     frag: shaderCode
 });
 painter.compose(layer);

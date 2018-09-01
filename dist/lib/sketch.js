@@ -1,7 +1,5 @@
-var Sketch = /** @class */ (function () {
-    function Sketch() {
-    }
-    Sketch.prototype.update = function (data) {
+export class Sketch {
+    update(data) {
         if (data.drawSettings) {
             this.drawSettings = data.drawSettings;
         }
@@ -15,12 +13,10 @@ var Sketch = /** @class */ (function () {
             this.uniforms = data.uniforms;
         }
         return this;
-    };
-    Sketch.prototype.destroy = function () {
+    }
+    destroy() {
         this.form && this.form.destroy();
         this.shade && this.shade.destroy();
-    };
-    return Sketch;
-}());
-export { Sketch };
+    }
+}
 //# sourceMappingURL=sketch.js.map

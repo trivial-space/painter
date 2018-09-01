@@ -1,8 +1,8 @@
 import { painter } from '../painter';
 import shaderCode from './shader.glsl';
 // effect
-var strength = 10;
-var passes = [];
+let strength = 10;
+const passes = [];
 while (strength >= 1) {
     console.log(strength);
     passes.push({
@@ -19,7 +19,7 @@ while (strength >= 1) {
     });
     strength /= 2;
 }
-var layer = painter.createEffectLayer().update({
+const layer = painter.createEffectLayer().update({
     buffered: true,
     width: 256,
     height: 256,
@@ -29,7 +29,7 @@ var layer = painter.createEffectLayer().update({
     uniforms: passes
 });
 // scene
-var form = painter.createForm().update({
+const form = painter.createForm().update({
     attribs: {
         position: {
             buffer: new Float32Array([
@@ -51,24 +51,38 @@ var form = painter.createForm().update({
     drawType: 'TRIANGLE_STRIP',
     itemCount: 4
 });
-var shade = painter.createShade().update({
-    vert: "\n\t\tattribute vec2 position;\n\t\tattribute vec2 uv;\n\t\tvarying vec2 vUv;\n\t\tvoid main() {\n\t\t\tgl_Position = vec4(position, 0.0, 1.0);\n\t\t\tvUv = uv;\n\t\t}\n\t",
-    frag: "precision mediump float;\n\t\tuniform sampler2D tex;\n\t\tvarying vec2 vUv;\n\t\tvoid main() {\n\t\t\tgl_FragColor = texture2D(tex, vUv);\n\t\t}\n\t"
+const shade = painter.createShade().update({
+    vert: `
+		attribute vec2 position;
+		attribute vec2 uv;
+		varying vec2 vUv;
+		void main() {
+			gl_Position = vec4(position, 0.0, 1.0);
+			vUv = uv;
+		}
+	`,
+    frag: `precision mediump float;
+		uniform sampler2D tex;
+		varying vec2 vUv;
+		void main() {
+			gl_FragColor = texture2D(tex, vUv);
+		}
+	`
 });
-var scene = painter.createDrawingLayer().update({
+const scene = painter.createDrawingLayer().update({
     sketches: [painter.createSketch().update({
-            form: form, shade: shade, uniforms: { tex: function () { return layer.texture(); } }
+            form, shade, uniforms: { tex: () => layer.texture() }
         })],
     drawSettings: {
         clearColor: [1, 0.7, 0.8, 1],
         clearBits: painter.gl.COLOR_BUFFER_BIT
     }
 });
-var texture = painter.createStaticLayer().update({
+const texture = painter.createStaticLayer().update({
     minFilter: 'LINEAR',
     magFilter: 'LINEAR'
 });
-var img = new Image();
+const img = new Image();
 img.onload = function () {
     texture.update({
         asset: img

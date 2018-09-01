@@ -10,28 +10,28 @@ painter.updateDrawSettings({
     depthFunc: gl.LEQUAL,
     blendFunc: [gl.ONE, gl.ONE]
 });
-var geoShade = painter.createShade().update({
+const geoShade = painter.createShade().update({
     vert: geoVert,
     frag: geoFrag
 });
-var cubeStackgl = createCube(1);
-var cubeGeometry = convertStackGLGeometry(cubeStackgl);
-var geoForm = painter.createForm().update(cubeGeometry);
+const cubeStackgl = createCube(1);
+const cubeGeometry = convertStackGLGeometry(cubeStackgl);
+const geoForm = painter.createForm().update(cubeGeometry);
 // CAMERA STUFF
-var projMatrix = mat4.create();
+const projMatrix = mat4.create();
 mat4.perspective(projMatrix, Math.PI / 2, gl.canvas.width / gl.canvas.height, 0.1, 10.0);
-var viewMatrix = mat4.create();
-var eyePosition = vec3.fromValues(1, 1, 1);
+const viewMatrix = mat4.create();
+const eyePosition = vec3.fromValues(1, 1, 1);
 mat4.lookAt(viewMatrix, eyePosition, vec3.fromValues(0, 0, 0), vec3.fromValues(0, 1, 0));
-var viewProjMatrix = mat4.create();
+const viewProjMatrix = mat4.create();
 mat4.multiply(viewProjMatrix, projMatrix, viewMatrix);
 // BOX DESCRIPTIONS FOR GEO PASS
-var box1 = mat4.create();
-var box2 = mat4.create();
+const box1 = mat4.create();
+const box2 = mat4.create();
 mat4.fromTranslation(box2, [0.8, 0.8, 0.4]);
 mat4.scale(box2, box2, [0.1, 0.1, 0.1]);
 mat4.rotateZ(box2, box2, Math.PI / 3);
-var boxes = [
+const boxes = [
     {
         uModelMatrix: box1,
         uMVP: mat4.create()
@@ -41,12 +41,12 @@ var boxes = [
         uMVP: mat4.create()
     }
 ];
-var geoSketch = painter.createSketch().update({
+const geoSketch = painter.createSketch().update({
     form: geoForm,
     shade: geoShade,
     uniforms: boxes
 });
-var geoLayer = painter.createDrawingLayer().update({
+const geoLayer = painter.createDrawingLayer().update({
     buffered: true,
     textureConfig: {
         count: 3,
@@ -60,7 +60,7 @@ var geoLayer = painter.createDrawingLayer().update({
     minFilter: 'NEAREST',
     magFilter: 'NEAREST'
 });
-var lights = [
+const lights = [
     {
         uLightPosition: vec3.fromValues(0, 1, 0.5),
         uLightColor: vec3.fromValues(0.8, 0.0, 0.0)
@@ -78,7 +78,7 @@ var lights = [
         uLightColor: vec3.fromValues(0.0, 0.8, 0.8)
     }
 ];
-var lightLayer = painter.createEffectLayer().update({
+const lightLayer = painter.createEffectLayer().update({
     frag: mainFrag,
     uniforms: {
         uEyePosition: eyePosition,
@@ -96,11 +96,10 @@ var lightLayer = painter.createEffectLayer().update({
 if (lightLayer.sketches) {
     lightLayer.sketches[0].uniforms = lights;
 }
-var rotationX = 0.01;
-var rotationY = 0.02;
+const rotationX = 0.01;
+const rotationY = 0.02;
 function animate() {
-    for (var _i = 0, boxes_1 = boxes; _i < boxes_1.length; _i++) {
-        var box = boxes_1[_i];
+    for (const box of boxes) {
         mat4.rotateX(box.uModelMatrix, box.uModelMatrix, rotationX);
         mat4.rotateY(box.uModelMatrix, box.uModelMatrix, rotationY);
         mat4.multiply(box.uMVP, viewProjMatrix, box.uModelMatrix);
