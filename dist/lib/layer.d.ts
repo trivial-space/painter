@@ -14,7 +14,7 @@ export declare class DrawingLayer implements Layer {
     private gl;
     id: string;
     data: LayerData;
-    targets?: [RenderTarget, RenderTarget];
+    targets?: RenderTarget[];
     uniforms?: Uniforms;
     sketches?: Sketch[];
     constructor(gl: GL, id?: string);

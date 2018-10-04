@@ -55,7 +55,7 @@ export class DrawingLayer {
                     type: (data.textureConfig && data.textureConfig.type) || this.gl.UNSIGNED_BYTE,
                     count: (data.textureConfig && data.textureConfig.count) || 1
                 }
-            }), 2);
+            }), data.doubleBuffered ? 2 : 1);
             this.targets.forEach(t => updateRenderTarget(this.gl, t, data, this.data));
         }
         else if (this.targets && data.width && data.height) {

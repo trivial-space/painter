@@ -143,11 +143,12 @@ function renderLayer(gl, layer, targets, uniforms, resultSketch, directRender) {
         gl.viewport(0, 0, gl.drawingBufferWidth, gl.drawingBufferHeight);
     }
     else if (layer.targets) {
+        const i = layer.targets.length - 1;
         if (process.env.NODE_ENV !== 'production' && Painter.debug) {
-            console.log(`PAINTER: Rendering to layer target ${layer.targets[1].id}`);
+            console.log(`PAINTER: Rendering to layer target ${layer.targets[i].id}`);
         }
-        gl.bindFramebuffer(gl.FRAMEBUFFER, layer.targets[1].frameBuffer);
-        gl.viewport(0, 0, layer.targets[1].width, layer.targets[1].height);
+        gl.bindFramebuffer(gl.FRAMEBUFFER, layer.targets[i].frameBuffer);
+        gl.viewport(0, 0, layer.targets[i].width, layer.targets[i].height);
     }
     else {
         if (process.env.NODE_ENV !== 'production' && Painter.debug) {
@@ -179,7 +180,7 @@ function renderLayer(gl, layer, targets, uniforms, resultSketch, directRender) {
             targets[0] = target;
             targets[1] = source;
         }
-        else {
+        else if (layer.targets.length === 2) {
             const tmp = layer.targets[0];
             layer.targets[0] = layer.targets[1];
             layer.targets[1] = tmp;

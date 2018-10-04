@@ -89,6 +89,7 @@ export interface TextureData {
 export interface LayerData extends TextureData {
     drawSettings?: DrawSettings;
     buffered?: boolean;
+    doubleBuffered?: boolean;
     width?: number;
     height?: number;
     textureConfig?: {
@@ -103,7 +104,7 @@ export interface LayerData extends TextureData {
 export interface Layer {
     id: string;
     data: LayerData;
-    targets?: [RenderTarget, RenderTarget];
+    targets?: RenderTarget[];
     looping?: boolean;
     uniforms?: Uniforms | Uniforms[];
     sketches?: Sketch[];

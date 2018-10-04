@@ -152,6 +152,7 @@ export interface TextureData {
 export interface LayerData extends TextureData {
 	drawSettings?: DrawSettings
 	buffered?: boolean // get its own RenderTarget
+	doubleBuffered?: boolean // create 2 RenderTargets for ping pong filtering
 	width?: number // for own RenderTarget
 	height?: number // for own RenderTarget
 	textureConfig?: {
@@ -168,7 +169,7 @@ export interface LayerData extends TextureData {
 export interface Layer {
 	id: string
 	data: LayerData
-	targets?: [RenderTarget, RenderTarget]
+	targets?: RenderTarget[]
 	looping?: boolean
 	uniforms?: Uniforms | Uniforms[]
 	sketches?: Sketch[]

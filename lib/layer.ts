@@ -47,7 +47,7 @@ let drawingLayerCount = 1
 
 export class DrawingLayer implements Layer {
 	data: LayerData = {}
-	targets?: [RenderTarget, RenderTarget]
+	targets?: RenderTarget[]
 	uniforms?: Uniforms
 	sketches?: Sketch[]
 
@@ -73,7 +73,7 @@ export class DrawingLayer implements Layer {
 					type: (data.textureConfig && data.textureConfig.type) || this.gl.UNSIGNED_BYTE,
 					count: (data.textureConfig && data.textureConfig.count) || 1
 				}
-			}), 2) as [RenderTarget, RenderTarget]
+			}), data.doubleBuffered ? 2 : 1) as [RenderTarget, RenderTarget]
 
 			this.targets.forEach(t => updateRenderTarget(this.gl, t, data, this.data))
 

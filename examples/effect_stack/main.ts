@@ -28,6 +28,7 @@ while (strength >= 1) {
 
 const layer = painter.createEffectLayer().update({
 	buffered: true,
+	doubleBuffered: true,
 	width: 256,
 	height: 256,
 	minFilter: 'LINEAR',
