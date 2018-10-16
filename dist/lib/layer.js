@@ -1,6 +1,7 @@
 import { setTextureParams, updateRenderTarget, destroyRenderTarget } from './render-utils';
 import { times } from 'tvs-libs/dist/lib/utils/sequence';
 import { Painter } from './painter';
+import { defaultTextureSettings } from './asset-lib';
 let staticLayerCount = 1;
 export class StaticLayer {
     constructor(gl, id = 'StaticLayer' + staticLayerCount++) {
@@ -14,6 +15,17 @@ export class StaticLayer {
     }
     update(data) {
         this.gl.bindTexture(this.gl.TEXTURE_2D, this.texture());
+        if (data.asset) {
+            if (!(data.wrap || data.wrapS || data.wrapT)) {
+                data.wrap = defaultTextureSettings.wrap;
+            }
+            if (!data.minFilter) {
+                data.minFilter = defaultTextureSettings.minFilter;
+            }
+            if (!data.magFilter) {
+                data.magFilter = defaultTextureSettings.magFilter;
+            }
+        }
         setTextureParams(this.gl, data, this.data);
         if (data.asset) {
             this.gl.texImage2D(this.gl.TEXTURE_2D, 0, this.gl.RGBA, this.gl.RGBA, this.gl.UNSIGNED_BYTE, data.asset);
@@ -56,6 +68,15 @@ export class DrawingLayer {
                     count: (data.textureConfig && data.textureConfig.count) || 1
                 }
             }), data.doubleBuffered ? 2 : 1);
+            if (!(data.wrap || data.wrapS || data.wrapT)) {
+                data.wrap = defaultTextureSettings.wrap;
+            }
+            if (!data.minFilter) {
+                data.minFilter = defaultTextureSettings.minFilter;
+            }
+            if (!data.magFilter) {
+                data.magFilter = defaultTextureSettings.magFilter;
+            }
             this.targets.forEach(t => updateRenderTarget(this.gl, t, data, this.data));
         }
         else if (this.targets && data.width && data.height) {

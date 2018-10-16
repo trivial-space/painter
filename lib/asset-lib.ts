@@ -2,11 +2,11 @@ import * as constants from './contants'
 import { FormStoreType, FormDrawType, TextureData, GL, DrawSettings } from './painter-types'
 
 
-export const defaultTextureSettings = {
+export const defaultTextureSettings: Readonly<TextureData> = {
 	wrap: 'CLAMP_TO_EDGE',
 	minFilter: 'LINEAR',
 	magFilter: 'NEAREST'
-} as TextureData
+}
 
 
 export function getDefaultLayerSettings (gl: GL): DrawSettings {
