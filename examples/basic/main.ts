@@ -1,6 +1,4 @@
 import { painter, gl } from '../painter'
-import { defaultTextureSettings } from '../../lib/asset-lib'
-
 
 const plane = painter.createForm().update({
 	attribs: {
@@ -50,8 +48,7 @@ const textureLayer = painter.createDrawingLayer().update({
 	drawSettings: {
 		clearColor: [1.0, 0.0, 1.0, 1.0],
 		clearBits: gl.COLOR_BUFFER_BIT
-	},
-	...defaultTextureSettings
+	}
 })
 
 
