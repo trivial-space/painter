@@ -1,5 +1,4 @@
 import { painter, gl } from '../painter';
-import { defaultTextureSettings } from '../../lib/asset-lib';
 const plane = painter.createForm().update({
     attribs: {
         position: {
@@ -35,13 +34,17 @@ const red = painter.createShade().update({
 		}
 	`
 });
-const textureLayer = painter.createDrawingLayer().update(Object.assign({ buffered: true, sketches: [painter.createSketch().update({
+const textureLayer = painter.createDrawingLayer().update({
+    buffered: true,
+    sketches: [painter.createSketch().update({
             form: plane,
             shade: red
-        })], drawSettings: {
+        })],
+    drawSettings: {
         clearColor: [1.0, 0.0, 1.0, 1.0],
         clearBits: gl.COLOR_BUFFER_BIT
-    } }, defaultTextureSettings));
+    }
+});
 const paintTexture = painter.createShade().update({
     vert: `
 		attribute vec2 position;

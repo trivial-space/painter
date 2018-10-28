@@ -21,6 +21,7 @@ export class Painter {
 		this.resize(1, true)
 		this.renderQuad = this.createForm().update(defaultForms.renderQuad)
 		this.result = this.createFlatSketch()
+		this.result.shade.update(defaultShaders.basicEffect)
 	}
 
 	resize (multiplier = 1, forceUpdateTargets = false) {
@@ -60,7 +61,7 @@ export class Painter {
 		const s = this.createSketch(id)
 		return s.update({
 			form: this.renderQuad,
-			shade: this.createShade(s.id + '_defaultShade').update(defaultShaders.basicEffect)
+			shade: this.createShade(s.id + '_defaultShade')
 		})
 	}
 	createStaticLayer (id?: string) { return new StaticLayer(this.gl, id) }

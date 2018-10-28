@@ -1,8 +1,8 @@
 import { GL } from '../painter-types'
 
 
-export function getContext (canvas: HTMLCanvasElement) {
-	const gl = canvas.getContext('webgl') || canvas.getContext('experimental-webgl')
+export function getContext (canvas: HTMLCanvasElement, contextAttributes?: WebGLContextAttributes) {
+	const gl = canvas.getContext('webgl', contextAttributes) || canvas.getContext('experimental-webgl', contextAttributes)
 	if (gl == null) {
 		throw Error('Webgl context cannot be initialized')
 	}

@@ -378,7 +378,7 @@ export function createUniformSetters (gl: GL, program: WebGLProgram | null) {
 	for (let i = 0; i < numUniforms; ++i) {
 		const uniformInfo = gl.getActiveUniform(program, i)
 		if (!uniformInfo) {
-			break
+			continue
 		}
 		let name = uniformInfo.name
 		// remove the array suffix.

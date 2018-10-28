@@ -40,19 +40,19 @@ export const defaultForms = {
 export const defaultShaders = {
     basicEffect: {
         vert: `
-			attribute vec2 ${constants.GEOMETRY_PROP_POSITION};
-			attribute vec2 ${constants.GEOMETRY_PROP_UV};
-			varying vec2 ${constants.VARYING_UV_COORDS};
-			void main() {
-				${constants.VARYING_UV_COORDS} = ${constants.GEOMETRY_PROP_UV};
-				gl_Position = vec4(${constants.GEOMETRY_PROP_POSITION}, 0.0, 1.0);
-			}`,
+attribute vec2 ${constants.GEOMETRY_PROP_POSITION};
+attribute vec2 ${constants.GEOMETRY_PROP_UV};
+varying vec2 ${constants.VARYING_UV_COORDS};
+void main() {
+	${constants.VARYING_UV_COORDS} = ${constants.GEOMETRY_PROP_UV};
+	gl_Position = vec4(${constants.GEOMETRY_PROP_POSITION}, 0.0, 1.0);
+}`,
         frag: `precision mediump float;
-			uniform sampler2D ${constants.UNIFORM_SOURCE_TEXTURE};
-			varying vec2 ${constants.VARYING_UV_COORDS};
-			void main() {
-				gl_FragColor = texture2D(${constants.UNIFORM_SOURCE_TEXTURE}, ${constants.VARYING_UV_COORDS});
-			}`
+uniform sampler2D ${constants.UNIFORM_SOURCE_TEXTURE};
+varying vec2 ${constants.VARYING_UV_COORDS};
+void main() {
+	gl_FragColor = texture2D(${constants.UNIFORM_SOURCE_TEXTURE}, ${constants.VARYING_UV_COORDS});
+}`
     }
 };
 //# sourceMappingURL=asset-lib.js.map

@@ -15,8 +15,8 @@ export class Shade {
 
 
 	constructor(private gl: GL, public id = 'Shade' + shadeCounter++) {
-		this.program = gl.createProgram(),
-		this.frag = gl.createShader(gl.FRAGMENT_SHADER),
+		this.program = gl.createProgram()
+		this.frag = gl.createShader(gl.FRAGMENT_SHADER)
 		this.vert = gl.createShader(gl.VERTEX_SHADER)
 		gl.attachShader(this.program, this.vert)
 		gl.attachShader(this.program, this.frag)

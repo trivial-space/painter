@@ -1,7 +1,7 @@
 import { setTextureParams, updateRenderTarget, destroyRenderTarget } from './render-utils';
 import { times } from 'tvs-libs/dist/lib/utils/sequence';
 import { Painter } from './painter';
-import { defaultTextureSettings } from './asset-lib';
+import { defaultTextureSettings, defaultShaders } from './asset-lib';
 let staticLayerCount = 1;
 export class StaticLayer {
     constructor(gl, id = 'StaticLayer' + staticLayerCount++) {
@@ -92,7 +92,7 @@ export class DrawingLayer {
         if (data.frag) {
             const sketch = this.sketches && this.sketches[0];
             if (sketch) {
-                sketch.shade.update({ frag: data.frag });
+                sketch.shade.update({ frag: data.frag, vert: defaultShaders.basicEffect.vert });
             }
         }
         if (data.uniforms) {

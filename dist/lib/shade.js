@@ -4,9 +4,9 @@ export class Shade {
     constructor(gl, id = 'Shade' + shadeCounter++) {
         this.gl = gl;
         this.id = id;
-        this.program = gl.createProgram(),
-            this.frag = gl.createShader(gl.FRAGMENT_SHADER),
-            this.vert = gl.createShader(gl.VERTEX_SHADER);
+        this.program = gl.createProgram();
+        this.frag = gl.createShader(gl.FRAGMENT_SHADER);
+        this.vert = gl.createShader(gl.VERTEX_SHADER);
         gl.attachShader(this.program, this.vert);
         gl.attachShader(this.program, this.frag);
     }
