@@ -332,7 +332,7 @@ const attrTypeMap: {[id: number]: AttribTypeInfo} = {
 }
 
 
-export function createUniformSetters (gl: GL, program: WebGLProgram | null) {
+export function createUniformSetters (gl: GL, program: WebGLProgram) {
 	let textureUnit = 0
 
 	function createUniformSetter (program: WebGLProgram, uniformInfo: WebGLActiveInfo) {
@@ -397,7 +397,7 @@ export function createUniformSetters (gl: GL, program: WebGLProgram | null) {
 }
 
 
-export function createAttributeSetters (gl: GL, program: WebGLProgram | null) {
+export function createAttributeSetters (gl: GL, program: WebGLProgram) {
 	const attribSetters: { [id: string]: AttribSetter } = {}
 
 	const numAttribs = gl.getProgramParameter(program, gl.ACTIVE_ATTRIBUTES)

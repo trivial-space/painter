@@ -4,9 +4,15 @@ export class Shade {
     constructor(gl, id = 'Shade' + shadeCounter++) {
         this.gl = gl;
         this.id = id;
-        this.program = gl.createProgram();
-        this.frag = gl.createShader(gl.FRAGMENT_SHADER);
-        this.vert = gl.createShader(gl.VERTEX_SHADER);
+        const program = gl.createProgram();
+        const frag = gl.createShader(gl.FRAGMENT_SHADER);
+        const vert = gl.createShader(gl.VERTEX_SHADER);
+        if (!(program && frag && vert)) {
+            throw TypeError('Could not initialize Shade');
+        }
+        this.program = program;
+        this.frag = frag;
+        this.vert = vert;
         gl.attachShader(this.program, this.vert);
         gl.attachShader(this.program, this.frag);
     }

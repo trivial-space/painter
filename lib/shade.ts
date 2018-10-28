@@ -5,9 +5,9 @@ import { createUniformSetters, createAttributeSetters } from './render-utils'
 let shadeCounter = 1
 
 export class Shade {
-	program: WebGLProgram | null
-	vert: WebGLShader | null
-	frag: WebGLShader | null
+	program: WebGLProgram
+	vert: WebGLShader
+	frag: WebGLShader
 	vertSource?: string
 	fragSource?: string
 	uniformSetters!: { [id: string]: UniformSetter }
@@ -15,9 +15,17 @@ export class Shade {
 
 
 	constructor(private gl: GL, public id = 'Shade' + shadeCounter++) {
-		this.program = gl.createProgram()
-		this.frag = gl.createShader(gl.FRAGMENT_SHADER)
-		this.vert = gl.createShader(gl.VERTEX_SHADER)
+		const program = gl.createProgram()
+		const frag = gl.createShader(gl.FRAGMENT_SHADER)
+		const vert = gl.createShader(gl.VERTEX_SHADER)
+
+		if (!(program && frag && vert)) {
+			throw TypeError('Could not initialize Shade')
+		}
+
+		this.program = program
+		this.frag = frag
+		this.vert = vert
 		gl.attachShader(this.program, this.vert)
 		gl.attachShader(this.program, this.frag)
 	}
