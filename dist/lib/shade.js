@@ -1,4 +1,4 @@
-import { createUniformSetters, createAttributeSetters } from './render-utils';
+import { createAttributeSetters, createUniformSetters } from './render-utils';
 let shadeCounter = 1;
 export class Shade {
     constructor(gl, id = 'Shade' + shadeCounter++) {

@@ -1,5 +1,5 @@
-import { GL, AttribContext, AttribSetter, UniformSetter, TextureData, RenderTarget, Wrap, DrawSettings } from './painter-types'
 import { GL_TYPE } from './contants'
+import { AttribContext, AttribSetter, DrawSettings, GL, RenderTarget, TextureData, UniformSetter, Wrap } from './painter-types'
 
 
 // Attrib and Uniform Setters

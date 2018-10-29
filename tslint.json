@@ -1,6 +1,6 @@
 {
 	"rules": {
-		"no-unused-expression": true,
+		"ordered-imports": true,
 		"no-duplicate-variable": true,
 		"no-unused-variable": true,
 		"curly": [true, "ignore-same-line"],

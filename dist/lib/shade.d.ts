@@ -1,4 +1,4 @@
-import { ShadeData, GL, UniformSetter, AttribSetter } from './painter-types';
+import { AttribSetter, GL, ShadeData, UniformSetter } from './painter-types';
 export declare class Shade {
     private gl;
     id: string;

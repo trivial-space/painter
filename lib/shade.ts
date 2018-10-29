@@ -1,5 +1,5 @@
-import { ShadeData, GL, UniformSetter, AttribSetter } from './painter-types'
-import { createUniformSetters, createAttributeSetters } from './render-utils'
+import { AttribSetter, GL, ShadeData, UniformSetter } from './painter-types'
+import { createAttributeSetters, createUniformSetters } from './render-utils'
 
 
 let shadeCounter = 1
