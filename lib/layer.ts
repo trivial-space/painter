@@ -1,9 +1,9 @@
-import { GL, Layer, LayerData, RenderTarget, Uniforms } from './painter-types'
-import { setTextureParams, updateRenderTarget, destroyRenderTarget } from './render-utils'
-import { Sketch } from './sketch'
 import { times } from 'tvs-libs/dist/lib/utils/sequence'
+import { defaultShaders, defaultTextureSettings } from './asset-lib'
 import { Painter } from './painter'
-import { defaultTextureSettings, defaultShaders } from './asset-lib'
+import { GL, Layer, LayerData, RenderTarget, Uniforms } from './painter-types'
+import { destroyRenderTarget, setTextureParams, updateRenderTarget } from './render-utils'
+import { Sketch } from './sketch'
 
 let staticLayerCount = 1
 

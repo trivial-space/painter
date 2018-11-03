@@ -1,5 +1,5 @@
-import { SketchData, DrawSettings, Uniforms } from './painter-types'
 import { Form } from './form'
+import { DrawSettings, SketchData, Uniforms } from './painter-types'
 import { Shade } from './shade'
 
 

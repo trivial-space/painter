@@ -1,11 +1,11 @@
-import { GL, Uniforms, RenderTarget, Layer, DrawSettings } from './painter-types'
-import { updateRenderTarget, applyDrawSettings, revertDrawSettings, destroyRenderTarget } from './render-utils'
-import { resizeCanvas } from './utils/context'
 import { defaultForms, defaultShaders, defaultTextureSettings, getDefaultLayerSettings } from './asset-lib'
 import { Form } from './form'
+import { DrawingLayer, StaticLayer } from './layer'
+import { DrawSettings, GL, Layer, RenderTarget, Uniforms } from './painter-types'
+import { applyDrawSettings, destroyRenderTarget, revertDrawSettings, updateRenderTarget } from './render-utils'
 import { Shade } from './shade'
 import { Sketch } from './sketch'
-import { StaticLayer, DrawingLayer } from './layer'
+import { resizeCanvas } from './utils/context'
 
 
 export class Painter {

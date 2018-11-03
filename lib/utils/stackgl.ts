@@ -1,7 +1,7 @@
+import { Vec } from 'tvs-libs/dist/lib/math/vectors'
+import { flatten } from 'tvs-libs/dist/lib/utils/sequence'
 import * as constants from '../contants'
 import { FormData, FormDrawType } from '../painter-types'
-import { flatten } from 'tvs-libs/dist/lib/utils/sequence'
-import { Vec } from 'tvs-libs/dist/lib/math/vectors'
 
 
 export const STACK_GL_GEOMETRY_PROP_POSITION = 'positions'
