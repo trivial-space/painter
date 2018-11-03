@@ -1,5 +1,5 @@
 import { times } from 'tvs-libs/dist/lib/utils/sequence'
-import { defaultShaders, defaultTextureSettings } from './asset-lib'
+import { defaultTextureSettings } from './asset-lib'
 import { Painter } from './painter'
 import { GL, Layer, LayerData, RenderTarget, Uniforms } from './painter-types'
 import { destroyRenderTarget, setTextureParams, updateRenderTarget } from './render-utils'
@@ -101,7 +101,7 @@ export class DrawingLayer implements Layer {
 
 			this.targets.forEach(t => updateRenderTarget(this.gl, t, data, this.data))
 
-		} else if (this.targets && data.width && data.height) {
+		} else if (this.targets && data.width && data.height && (data.width !== this.data.width || data.height !== this.data.height)) {
 			this.targets.forEach(t => {
 				t.width = data.width as number
 				t.height = data.height as number
@@ -116,7 +116,7 @@ export class DrawingLayer implements Layer {
 		if (data.frag) {
 			const sketch = this.sketches && this.sketches[0]
 			if (sketch) {
-				sketch.shade.update({ frag: data.frag, vert: defaultShaders.basicEffect.vert })
+				sketch.shade.update({ frag: data.frag })
 			}
 		}
 

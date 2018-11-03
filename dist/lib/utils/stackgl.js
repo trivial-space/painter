@@ -1,5 +1,5 @@
-import * as constants from '../contants';
 import { flatten } from 'tvs-libs/dist/lib/utils/sequence';
+import * as constants from '../contants';
 export const STACK_GL_GEOMETRY_PROP_POSITION = 'positions';
 export const STACK_GL_GEOMETRY_PROP_NORMAL = 'normals';
 export const STACK_GL_GEOMETRY_PROP_UV = 'uvs';

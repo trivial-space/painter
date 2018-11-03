@@ -4,48 +4,51 @@ export class Shade {
     constructor(gl, id = 'Shade' + shadeCounter++) {
         this.gl = gl;
         this.id = id;
-        const program = gl.createProgram();
-        const frag = gl.createShader(gl.FRAGMENT_SHADER);
-        const vert = gl.createShader(gl.VERTEX_SHADER);
-        if (!(program && frag && vert)) {
-            throw TypeError('Could not initialize Shade');
-        }
-        this.program = program;
-        this.frag = frag;
-        this.vert = vert;
-        gl.attachShader(this.program, this.vert);
-        gl.attachShader(this.program, this.frag);
     }
     update(data) {
         const gl = this.gl;
-        const frag = (data.frag && data.frag.trim()) || this.fragSource;
-        const vert = (data.vert && data.vert.trim()) || this.vertSource;
-        if (!(frag && vert)) {
+        const fragSource = (data.frag && data.frag.trim()) || this.fragSource;
+        const vertSource = (data.vert && data.vert.trim()) || this.vertSource;
+        if (!(fragSource && vertSource && (fragSource !== this.fragSource || vertSource !== this.vertSource))) {
             return this;
         }
-        if (frag.indexOf('GL_EXT_draw_buffers') >= 0) {
+        this.destroy();
+        if (fragSource.indexOf('GL_EXT_draw_buffers') >= 0) {
             gl.getExtension('WEBGL_draw_buffers');
         }
-        gl.shaderSource(this.vert, vert);
-        gl.shaderSource(this.frag, frag);
-        gl.compileShader(this.vert);
-        gl.compileShader(this.frag);
-        if (!gl.getShaderParameter(this.vert, gl.COMPILE_STATUS)) {
-            console.error('Error Compiling Vertex Shader!\n', gl.getShaderInfoLog(this.vert), addLineNumbers(vert));
+        const program = gl.createProgram();
+        const frag = gl.createShader(gl.FRAGMENT_SHADER);
+        const vert = gl.createShader(gl.VERTEX_SHADER);
+        // if (!(program && frag && vert)) {
+        // 	throw TypeError('Could not initialize Shade')
+        // }
+        this.program = program;
+        this.frag = frag;
+        this.vert = vert;
+        if (!(program && vert && frag))
+            return;
+        gl.attachShader(program, vert);
+        gl.attachShader(program, frag);
+        gl.shaderSource(vert, vertSource);
+        gl.shaderSource(frag, fragSource);
+        gl.compileShader(vert);
+        gl.compileShader(frag);
+        if (!gl.getShaderParameter(vert, gl.COMPILE_STATUS)) {
+            console.error('Error Compiling Vertex Shader!\n', gl.getShaderInfoLog(vert), addLineNumbers(vertSource));
         }
-        if (!gl.getShaderParameter(this.frag, gl.COMPILE_STATUS)) {
-            console.error('Error Compiling Fragment Shader!\n', gl.getShaderInfoLog(this.frag), addLineNumbers(frag));
+        if (!gl.getShaderParameter(frag, gl.COMPILE_STATUS)) {
+            console.error('Error Compiling Fragment Shader!\n', gl.getShaderInfoLog(frag), addLineNumbers(fragSource));
         }
-        gl.linkProgram(this.program);
-        const linked = gl.getProgramParameter(this.program, gl.LINK_STATUS);
+        gl.linkProgram(program);
+        const linked = gl.getProgramParameter(program, gl.LINK_STATUS);
         if (!linked) {
-            const lastError = gl.getProgramInfoLog(this.program);
+            const lastError = gl.getProgramInfoLog(program);
             console.error('Error in program linking:', lastError);
         }
-        this.uniformSetters = createUniformSetters(gl, this.program);
-        this.attributeSetters = createAttributeSetters(gl, this.program);
-        this.fragSource = frag;
-        this.vertSource = vert;
+        this.uniformSetters = createUniformSetters(gl, program);
+        this.attributeSetters = createAttributeSetters(gl, program);
+        this.fragSource = fragSource;
+        this.vertSource = vertSource;
         return this;
     }
     destroy() {

@@ -1,4 +1,4 @@
-import { GL, FormData, AttribContext } from './painter-types';
+import { AttribContext, FormData, GL } from './painter-types';
 export declare class Form {
     private gl;
     id: string;

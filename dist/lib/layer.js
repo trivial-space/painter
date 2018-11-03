@@ -1,7 +1,7 @@
-import { setTextureParams, updateRenderTarget, destroyRenderTarget } from './render-utils';
 import { times } from 'tvs-libs/dist/lib/utils/sequence';
+import { defaultTextureSettings } from './asset-lib';
 import { Painter } from './painter';
-import { defaultTextureSettings, defaultShaders } from './asset-lib';
+import { destroyRenderTarget, setTextureParams, updateRenderTarget } from './render-utils';
 let staticLayerCount = 1;
 export class StaticLayer {
     constructor(gl, id = 'StaticLayer' + staticLayerCount++) {
@@ -79,7 +79,7 @@ export class DrawingLayer {
             }
             this.targets.forEach(t => updateRenderTarget(this.gl, t, data, this.data));
         }
-        else if (this.targets && data.width && data.height) {
+        else if (this.targets && data.width && data.height && (data.width !== this.data.width || data.height !== this.data.height)) {
             this.targets.forEach(t => {
                 t.width = data.width;
                 t.height = data.height;
@@ -92,7 +92,7 @@ export class DrawingLayer {
         if (data.frag) {
             const sketch = this.sketches && this.sketches[0];
             if (sketch) {
-                sketch.shade.update({ frag: data.frag, vert: defaultShaders.basicEffect.vert });
+                sketch.shade.update({ frag: data.frag });
             }
         }
         if (data.uniforms) {

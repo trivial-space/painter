@@ -1,10 +1,10 @@
-import { updateRenderTarget, applyDrawSettings, revertDrawSettings, destroyRenderTarget } from './render-utils';
-import { resizeCanvas } from './utils/context';
 import { defaultForms, defaultShaders, defaultTextureSettings, getDefaultLayerSettings } from './asset-lib';
 import { Form } from './form';
+import { DrawingLayer, StaticLayer } from './layer';
+import { applyDrawSettings, destroyRenderTarget, revertDrawSettings, updateRenderTarget } from './render-utils';
 import { Shade } from './shade';
 import { Sketch } from './sketch';
-import { StaticLayer, DrawingLayer } from './layer';
+import { resizeCanvas } from './utils/context';
 export class Painter {
     constructor(gl) {
         this.gl = gl;
@@ -15,7 +15,6 @@ export class Painter {
         this.resize(1, true);
         this.renderQuad = this.createForm().update(defaultForms.renderQuad);
         this.result = this.createFlatSketch();
-        this.result.shade.update(defaultShaders.basicEffect);
     }
     resize(multiplier = 1, forceUpdateTargets = false) {
         const canvas = this.gl.canvas;
@@ -50,7 +49,7 @@ export class Painter {
         const s = this.createSketch(id);
         return s.update({
             form: this.renderQuad,
-            shade: this.createShade(s.id + '_defaultShade')
+            shade: this.createShade(s.id + '_defaultShade').update(defaultShaders.basicEffect)
         });
     }
     createStaticLayer(id) { return new StaticLayer(this.gl, id); }

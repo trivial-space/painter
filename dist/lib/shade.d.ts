@@ -2,9 +2,9 @@ import { AttribSetter, GL, ShadeData, UniformSetter } from './painter-types';
 export declare class Shade {
     private gl;
     id: string;
-    program: WebGLProgram;
-    vert: WebGLShader;
-    frag: WebGLShader;
+    program: WebGLProgram | null;
+    vert: WebGLShader | null;
+    frag: WebGLShader | null;
     vertSource?: string;
     fragSource?: string;
     uniformSetters: {
@@ -14,6 +14,6 @@ export declare class Shade {
         [id: string]: AttribSetter;
     };
     constructor(gl: GL, id?: string);
-    update(data: ShadeData): this;
+    update(data: ShadeData): this | undefined;
     destroy(): void;
 }

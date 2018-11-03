@@ -1,8 +1,8 @@
-import { GL, Uniforms, RenderTarget, Layer, DrawSettings } from './painter-types';
 import { Form } from './form';
+import { DrawingLayer, StaticLayer } from './layer';
+import { DrawSettings, GL, Layer, RenderTarget, Uniforms } from './painter-types';
 import { Shade } from './shade';
 import { Sketch } from './sketch';
-import { StaticLayer, DrawingLayer } from './layer';
 export declare class Painter {
     gl: GL;
     static debug: boolean;
