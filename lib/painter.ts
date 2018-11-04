@@ -10,32 +10,34 @@ import { resizeCanvas } from './utils/context'
 
 export class Painter {
 	static debug = false
-	targets = [
-		{id: 'MainTarget_1'} as RenderTarget,
-		{id: 'MainTarget_2'} as RenderTarget
-	]
+	targets = [{ id: 'MainTarget_1' } as RenderTarget, { id: 'MainTarget_2' } as RenderTarget]
 	renderQuad: Form
 	result: Sketch
 
 	constructor(public gl: GL) {
-		this.resize(1, true)
+		this.resize({
+			forceUpdateTargets: true,
+			keepCurrentSize: !!(gl.canvas.width && gl.canvas.height)
+		})
 		this.renderQuad = this.createForm().update(defaultForms.renderQuad)
 		this.result = this.createFlatSketch()
 	}
 
-	resize (multiplier = 1, forceUpdateTargets = false) {
+	resize ({ multiplier = 1, forceUpdateTargets = false, keepCurrentSize = false } = {}) {
 		const canvas = this.gl.canvas
-		const needUpdate = resizeCanvas(canvas, multiplier)
+		const needUpdate = keepCurrentSize || resizeCanvas(canvas, multiplier)
 
 		if (needUpdate || forceUpdateTargets) {
 			this.targets.forEach(t => {
-				t.width = canvas.width
-				t.height = canvas.height
-				t.textureConfig = {
-					count: 1,
-					type: this.gl.UNSIGNED_BYTE
+				if (t.width !== canvas.width || t.height !== canvas.height) {
+					t.width = canvas.width
+					t.height = canvas.height
+					t.textureConfig = {
+						count: 1,
+						type: this.gl.UNSIGNED_BYTE
+					}
+					updateRenderTarget(this.gl, t, defaultTextureSettings)
 				}
-				updateRenderTarget(this.gl, t, defaultTextureSettings)
 			})
 		}
 
@@ -50,21 +52,36 @@ export class Painter {
 	}
 
 	updateDrawSettings (drawSettings?: DrawSettings) {
-		applyDrawSettings(this.gl, { ...getDefaultLayerSettings(this.gl), ...drawSettings })
+		applyDrawSettings(this.gl, {
+			...getDefaultLayerSettings(this.gl),
+			...drawSettings
+		})
 		return this
 	}
-	createForm (id?: string) { return new Form(this.gl, id) }
-	createShade (id?: string) { return new Shade(this.gl, id) }
-	createSketch (id?: string) { return new Sketch(id) }
+	createForm (id?: string) {
+		return new Form(this.gl, id)
+	}
+	createShade (id?: string) {
+		return new Shade(this.gl, id)
+	}
+	createSketch (id?: string) {
+		return new Sketch(id)
+	}
 	createFlatSketch (id?: string) {
 		const s = this.createSketch(id)
 		return s.update({
 			form: this.renderQuad,
-			shade: this.createShade(s.id + '_defaultShade').update(defaultShaders.basicEffect)
+			shade: this.createShade(s.id + '_defaultShade').update(
+				defaultShaders.basicEffect
+			)
 		})
 	}
-	createStaticLayer (id?: string) { return new StaticLayer(this.gl, id) }
-	createDrawingLayer (id?: string) { return new DrawingLayer(this.gl, id) }
+	createStaticLayer (id?: string) {
+		return new StaticLayer(this.gl, id)
+	}
+	createDrawingLayer (id?: string) {
+		return new DrawingLayer(this.gl, id)
+	}
 	createEffectLayer (id?: string) {
 		const l = this.createDrawingLayer(id)
 		return l.update({

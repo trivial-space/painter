@@ -1,9 +1,9 @@
-import { convertStackGLGeometry } from '../../lib/utils/stackgl'
 import { mat4 } from 'gl-matrix'
 import createCube from 'primitive-cube'
 import createSphere from 'primitive-sphere'
-import { painter } from '../painter'
 import { makeClear } from '../../lib/utils/context'
+import { convertStackGLGeometry } from '../../lib/utils/stackgl'
+import { painter } from '../painter'
 
 
 const cubeStackgl = createCube()

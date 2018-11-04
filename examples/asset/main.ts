@@ -1,14 +1,14 @@
-import { painter, gl } from '../painter'
 import { mat4 } from 'gl-matrix'
-import planeVert from './plane-material.vert'
-import planeFrag from './plane-material.frag'
-import effectFrag from './effect.frag'
-import { plane } from '../../lib/utils/geometry/plane'
 import { makeClear } from '../../lib/utils/context'
+import { plane } from '../../lib/utils/geometry/plane'
+import { gl, painter } from '../painter'
+import effectFrag from './effect.frag'
+import planeFrag from './plane-material.frag'
+import planeVert from './plane-material.vert'
 
 
 painter.updateDrawSettings()
-painter.resize(window.devicePixelRatio)
+painter.resize({ multiplier: window.devicePixelRatio })
 
 const planMat1 = mat4.fromTranslation(mat4.create(), [0, 0, -3])
 const planMat2 = mat4.fromTranslation(mat4.create(), [0, 0, -3])

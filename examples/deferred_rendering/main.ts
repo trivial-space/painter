@@ -1,10 +1,10 @@
 import { mat4, vec3 } from 'gl-matrix'
-import { painter, gl } from '../painter'
-import { convertStackGLGeometry } from '../../lib/utils/stackgl'
-import { makeClear } from '../../lib/utils/context'
 import createCube from 'primitive-cube'
-import geoVert from './geo.vert'
+import { makeClear } from '../../lib/utils/context'
+import { convertStackGLGeometry } from '../../lib/utils/stackgl'
+import { gl, painter } from '../painter'
 import geoFrag from './geo.frag'
+import geoVert from './geo.vert'
 import mainFrag from './main.frag'
 
 
