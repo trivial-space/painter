@@ -10,7 +10,11 @@ export declare class Painter {
     renderQuad: Form;
     result: Sketch;
     constructor(gl: GL);
-    resize(multiplier?: number, forceUpdateTargets?: boolean): this;
+    resize({ multiplier, forceUpdateTargets, keepCurrentSize }?: {
+        multiplier?: number | undefined;
+        forceUpdateTargets?: boolean | undefined;
+        keepCurrentSize?: boolean | undefined;
+    }): this;
     destroy(): void;
     updateDrawSettings(drawSettings?: DrawSettings): this;
     createForm(id?: string): Form;

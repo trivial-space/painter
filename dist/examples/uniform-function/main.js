@@ -1,11 +1,11 @@
-import { painter, gl } from '../painter';
 import { mat4 } from 'gl-matrix';
-import planeVert from './plane-material.vert';
-import planeFrag from './plane-material.frag';
-import { plane } from '../../lib/utils/geometry/plane';
-import { makeClear } from '../../lib/utils/context';
 import { adjustHue, hslToRGB } from 'tvs-libs/dist/lib/graphics/colors';
-painter.resize(window.devicePixelRatio);
+import { makeClear } from '../../lib/utils/context';
+import { plane } from '../../lib/utils/geometry/plane';
+import { gl, painter } from '../painter';
+import planeFrag from './plane-material.frag';
+import planeVert from './plane-material.vert';
+painter.resize({ multiplier: window.devicePixelRatio });
 const planMat = mat4.fromTranslation(mat4.create(), [0, 0, -3]);
 const rotation = 0.01;
 const projection = mat4.perspective(mat4.create(), 45, 1, 0.01, 10);
