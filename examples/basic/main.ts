@@ -6,26 +6,15 @@ painter.resize()
 const plane = painter.createForm().update({
 	attribs: {
 		position: {
-			buffer: new Float32Array([
-				-0.7, 0.7,
-				-0.5, -0.4,
-				0.6, 0.5,
-				0.5, -0.5
-			])
+			buffer: new Float32Array([-0.7, 0.7, -0.5, -0.4, 0.6, 0.5, 0.5, -0.5])
 		},
 		uv: {
-			buffer: new Float32Array([
-				0, 1,
-				0, 0,
-				1, 1,
-				1, 0
-			])
+			buffer: new Float32Array([0, 1, 0, 0, 1, 1, 1, 0])
 		}
 	},
 	drawType: 'TRIANGLE_STRIP',
 	itemCount: 4
 })
-
 
 const red = painter.createShade().update({
 	vert: `
@@ -41,19 +30,19 @@ const red = painter.createShade().update({
 	`
 })
 
-
 const textureLayer = painter.createDrawingLayer().update({
 	buffered: true,
-	sketches: [painter.createSketch().update({
-		form: plane,
-		shade: red
-	})],
+	sketches: [
+		painter.createSketch().update({
+			form: plane,
+			shade: red
+		})
+	],
 	drawSettings: {
 		clearColor: [1.0, 0.0, 1.0, 1.0],
 		clearBits: gl.COLOR_BUFFER_BIT
 	}
 })
-
 
 const paintTexture = painter.createShade().update({
 	vert: `
@@ -77,19 +66,20 @@ const paintTexture = painter.createShade().update({
 })
 
 const planeLayer = painter.createDrawingLayer().update({
-	sketches: [painter.createSketch().update({
-		form: plane,
-		shade: paintTexture,
-		uniforms: {
-			fufu: () => textureLayer.texture()
-		}
-	})],
+	sketches: [
+		painter.createSketch().update({
+			form: plane,
+			shade: paintTexture,
+			uniforms: {
+				fufu: () => textureLayer.texture()
+			}
+		})
+	],
 	drawSettings: {
 		clearColor: [0.0, 0.0, 0.0, 1.0],
 		clearBits: gl.COLOR_BUFFER_BIT
 	}
 })
-
 
 const effect = painter.createEffectLayer().update({
 	frag: `precision mediump float;
@@ -105,8 +95,11 @@ const effect = painter.createEffectLayer().update({
 	}
 })
 
-
-painter.compose(textureLayer, planeLayer, effect)
+painter.compose(
+	textureLayer,
+	planeLayer,
+	effect
+)
 
 if (module.hot) {
 	module.hot.accept()

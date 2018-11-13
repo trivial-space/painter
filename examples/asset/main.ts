@@ -6,7 +6,6 @@ import effectFrag from './effect.frag'
 import planeFrag from './plane-material.frag'
 import planeVert from './plane-material.vert'
 
-
 painter.updateDrawSettings()
 painter.resize({ multiplier: window.devicePixelRatio })
 
@@ -16,7 +15,6 @@ const rotation = 0.01
 const projection = mat4.perspective(mat4.create(), 45, 1, 0.01, 10)
 
 mat4.rotateY(planMat2, planMat2, Math.PI / 2)
-
 
 // ===== Setup Render Context =====
 
@@ -42,7 +40,8 @@ const shade = painter.createShade().update({
 console.log(texture)
 
 const plane1 = painter.createSketch().update({
-	form, shade,
+	form,
+	shade,
 	uniforms: {
 		transform: planMat1
 	},
@@ -52,7 +51,8 @@ const plane1 = painter.createSketch().update({
 })
 
 const plane2 = painter.createSketch().update({
-	form, shade,
+	form,
+	shade,
 	uniforms: {
 		transform: planMat2
 	},
@@ -73,17 +73,18 @@ const planeLayer = painter.createDrawingLayer().update({
 	}
 })
 
-
 // ===== initialize animation =====
 
-function animate () {
+function animate() {
 	mat4.rotateY(planMat1, planMat1, rotation)
 	mat4.rotateY(planMat2, planMat2, rotation)
 	// painter.compose(texture)
-	painter.compose(planeLayer, effect)
+	painter.compose(
+		planeLayer,
+		effect
+	)
 	requestAnimationFrame(animate)
 }
-
 
 const img = new Image()
 img.onload = function() {
@@ -93,4 +94,3 @@ img.onload = function() {
 	animate()
 }
 img.src = '../hepatica_256.png'
-

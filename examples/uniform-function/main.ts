@@ -6,15 +6,12 @@ import { gl, painter } from '../painter'
 import planeFrag from './plane-material.frag'
 import planeVert from './plane-material.vert'
 
-
 painter.resize({ multiplier: window.devicePixelRatio })
-
 
 const planMat = mat4.fromTranslation(mat4.create(), [0, 0, -3])
 const rotation = 0.01
 const projection = mat4.perspective(mat4.create(), 45, 1, 0.01, 10)
 const colorHSL = { h: 0, s: 0.5, l: 0.5 }
-
 
 // ===== Setup Render Context =====
 
@@ -26,12 +23,12 @@ const shade = painter.createShade().update({
 })
 
 const sketch = painter.createSketch().update({
-	form, shade,
+	form,
+	shade,
 	uniforms: {
 		transform: () => mat4.rotateY(planMat, planMat, rotation)
 	}
 })
-
 
 const planeLayer = painter.createDrawingLayer().update({
 	sketches: [sketch],
@@ -48,13 +45,11 @@ const planeLayer = painter.createDrawingLayer().update({
 	}
 })
 
-
 // ===== initialize animation =====
 
-function animate () {
+function animate() {
 	painter.compose(planeLayer)
 	requestAnimationFrame(animate)
 }
-
 
 animate()

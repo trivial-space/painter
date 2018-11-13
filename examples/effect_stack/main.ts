@@ -39,32 +39,20 @@ const layer = painter.createEffectLayer().update({
 	uniforms: passes
 })
 
-
 // scene
 
 const form = painter.createForm().update({
 	attribs: {
 		position: {
-			buffer: new Float32Array([
-				-0.7, 0.7,
-				-0.5, -0.4,
-				0.6, 0.5,
-				0.5, -0.5
-			])
+			buffer: new Float32Array([-0.7, 0.7, -0.5, -0.4, 0.6, 0.5, 0.5, -0.5])
 		},
 		uv: {
-			buffer: new Float32Array([
-				0, 1,
-				0, 0,
-				1, 1,
-				1, 0
-			])
+			buffer: new Float32Array([0, 1, 0, 0, 1, 1, 1, 0])
 		}
 	},
 	drawType: 'TRIANGLE_STRIP',
 	itemCount: 4
 })
-
 
 const shade = painter.createShade().update({
 	vert: `
@@ -86,28 +74,34 @@ const shade = painter.createShade().update({
 })
 
 const scene = painter.createDrawingLayer().update({
-	sketches: [painter.createSketch().update({
-		form, shade, uniforms: {tex: () => layer.texture()}
-	})],
+	sketches: [
+		painter.createSketch().update({
+			form,
+			shade,
+			uniforms: { tex: () => layer.texture() }
+		})
+	],
 	drawSettings: {
 		clearColor: [1, 0.7, 0.8, 1],
 		clearBits: painter.gl.COLOR_BUFFER_BIT
 	}
 })
 
-
 const texture = painter.createStaticLayer().update({
 	minFilter: 'LINEAR',
 	magFilter: 'LINEAR'
 })
-
 
 const img = new Image()
 img.onload = function() {
 	texture.update({
 		asset: img
 	})
-	painter.compose(texture, layer, scene)
+	painter.compose(
+		texture,
+		layer,
+		scene
+	)
 }
 
 img.src = '../hepatica_256.png'

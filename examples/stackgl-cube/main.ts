@@ -5,7 +5,6 @@ import { makeClear } from '../../lib/utils/context'
 import { convertStackGLGeometry } from '../../lib/utils/stackgl'
 import { painter } from '../painter'
 
-
 const cubeStackgl = createCube()
 const cubeGeometry = convertStackGLGeometry(cubeStackgl)
 
@@ -14,13 +13,11 @@ const sphereGeometry = convertStackGLGeometry(sphereStackgl)
 
 //cubeGeometry.drawType = 'LINE_LOOP'
 
-
 const rotationX = 0.01
 const rotationZ = 0.009101
 const cubeMat = mat4.fromTranslation(mat4.create(), [1, 0, -3])
 const sphereMat = mat4.fromTranslation(mat4.create(), [-1, 0, -3])
 const projection = mat4.perspective(mat4.create(), 45, 1, 0.01, 10)
-
 
 const cube = painter.createForm().update(cubeGeometry)
 const sphere = painter.createForm().update(sphereGeometry)
@@ -47,7 +44,6 @@ const shade = painter.createShade().update({
 	`
 })
 
-
 const cubeSketch = painter.createSketch().update({
 	shade,
 	form: cube,
@@ -69,13 +65,11 @@ const sphereSketch = painter.createSketch().update({
 	}
 })
 
-
 painter.updateDrawSettings({
 	clearColor: [1.0, 0.5, 0.8, 1.0]
 })
 
-
-function animate () {
+function animate() {
 	mat4.rotateY(cubeMat, cubeMat, rotationX)
 	mat4.rotateZ(cubeMat, cubeMat, rotationZ)
 	mat4.rotateX(cubeMat, cubeMat, 1.78 * rotationZ)

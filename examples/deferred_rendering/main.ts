@@ -7,7 +7,6 @@ import geoFrag from './geo.frag'
 import geoVert from './geo.vert'
 import mainFrag from './main.frag'
 
-
 painter.updateDrawSettings({
 	depthFunc: gl.LEQUAL,
 	blendFunc: [gl.ONE, gl.ONE]
@@ -22,19 +21,28 @@ const cubeStackgl = createCube(1)
 const cubeGeometry = convertStackGLGeometry(cubeStackgl)
 const geoForm = painter.createForm().update(cubeGeometry)
 
-
 // CAMERA STUFF
 
 const projMatrix = mat4.create()
-mat4.perspective(projMatrix, Math.PI / 2, gl.canvas.width / gl.canvas.height, 0.1, 10.0)
+mat4.perspective(
+	projMatrix,
+	Math.PI / 2,
+	gl.canvas.width / gl.canvas.height,
+	0.1,
+	10.0
+)
 
 const viewMatrix = mat4.create()
 const eyePosition = vec3.fromValues(1, 1, 1)
-mat4.lookAt(viewMatrix, eyePosition, vec3.fromValues(0, 0, 0), vec3.fromValues(0, 1, 0))
+mat4.lookAt(
+	viewMatrix,
+	eyePosition,
+	vec3.fromValues(0, 0, 0),
+	vec3.fromValues(0, 1, 0)
+)
 
 const viewProjMatrix = mat4.create()
 mat4.multiply(viewProjMatrix, projMatrix, viewMatrix)
-
 
 // BOX DESCRIPTIONS FOR GEO PASS
 
@@ -77,7 +85,6 @@ const geoLayer = painter.createDrawingLayer().update({
 	magFilter: 'NEAREST'
 })
 
-
 const lights = [
 	{
 		uLightPosition: vec3.fromValues(0, 1, 0.5),
@@ -96,7 +103,6 @@ const lights = [
 		uLightColor: vec3.fromValues(0.0, 0.8, 0.8)
 	}
 ]
-
 
 const lightLayer = painter.createEffectLayer().update({
 	frag: mainFrag,
@@ -121,15 +127,17 @@ if (lightLayer.sketches) {
 const rotationX = 0.01
 const rotationY = 0.02
 
-function animate () {
-
+function animate() {
 	for (const box of boxes) {
 		mat4.rotateX(box.uModelMatrix, box.uModelMatrix, rotationX)
 		mat4.rotateY(box.uModelMatrix, box.uModelMatrix, rotationY)
 		mat4.multiply(box.uMVP, viewProjMatrix, box.uModelMatrix)
 	}
 
-	painter.compose(geoLayer, lightLayer)
+	painter.compose(
+		geoLayer,
+		lightLayer
+	)
 
 	requestAnimationFrame(animate)
 }

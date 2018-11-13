@@ -2,7 +2,6 @@ import { mat4, quat } from 'gl-matrix'
 import { painter, gl } from '../painter'
 import { makeClear } from '../../lib/utils/context'
 
-
 const rotationX = 0.01
 const rotationZ = 0.009101
 
@@ -12,10 +11,9 @@ painter.updateDrawSettings({
 	clearColor: [1.0, 0.5, 0.8, 1.0]
 })
 
-
 interface Dimension {
 	pos: number[]
-	scale: number[],
+	scale: number[]
 	rot: quat
 }
 
@@ -37,23 +35,26 @@ for (let i = 0; i < triangleCount; i++) {
 	})
 }
 
-dimensions.sort((d1, d2) => d1.pos[2] > d2.pos[2] ? 1 : d1.pos[2] < d2.pos[2] ? -1 : 0)
+dimensions.sort((d1, d2) =>
+	d1.pos[2] > d2.pos[2] ? 1 : d1.pos[2] < d2.pos[2] ? -1 : 0
+)
 
 const projection = mat4.perspective(mat4.create(), 65, 1, 0.01, 1000)
 
 const cubes = dimensions.map(vals => ({
-	transform: mat4.fromRotationTranslationScale(mat4.create(), vals.rot, vals.pos, vals.scale ),
+	transform: mat4.fromRotationTranslationScale(
+		mat4.create(),
+		vals.rot,
+		vals.pos,
+		vals.scale
+	),
 	color: new Float32Array([Math.random(), Math.random(), Math.random(), 0.8])
 }))
 
 const form = painter.createForm().update({
 	attribs: {
 		position: {
-			buffer: new Float32Array([
-				1, 1, 1,
-				0, 0, 0,
-				1, 0, 0
-			])
+			buffer: new Float32Array([1, 1, 1, 0, 0, 0, 1, 0, 0])
 		}
 	},
 	drawType: 'TRIANGLES',
@@ -79,7 +80,8 @@ const shade = painter.createShade().update({
 })
 
 const sketch = painter.createSketch().update({
-	shade, form,
+	shade,
+	form,
 	uniforms: cubes,
 	drawSettings: {
 		enable: [gl.BLEND],
@@ -87,7 +89,7 @@ const sketch = painter.createSketch().update({
 	}
 })
 
-function animate () {
+function animate() {
 	cubes.forEach(({ transform }, i) => {
 		mat4.rotateY(transform, transform, rotationX)
 		mat4.rotateZ(transform, transform, rotationZ * (i / triangleCount))
@@ -98,5 +100,4 @@ function animate () {
 }
 
 animate()
-
-; (window as any)['gl'] = gl
+;(window as any)['gl'] = gl
