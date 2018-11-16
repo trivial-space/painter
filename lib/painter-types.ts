@@ -35,6 +35,8 @@ export type TypedArrayTypes =
 	| 'Float32Array'
 	| 'Float64Array'
 
+type BufferType = 'FLOAT' | 'UNSIGNED_BYTE'
+
 export interface RenderTarget {
 	id: string
 	frameBuffer: WebGLFramebuffer | null
@@ -42,10 +44,7 @@ export interface RenderTarget {
 	depthBuffer: WebGLRenderbuffer | null
 	width: number
 	height: number
-	textureConfig: {
-		type: number
-		count: number
-	}
+	bufferStructure: BufferType[]
 }
 
 // Form
@@ -153,32 +152,24 @@ export interface TextureData {
 	magFilter?: MagFilter
 }
 
-export interface LayerData extends TextureData {
-	drawSettings?: DrawSettings
-	buffered?: boolean // get its own RenderTarget
-	doubleBuffered?: boolean // create 2 RenderTargets for ping pong filtering
+export interface Layer {}
+
+export interface FrameData extends TextureData {
+	layers?: Layer[]
 	width?: number // for own RenderTarget
 	height?: number // for own RenderTarget
-	textureConfig?: {
-		type?: number
-		count?: number
-	}
+	bufferStructure?: BufferType[]
+	selfReferencing?: boolean
+	_targetCount?: number
+}
 
+export interface StaticLayerData extends TextureData {
 	asset?: Asset // AssetLayer specific
+}
+
+export interface DrawingLayerData {
+	drawSettings?: DrawSettings
 	sketches?: Sketch[]
 	uniforms?: Uniforms | Uniforms[] // ShaderLayer specific
 	frag?: string
-}
-
-export interface Layer {
-	id: string
-	data: LayerData
-	targets?: RenderTarget[]
-	looping?: boolean
-	uniforms?: Uniforms | Uniforms[]
-	sketches?: Sketch[]
-
-	texture: (index?: number) => WebGLTexture | null
-	update: (data: LayerData) => Layer
-	destroy: () => void
 }

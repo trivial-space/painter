@@ -1,7 +1,14 @@
 import { times } from 'tvs-libs/dist/lib/utils/sequence'
 import { defaultTextureSettings } from './asset-lib'
 import { Painter } from './painter'
-import { GL, Layer, LayerData, RenderTarget, Uniforms } from './painter-types'
+import {
+	DrawingLayerData,
+	GL,
+	Layer,
+	RenderTarget,
+	StaticLayerData,
+	Uniforms
+} from './painter-types'
 import {
 	destroyRenderTarget,
 	setTextureParams,
@@ -13,7 +20,7 @@ let staticLayerCount = 1
 
 export class StaticLayer implements Layer {
 	_texture: WebGLTexture | null
-	data: LayerData = {}
+	data: StaticLayerData = {}
 
 	constructor(private gl: GL, public id = 'StaticLayer' + staticLayerCount++) {
 		this._texture = gl.createTexture()
@@ -23,8 +30,9 @@ export class StaticLayer implements Layer {
 		return this._texture
 	}
 
-	update(data: LayerData) {
-		this.gl.bindTexture(this.gl.TEXTURE_2D, this.texture())
+	update(data: StaticLayerData) {
+		const gl = this.gl
+		gl.bindTexture(gl.TEXTURE_2D, this.texture())
 
 		if (data.asset) {
 			if (!(data.wrap || data.wrapS || data.wrapT)) {
@@ -38,24 +46,24 @@ export class StaticLayer implements Layer {
 			}
 		}
 
-		setTextureParams(this.gl, data, this.data)
+		setTextureParams(gl, data, this.data)
 
 		if (data.asset) {
-			this.gl.texImage2D(
-				this.gl.TEXTURE_2D,
+			gl.texImage2D(
+				gl.TEXTURE_2D,
 				0,
-				this.gl.RGBA,
-				this.gl.RGBA,
-				this.gl.UNSIGNED_BYTE,
+				gl.RGBA,
+				gl.RGBA,
+				gl.UNSIGNED_BYTE,
 				data.asset
 			)
 		}
 
 		if (data.minFilter && data.minFilter.indexOf('MIPMAP') > 0) {
-			this.gl.generateMipmap(this.gl.TEXTURE_2D)
+			gl.generateMipmap(gl.TEXTURE_2D)
 		}
 
-		this.gl.bindTexture(this.gl.TEXTURE_2D, null)
+		gl.bindTexture(gl.TEXTURE_2D, null)
 
 		Object.assign(this.data, data)
 
@@ -70,8 +78,7 @@ export class StaticLayer implements Layer {
 let drawingLayerCount = 1
 
 export class DrawingLayer implements Layer {
-	data: LayerData = {}
-	targets?: RenderTarget[]
+	data: DrawingLayerData = {}
 	uniforms?: Uniforms
 	sketches?: Sketch[]
 
@@ -80,59 +87,7 @@ export class DrawingLayer implements Layer {
 		public id = 'DrawingLayer' + drawingLayerCount++
 	) {}
 
-	texture(i = 0) {
-		if (process.env.NODE_ENV !== 'production' && Painter.debug) {
-			if (this.targets) {
-				console.log(`PAINTER: Using buffer texture ${this.targets[0].id}`)
-			}
-		}
-		return (this.targets && this.targets[0].textures[i]) || null
-	}
-
-	update(data: LayerData) {
-		if (data.buffered && !this.targets) {
-			this.targets = times<RenderTarget>(
-				i => ({
-					id: this.id + '_target' + (i + 1),
-					width: data.width || this.gl.canvas.width,
-					height: data.height || this.gl.canvas.height,
-					frameBuffer: null,
-					textures: [],
-					depthBuffer: null,
-					textureConfig: {
-						type:
-							(data.textureConfig && data.textureConfig.type) ||
-							this.gl.UNSIGNED_BYTE,
-						count: (data.textureConfig && data.textureConfig.count) || 1
-					}
-				}),
-				data.doubleBuffered ? 2 : 1
-			) as [RenderTarget, RenderTarget]
-
-			if (!(data.wrap || data.wrapS || data.wrapT)) {
-				data.wrap = defaultTextureSettings.wrap
-			}
-			if (!data.minFilter) {
-				data.minFilter = defaultTextureSettings.minFilter
-			}
-			if (!data.magFilter) {
-				data.magFilter = defaultTextureSettings.magFilter
-			}
-
-			this.targets.forEach(t => updateRenderTarget(this.gl, t, data, this.data))
-		} else if (
-			this.targets &&
-			data.width &&
-			data.height &&
-			(data.width !== this.data.width || data.height !== this.data.height)
-		) {
-			this.targets.forEach(t => {
-				t.width = data.width as number
-				t.height = data.height as number
-				updateRenderTarget(this.gl, t, data, this.data)
-			})
-		}
-
+	update(data: DrawingLayerData) {
 		if (data.sketches) {
 			this.sketches = data.sketches
 		}
@@ -158,11 +113,6 @@ export class DrawingLayer implements Layer {
 			for (const sketch of this.sketches) {
 				sketch.destroy()
 			}
-		}
-
-		if (this.targets) {
-			this.targets.forEach(t => destroyRenderTarget(this.gl, t))
-			this.targets = undefined
 		}
 	}
 }

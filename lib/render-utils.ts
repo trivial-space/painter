@@ -781,12 +781,11 @@ export function updateRenderTarget(
 
 	gl.bindFramebuffer(gl.FRAMEBUFFER, target.frameBuffer)
 
-	if (target.textureConfig.type === gl.FLOAT) {
+	if (target.bufferStructure.some(t => t === 'FLOAT')) {
 		gl.getExtension('OES_texture_float')
 	}
 
-	const texCount = target.textureConfig.count
-
+	const texCount = target.bufferStructure.length
 	if (texCount > 1) {
 		const glDB =
 			gl.getExtension('WEBGL_draw_buffers') ||
@@ -814,7 +813,7 @@ export function updateRenderTarget(
 				target.height,
 				0,
 				gl.RGBA,
-				target.textureConfig.type,
+				gl[target.bufferStructure[i]],
 				null
 			)
 
@@ -834,6 +833,7 @@ export function updateRenderTarget(
 		const texture = target.textures[0]
 
 		gl.bindTexture(gl.TEXTURE_2D, texture)
+		setTextureParams(gl, data, oldData)
 		gl.texImage2D(
 			gl.TEXTURE_2D,
 			0,
@@ -842,11 +842,10 @@ export function updateRenderTarget(
 			target.height,
 			0,
 			gl.RGBA,
-			target.textureConfig.type,
+			gl[target.bufferStructure[0]],
 			null
 		)
 
-		setTextureParams(gl, data, oldData)
 		gl.framebufferTexture2D(
 			gl.FRAMEBUFFER,
 			gl.COLOR_ATTACHMENT0,
