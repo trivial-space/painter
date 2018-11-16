@@ -1,16 +1,34 @@
-import { defaultForms, defaultShaders, defaultTextureSettings, getDefaultLayerSettings } from './asset-lib'
+import {
+	defaultForms,
+	defaultShaders,
+	defaultTextureSettings,
+	getDefaultLayerSettings
+} from './asset-lib'
 import { Form } from './form'
 import { DrawingLayer, StaticLayer } from './layer'
-import { DrawSettings, GL, Layer, RenderTarget, Uniforms } from './painter-types'
-import { applyDrawSettings, destroyRenderTarget, revertDrawSettings, updateRenderTarget } from './render-utils'
+import {
+	DrawSettings,
+	GL,
+	Layer,
+	RenderTarget,
+	Uniforms
+} from './painter-types'
+import {
+	applyDrawSettings,
+	destroyRenderTarget,
+	revertDrawSettings,
+	updateRenderTarget
+} from './render-utils'
 import { Shade } from './shade'
 import { Sketch } from './sketch'
 import { resizeCanvas } from './utils/context'
 
-
 export class Painter {
 	static debug = false
-	targets = [{ id: 'MainTarget_1' } as RenderTarget, { id: 'MainTarget_2' } as RenderTarget]
+	targets = [
+		{ id: 'MainTarget_1' } as RenderTarget,
+		{ id: 'MainTarget_2' } as RenderTarget
+	]
 	renderQuad: Form
 	result: Sketch
 
@@ -23,7 +41,11 @@ export class Painter {
 		this.result = this.createFlatSketch()
 	}
 
-	resize ({ multiplier = 1, forceUpdateTargets = false, keepCurrentSize = false } = {}) {
+	resize({
+		multiplier = 1,
+		forceUpdateTargets = false,
+		keepCurrentSize = false
+	} = {}) {
 		const canvas = this.gl.canvas
 		const needUpdate = keepCurrentSize || resizeCanvas(canvas, multiplier)
 
@@ -44,30 +66,30 @@ export class Painter {
 		return this
 	}
 
-	destroy () {
+	destroy() {
 		this.result.destroy()
 		for (const target of this.targets) {
 			destroyRenderTarget(this.gl, target)
 		}
 	}
 
-	updateDrawSettings (drawSettings?: DrawSettings) {
+	updateDrawSettings(drawSettings?: DrawSettings) {
 		applyDrawSettings(this.gl, {
 			...getDefaultLayerSettings(this.gl),
 			...drawSettings
 		})
 		return this
 	}
-	createForm (id?: string) {
+	createForm(id?: string) {
 		return new Form(this.gl, id)
 	}
-	createShade (id?: string) {
+	createShade(id?: string) {
 		return new Shade(this.gl, id)
 	}
-	createSketch (id?: string) {
+	createSketch(id?: string) {
 		return new Sketch(id)
 	}
-	createFlatSketch (id?: string) {
+	createFlatSketch(id?: string) {
 		const s = this.createSketch(id)
 		return s.update({
 			form: this.renderQuad,
@@ -76,36 +98,34 @@ export class Painter {
 			)
 		})
 	}
-	createStaticLayer (id?: string) {
+	createStaticLayer(id?: string) {
 		return new StaticLayer(this.gl, id)
 	}
-	createDrawingLayer (id?: string) {
+	createDrawingLayer(id?: string) {
 		return new DrawingLayer(this.gl, id)
 	}
-	createEffectLayer (id?: string) {
+	createEffectLayer(id?: string) {
 		const l = this.createDrawingLayer(id)
 		return l.update({
 			sketches: [this.createFlatSketch(l.id + '_effectSketch')]
 		})
 	}
-	draw (sketch: Sketch, globalUniforms?: Uniforms) {
+	draw(sketch: Sketch, globalUniforms?: Uniforms) {
 		draw(this.gl, sketch, null, globalUniforms)
 		return this
 	}
-	compose (...layers: Layer[]) {
+	compose(...layers: Layer[]) {
 		composeLayers(this.gl, layers, this.targets, this.result)
 		return this
 	}
 }
 
-
-function draw (
+function draw(
 	gl: GL,
 	sketch: Sketch,
 	defaultTexture: WebGLTexture | null,
 	globalUniforms?: Uniforms
 ) {
-
 	const { shade, form, drawSettings, uniforms } = sketch
 
 	if (!(shade && form)) {
@@ -136,8 +156,7 @@ function draw (
 	}
 }
 
-
-function drawInstance (
+function drawInstance(
 	gl: GL,
 	sketch: Sketch,
 	defaultTexture: WebGLTexture | null,
@@ -149,14 +168,18 @@ function drawInstance (
 
 	if (sketch.form.elements && sketch.form.elements.glType != null) {
 		gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, sketch.form.elements.buffer)
-		gl.drawElements(sketch.form.drawType, sketch.form.itemCount, sketch.form.elements.glType, 0)
+		gl.drawElements(
+			sketch.form.drawType,
+			sketch.form.itemCount,
+			sketch.form.elements.glType,
+			0
+		)
 	} else {
 		gl.drawArrays(sketch.form.drawType, 0, sketch.form.itemCount)
 	}
 }
 
-
-function shadeForm (shade: Shade, form: Form) {
+function shadeForm(shade: Shade, form: Form) {
 	for (const name in form.attribs) {
 		const setter = shade.attributeSetters[name]
 		if (setter) {
@@ -165,8 +188,11 @@ function shadeForm (shade: Shade, form: Form) {
 	}
 }
 
-
-function shadeUniforms (shade: Shade, uniforms: Uniforms, defaultTexture?: WebGLTexture | null) {
+function shadeUniforms(
+	shade: Shade,
+	uniforms: Uniforms,
+	defaultTexture?: WebGLTexture | null
+) {
 	for (const name in uniforms) {
 		const setter = shade.uniformSetters[name]
 		if (setter) {
@@ -183,8 +209,14 @@ function shadeUniforms (shade: Shade, uniforms: Uniforms, defaultTexture?: WebGL
 	}
 }
 
-
-function renderLayer (gl: GL, layer: Layer, targets: RenderTarget[], uniforms: Uniforms | undefined, resultSketch: Sketch, directRender: boolean) {
+function renderLayer(
+	gl: GL,
+	layer: Layer,
+	targets: RenderTarget[],
+	uniforms: Uniforms | undefined,
+	resultSketch: Sketch,
+	directRender: boolean
+) {
 	const source = targets[0]
 	const target = targets[1]
 
@@ -194,7 +226,6 @@ function renderLayer (gl: GL, layer: Layer, targets: RenderTarget[], uniforms: U
 		}
 		gl.bindFramebuffer(gl.FRAMEBUFFER, null)
 		gl.viewport(0, 0, gl.drawingBufferWidth, gl.drawingBufferHeight)
-
 	} else if (layer.targets) {
 		const i = layer.targets.length - 1
 		if (process.env.NODE_ENV !== 'production' && Painter.debug) {
@@ -202,7 +233,6 @@ function renderLayer (gl: GL, layer: Layer, targets: RenderTarget[], uniforms: U
 		}
 		gl.bindFramebuffer(gl.FRAMEBUFFER, layer.targets[i].frameBuffer)
 		gl.viewport(0, 0, layer.targets[i].width, layer.targets[i].height)
-
 	} else {
 		if (process.env.NODE_ENV !== 'production' && Painter.debug) {
 			console.log(`PAINTER: Rendering to target ${target.id}`)
@@ -217,7 +247,12 @@ function renderLayer (gl: GL, layer: Layer, targets: RenderTarget[], uniforms: U
 
 	if (layer.sketches) {
 		for (const sketch of layer.sketches) {
-			draw(gl, sketch, (layer.looping && layer.texture()) || source.textures[0], uniforms)
+			draw(
+				gl,
+				sketch,
+				(layer.looping && layer.texture()) || source.textures[0],
+				uniforms
+			)
 		}
 	} else {
 		// Display static texture
@@ -244,8 +279,12 @@ function renderLayer (gl: GL, layer: Layer, targets: RenderTarget[], uniforms: U
 	}
 }
 
-
-function composeLayers (gl: GL, layers: Layer[], targets: RenderTarget[], result: Sketch) {
+function composeLayers(
+	gl: GL,
+	layers: Layer[],
+	targets: RenderTarget[],
+	result: Sketch
+) {
 	const last = layers.length - 1
 
 	for (let i = 0; i < layers.length; i++) {
@@ -266,11 +305,9 @@ function composeLayers (gl: GL, layers: Layer[], targets: RenderTarget[], result
 				const directRender = i + j === newLast
 				renderLayer(gl, layer, targets, layer.uniforms[j], result, directRender)
 			}
-
 		} else {
 			const directRender = i === last
 			renderLayer(gl, layer, targets, layer.uniforms, result, directRender)
 		}
 	}
 }
-

@@ -2,7 +2,6 @@ import { Form } from './form'
 import { DrawSettings, SketchData, Uniforms } from './painter-types'
 import { Shade } from './shade'
 
-
 let sketchCounter = 1
 
 export class Sketch {
@@ -11,9 +10,9 @@ export class Sketch {
 	shade!: Shade
 	uniforms!: Uniforms
 
-	constructor (public id = 'Sketch' + sketchCounter++) {}
+	constructor(public id = 'Sketch' + sketchCounter++) {}
 
-	update (data: SketchData) {
+	update(data: SketchData) {
 		if (data.drawSettings) {
 			this.drawSettings = data.drawSettings
 		}
@@ -33,7 +32,7 @@ export class Sketch {
 		return this
 	}
 
-	destroy () {
+	destroy() {
 		this.form && this.form.destroy()
 		this.shade && this.shade.destroy()
 	}

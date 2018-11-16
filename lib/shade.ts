@@ -1,7 +1,6 @@
 import { AttribSetter, GL, ShadeData, UniformSetter } from './painter-types'
 import { createAttributeSetters, createUniformSetters } from './render-utils'
 
-
 let shadeCounter = 1
 
 export class Shade {
@@ -13,14 +12,20 @@ export class Shade {
 	uniformSetters!: { [id: string]: UniformSetter }
 	attributeSetters!: { [id: string]: AttribSetter }
 
-	constructor(private gl: GL, public id = 'Shade' + shadeCounter++) { }
+	constructor(private gl: GL, public id = 'Shade' + shadeCounter++) {}
 
-	update (data: ShadeData) {
+	update(data: ShadeData) {
 		const gl = this.gl
 		const fragSource = (data.frag && data.frag.trim()) || this.fragSource
 		const vertSource = (data.vert && data.vert.trim()) || this.vertSource
 
-		if (!(fragSource && vertSource && (fragSource !== this.fragSource || vertSource !== this.vertSource))) {
+		if (
+			!(
+				fragSource &&
+				vertSource &&
+				(fragSource !== this.fragSource || vertSource !== this.vertSource)
+			)
+		) {
 			return this
 		}
 
@@ -52,10 +57,18 @@ export class Shade {
 		gl.compileShader(frag)
 
 		if (!gl.getShaderParameter(vert, gl.COMPILE_STATUS)) {
-			console.error('Error Compiling Vertex Shader!\n', gl.getShaderInfoLog(vert), addLineNumbers(vertSource))
+			console.error(
+				'Error Compiling Vertex Shader!\n',
+				gl.getShaderInfoLog(vert),
+				addLineNumbers(vertSource)
+			)
 		}
 		if (!gl.getShaderParameter(frag, gl.COMPILE_STATUS)) {
-			console.error('Error Compiling Fragment Shader!\n', gl.getShaderInfoLog(frag), addLineNumbers(fragSource))
+			console.error(
+				'Error Compiling Fragment Shader!\n',
+				gl.getShaderInfoLog(frag),
+				addLineNumbers(fragSource)
+			)
 		}
 
 		gl.linkProgram(program)
@@ -75,16 +88,17 @@ export class Shade {
 		return this
 	}
 
-	destroy () {
+	destroy() {
 		this.gl.deleteProgram(this.program)
 		this.gl.deleteShader(this.frag)
 		this.gl.deleteShader(this.vert)
 	}
 }
 
-
-function addLineNumbers (src: string) {
-	return src.trim().split('\n')
-		.map((line, i) => (i + 1) + ': ' + line)
+function addLineNumbers(src: string) {
+	return src
+		.trim()
+		.split('\n')
+		.map((line, i) => i + 1 + ': ' + line)
 		.join('\n')
 }

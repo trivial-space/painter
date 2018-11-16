@@ -1,13 +1,11 @@
 import { FormData } from '../../painter-types'
 
-
-export function plane (
+export function plane(
 	width: number,
 	height: number,
 	widthSegments?: number,
 	heightSegments?: number
 ): FormData {
-
 	const widthHalf = width / 2
 	const heightHalf = height / 2
 
@@ -29,40 +27,36 @@ export function plane (
 	let offset2 = 0
 
 	for (iy = 0; iy < gridY1; iy++) {
-
 		const y = iy * segmentHeight - heightHalf
 
 		for (ix = 0; ix < gridX1; ix++) {
-
 			const x = ix * segmentWidth - widthHalf
 
 			vertices[offset] = x
-			vertices[offset + 1] = - y
+			vertices[offset + 1] = -y
 
 			normals[offset + 2] = 1
 
 			uvs[offset2] = ix / gridX
-			uvs[offset2 + 1] = 1 - (iy / gridY)
+			uvs[offset2 + 1] = 1 - iy / gridY
 
 			offset += 3
 			offset2 += 2
-
 		}
-
 	}
 
 	offset = 0
 
-	const indices = new ((vertices.length / 3) > 65535 ? Uint32Array : Uint16Array)(gridX * gridY * 6)
+	const indices = new (vertices.length / 3 > 65535 ? Uint32Array : Uint16Array)(
+		gridX * gridY * 6
+	)
 
 	for (iy = 0; iy < gridY; iy++) {
-
 		for (ix = 0; ix < gridX; ix++) {
-
 			const a = ix + gridX1 * iy
 			const b = ix + gridX1 * (iy + 1)
-			const c = (ix + 1) + gridX1 * (iy + 1)
-			const d = (ix + 1) + gridX1 * iy
+			const c = ix + 1 + gridX1 * (iy + 1)
+			const d = ix + 1 + gridX1 * iy
 
 			indices[offset] = a
 			indices[offset + 1] = b
@@ -73,19 +67,18 @@ export function plane (
 			indices[offset + 5] = d
 
 			offset += 6
-
 		}
 	}
 
 	return {
 		attribs: {
-			'position': {
+			position: {
 				buffer: vertices
 			},
-			'normal': {
+			normal: {
 				buffer: normals
 			},
-			'uv': {
+			uv: {
 				buffer: uvs
 			}
 		},
@@ -95,5 +88,4 @@ export function plane (
 		drawType: 'TRIANGLES',
 		itemCount: indices.length
 	}
-
 }

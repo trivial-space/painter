@@ -12,9 +12,9 @@ export class Form {
 		glType: number | null
 	}
 
-	constructor (private gl: GL, public id = 'Form' + formCounter++) {}
+	constructor(private gl: GL, public id = 'Form' + formCounter++) {}
 
-	update (data: FormData) {
+	update(data: FormData) {
 		const gl = this.gl
 		if (data.drawType) {
 			this.drawType = gl[data.drawType]
@@ -36,8 +36,11 @@ export class Form {
 			}
 
 			gl.bindBuffer(gl.ARRAY_BUFFER, this.attribs[id].buffer)
-			gl.bufferData(gl.ARRAY_BUFFER, attribData.buffer,
-				(gl as any)[(attribData.storeType || 'STATIC') + '_DRAW'])
+			gl.bufferData(
+				gl.ARRAY_BUFFER,
+				attribData.buffer,
+				(gl as any)[(attribData.storeType || 'STATIC') + '_DRAW']
+			)
 		}
 
 		if (data.elements) {
@@ -53,14 +56,17 @@ export class Form {
 			this.elements.glType = getGLTypeForTypedArray(buffer)
 
 			gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.elements.buffer)
-			gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, buffer,
-				(gl as any)[(data.elements.storeType || 'STATIC') + '_DRAW'])
+			gl.bufferData(
+				gl.ELEMENT_ARRAY_BUFFER,
+				buffer,
+				(gl as any)[(data.elements.storeType || 'STATIC') + '_DRAW']
+			)
 		}
 
 		return this
 	}
 
-	destroy () {
+	destroy() {
 		for (const id in this.attribs) {
 			this.gl.deleteBuffer(this.attribs[id].buffer)
 		}

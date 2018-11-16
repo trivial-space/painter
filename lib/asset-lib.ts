@@ -1,6 +1,11 @@
 import * as constants from './contants'
-import { DrawSettings, FormDrawType, FormStoreType, GL, TextureData } from './painter-types'
-
+import {
+	DrawSettings,
+	FormDrawType,
+	FormStoreType,
+	GL,
+	TextureData
+} from './painter-types'
 
 export const defaultTextureSettings: Readonly<TextureData> = {
 	wrap: 'CLAMP_TO_EDGE',
@@ -8,8 +13,7 @@ export const defaultTextureSettings: Readonly<TextureData> = {
 	magFilter: 'NEAREST'
 }
 
-
-export function getDefaultLayerSettings (gl: GL): DrawSettings {
+export function getDefaultLayerSettings(gl: GL): DrawSettings {
 	return {
 		clearColor: [0.0, 0.0, 0.0, 1.0],
 		enable: [gl.DEPTH_TEST],
@@ -17,27 +21,15 @@ export function getDefaultLayerSettings (gl: GL): DrawSettings {
 	}
 }
 
-
 export const defaultForms = {
-
 	renderQuad: {
 		attribs: {
 			[constants.GEOMETRY_PROP_POSITION]: {
-				buffer: new Float32Array([
-					-1, 1,
-					-1, -1,
-					1, 1,
-					1, -1
-				]),
+				buffer: new Float32Array([-1, 1, -1, -1, 1, 1, 1, -1]),
 				storeType: 'STATIC' as FormStoreType
 			},
 			[constants.GEOMETRY_PROP_UV]: {
-				buffer: new Float32Array([
-					0, 1,
-					0, 0,
-					1, 1,
-					1, 0
-				]),
+				buffer: new Float32Array([0, 1, 0, 0, 1, 1, 1, 0]),
 				storeType: 'STATIC' as FormStoreType
 			}
 		},
@@ -46,10 +38,8 @@ export const defaultForms = {
 	}
 }
 
-
 export const defaultShaders = {
 	basicEffect: {
-
 		vert: `
 attribute vec2 ${constants.GEOMETRY_PROP_POSITION};
 attribute vec2 ${constants.GEOMETRY_PROP_UV};
@@ -63,7 +53,9 @@ void main() {
 uniform sampler2D ${constants.UNIFORM_SOURCE_TEXTURE};
 varying vec2 ${constants.VARYING_UV_COORDS};
 void main() {
-	gl_FragColor = texture2D(${constants.UNIFORM_SOURCE_TEXTURE}, ${constants.VARYING_UV_COORDS});
+	gl_FragColor = texture2D(${constants.UNIFORM_SOURCE_TEXTURE}, ${
+			constants.VARYING_UV_COORDS
+		});
 }`
 	}
 }

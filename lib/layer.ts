@@ -2,7 +2,11 @@ import { times } from 'tvs-libs/dist/lib/utils/sequence'
 import { defaultTextureSettings } from './asset-lib'
 import { Painter } from './painter'
 import { GL, Layer, LayerData, RenderTarget, Uniforms } from './painter-types'
-import { destroyRenderTarget, setTextureParams, updateRenderTarget } from './render-utils'
+import {
+	destroyRenderTarget,
+	setTextureParams,
+	updateRenderTarget
+} from './render-utils'
 import { Sketch } from './sketch'
 
 let staticLayerCount = 1
@@ -11,19 +15,18 @@ export class StaticLayer implements Layer {
 	_texture: WebGLTexture | null
 	data: LayerData = {}
 
-	constructor(private gl: GL, public id = 'StaticLayer' + staticLayerCount++ ) {
+	constructor(private gl: GL, public id = 'StaticLayer' + staticLayerCount++) {
 		this._texture = gl.createTexture()
 	}
 
-	texture () {
+	texture() {
 		return this._texture
 	}
 
-	update (data: LayerData) {
+	update(data: LayerData) {
 		this.gl.bindTexture(this.gl.TEXTURE_2D, this.texture())
 
 		if (data.asset) {
-
 			if (!(data.wrap || data.wrapS || data.wrapT)) {
 				data.wrap = defaultTextureSettings.wrap
 			}
@@ -38,7 +41,14 @@ export class StaticLayer implements Layer {
 		setTextureParams(this.gl, data, this.data)
 
 		if (data.asset) {
-			this.gl.texImage2D(this.gl.TEXTURE_2D, 0, this.gl.RGBA, this.gl.RGBA, this.gl.UNSIGNED_BYTE, data.asset)
+			this.gl.texImage2D(
+				this.gl.TEXTURE_2D,
+				0,
+				this.gl.RGBA,
+				this.gl.RGBA,
+				this.gl.UNSIGNED_BYTE,
+				data.asset
+			)
 		}
 
 		if (data.minFilter && data.minFilter.indexOf('MIPMAP') > 0) {
@@ -52,7 +62,7 @@ export class StaticLayer implements Layer {
 		return this
 	}
 
-	destroy () {
+	destroy() {
 		this.gl.deleteTexture(this.texture())
 	}
 }
@@ -65,9 +75,12 @@ export class DrawingLayer implements Layer {
 	uniforms?: Uniforms
 	sketches?: Sketch[]
 
-	constructor(private gl: GL, public id = 'DrawingLayer' + drawingLayerCount++) { }
+	constructor(
+		private gl: GL,
+		public id = 'DrawingLayer' + drawingLayerCount++
+	) {}
 
-	texture (i = 0) {
+	texture(i = 0) {
 		if (process.env.NODE_ENV !== 'production' && Painter.debug) {
 			if (this.targets) {
 				console.log(`PAINTER: Using buffer texture ${this.targets[0].id}`)
@@ -76,18 +89,25 @@ export class DrawingLayer implements Layer {
 		return (this.targets && this.targets[0].textures[i]) || null
 	}
 
-	update (data: LayerData) {
+	update(data: LayerData) {
 		if (data.buffered && !this.targets) {
-			this.targets = times<RenderTarget>(i => ({
-				id: this.id + '_target' + (i + 1),
-				width: data.width || this.gl.canvas.width,
-				height: data.height || this.gl.canvas.height,
-				frameBuffer: null, textures: [], depthBuffer: null,
-				textureConfig: {
-					type: (data.textureConfig && data.textureConfig.type) || this.gl.UNSIGNED_BYTE,
-					count: (data.textureConfig && data.textureConfig.count) || 1
-				}
-			}), data.doubleBuffered ? 2 : 1) as [RenderTarget, RenderTarget]
+			this.targets = times<RenderTarget>(
+				i => ({
+					id: this.id + '_target' + (i + 1),
+					width: data.width || this.gl.canvas.width,
+					height: data.height || this.gl.canvas.height,
+					frameBuffer: null,
+					textures: [],
+					depthBuffer: null,
+					textureConfig: {
+						type:
+							(data.textureConfig && data.textureConfig.type) ||
+							this.gl.UNSIGNED_BYTE,
+						count: (data.textureConfig && data.textureConfig.count) || 1
+					}
+				}),
+				data.doubleBuffered ? 2 : 1
+			) as [RenderTarget, RenderTarget]
 
 			if (!(data.wrap || data.wrapS || data.wrapT)) {
 				data.wrap = defaultTextureSettings.wrap
@@ -100,8 +120,12 @@ export class DrawingLayer implements Layer {
 			}
 
 			this.targets.forEach(t => updateRenderTarget(this.gl, t, data, this.data))
-
-		} else if (this.targets && data.width && data.height && (data.width !== this.data.width || data.height !== this.data.height)) {
+		} else if (
+			this.targets &&
+			data.width &&
+			data.height &&
+			(data.width !== this.data.width || data.height !== this.data.height)
+		) {
 			this.targets.forEach(t => {
 				t.width = data.width as number
 				t.height = data.height as number
@@ -129,7 +153,7 @@ export class DrawingLayer implements Layer {
 		return this
 	}
 
-	destroy () {
+	destroy() {
 		if (this.sketches) {
 			for (const sketch of this.sketches) {
 				sketch.destroy()
@@ -142,4 +166,3 @@ export class DrawingLayer implements Layer {
 		}
 	}
 }
-
