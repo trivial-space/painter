@@ -1,5 +1,5 @@
-import { Vec } from 'tvs-libs/dist/lib/math/vectors'
-import { flatten } from 'tvs-libs/dist/lib/utils/sequence'
+import { Vec } from 'tvs-libs/dist/math/vectors'
+import { flatten } from 'tvs-libs/dist/utils/sequence'
 import * as constants from '../contants'
 import { FormData, FormDrawType } from '../painter-types'
 
@@ -14,7 +14,7 @@ export function convertStackGLGeometry(stackglGeometry: {
 	const geometry: FormData = {
 		drawType: 'TRIANGLES' as FormDrawType,
 		attribs: {},
-		itemCount: 0
+		itemCount: 0,
 	}
 
 	for (const prop in stackglGeometry) {
@@ -22,23 +22,23 @@ export function convertStackGLGeometry(stackglGeometry: {
 
 		if (prop === STACK_GL_GEOMETRY_PROP_ELEMENTS) {
 			const buffer = new (arr.length > 65535 ? Uint32Array : Uint16Array)(
-				flatten(arr)
+				flatten(arr),
 			)
 			Object.assign(geometry, {
 				elements: { buffer },
-				itemCount: buffer.length
+				itemCount: buffer.length,
 			})
 		} else if (prop === STACK_GL_GEOMETRY_PROP_POSITION) {
 			geometry.attribs[constants.GEOMETRY_PROP_POSITION] = {
-				buffer: new Float32Array(flatten(arr))
+				buffer: new Float32Array(flatten(arr)),
 			}
 		} else if (prop === STACK_GL_GEOMETRY_PROP_NORMAL) {
 			geometry.attribs[constants.GEOMETRY_PROP_NORMAL] = {
-				buffer: new Float32Array(flatten(arr))
+				buffer: new Float32Array(flatten(arr)),
 			}
 		} else if (prop === STACK_GL_GEOMETRY_PROP_UV) {
 			geometry.attribs[constants.GEOMETRY_PROP_UV] = {
-				buffer: new Float32Array(flatten(arr))
+				buffer: new Float32Array(flatten(arr)),
 			}
 		} else {
 			geometry.attribs[prop] = { buffer: new Float32Array(flatten(arr)) }

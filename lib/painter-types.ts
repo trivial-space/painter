@@ -99,7 +99,9 @@ export interface AttribSetter {
 
 // Sketch
 
-export type Uniforms = { [id: string]: any }
+export interface Uniforms {
+	[id: string]: any
+}
 
 export interface DrawSettings {
 	clearColor?: Color

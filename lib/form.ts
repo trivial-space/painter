@@ -31,7 +31,7 @@ export class Form {
 
 			if (this.attribs[id] == null) {
 				this.attribs[id] = {
-					buffer: gl.createBuffer()
+					buffer: gl.createBuffer(),
 				}
 			}
 
@@ -39,7 +39,7 @@ export class Form {
 			gl.bufferData(
 				gl.ARRAY_BUFFER,
 				attribData.buffer,
-				(gl as any)[(attribData.storeType || 'STATIC') + '_DRAW']
+				(gl as any)[(attribData.storeType || 'STATIC') + '_DRAW'],
 			)
 		}
 
@@ -49,7 +49,7 @@ export class Form {
 			if (this.elements == null) {
 				this.elements = {
 					buffer: gl.createBuffer(),
-					glType: null
+					glType: null,
 				}
 			}
 
@@ -59,7 +59,7 @@ export class Form {
 			gl.bufferData(
 				gl.ELEMENT_ARRAY_BUFFER,
 				buffer,
-				(gl as any)[(data.elements.storeType || 'STATIC') + '_DRAW']
+				(gl as any)[(data.elements.storeType || 'STATIC') + '_DRAW'],
 			)
 		}
 

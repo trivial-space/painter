@@ -4,7 +4,7 @@ export function plane(
 	width: number,
 	height: number,
 	widthSegments?: number,
-	heightSegments?: number
+	heightSegments?: number,
 ): FormData {
 	const widthHalf = width / 2
 	const heightHalf = height / 2
@@ -48,7 +48,7 @@ export function plane(
 	offset = 0
 
 	const indices = new (vertices.length / 3 > 65535 ? Uint32Array : Uint16Array)(
-		gridX * gridY * 6
+		gridX * gridY * 6,
 	)
 
 	for (iy = 0; iy < gridY; iy++) {
@@ -73,19 +73,19 @@ export function plane(
 	return {
 		attribs: {
 			position: {
-				buffer: vertices
+				buffer: vertices,
 			},
 			normal: {
-				buffer: normals
+				buffer: normals,
 			},
 			uv: {
-				buffer: uvs
-			}
+				buffer: uvs,
+			},
 		},
 		elements: {
-			buffer: indices
+			buffer: indices,
 		},
 		drawType: 'TRIANGLES',
-		itemCount: indices.length
+		itemCount: indices.length,
 	}
 }

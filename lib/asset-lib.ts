@@ -4,20 +4,20 @@ import {
 	FormDrawType,
 	FormStoreType,
 	GL,
-	TextureData
+	TextureData,
 } from './painter-types'
 
 export const defaultTextureSettings: Readonly<TextureData> = {
 	wrap: 'CLAMP_TO_EDGE',
 	minFilter: 'LINEAR',
-	magFilter: 'NEAREST'
+	magFilter: 'NEAREST',
 }
 
 export function getDefaultLayerSettings(gl: GL): DrawSettings {
 	return {
 		clearColor: [0.0, 0.0, 0.0, 1.0],
 		enable: [gl.DEPTH_TEST],
-		blendFunc: [gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA]
+		blendFunc: [gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA],
 	}
 }
 
@@ -26,16 +26,16 @@ export const defaultForms = {
 		attribs: {
 			[constants.GEOMETRY_PROP_POSITION]: {
 				buffer: new Float32Array([-1, 1, -1, -1, 1, 1, 1, -1]),
-				storeType: 'STATIC' as FormStoreType
+				storeType: 'STATIC' as FormStoreType,
 			},
 			[constants.GEOMETRY_PROP_UV]: {
 				buffer: new Float32Array([0, 1, 0, 0, 1, 1, 1, 0]),
-				storeType: 'STATIC' as FormStoreType
-			}
+				storeType: 'STATIC' as FormStoreType,
+			},
 		},
 		drawType: 'TRIANGLE_STRIP' as FormDrawType,
-		itemCount: 4
-	}
+		itemCount: 4,
+	},
 }
 
 export const defaultShaders = {
@@ -56,6 +56,6 @@ void main() {
 	gl_FragColor = texture2D(${constants.UNIFORM_SOURCE_TEXTURE}, ${
 			constants.VARYING_UV_COORDS
 		});
-}`
-	}
+}`,
+	},
 }

@@ -7,7 +7,7 @@ import {
 	RenderTarget,
 	TextureData,
 	UniformSetter,
-	Wrap
+	Wrap,
 } from './painter-types'
 
 // Attrib and Uniform Setters
@@ -17,145 +17,145 @@ function getBindPointForSamplerType(type: number) {
 }
 
 function floatSetter(gl: GL, location: WebGLUniformLocation) {
-	return function(v: number) {
+	return (v: number) => {
 		gl.uniform1f(location, v)
 	}
 }
 
 function floatArraySetter(gl: GL, location: WebGLUniformLocation) {
-	return function(v: any) {
+	return (v: any) => {
 		gl.uniform1fv(location, v)
 	}
 }
 
 function floatVec2Setter(gl: GL, location: WebGLUniformLocation) {
-	return function(v: any) {
+	return (v: any) => {
 		gl.uniform2fv(location, v)
 	}
 }
 
 function floatVec3Setter(gl: GL, location: WebGLUniformLocation) {
-	return function(v: any) {
+	return (v: any) => {
 		gl.uniform3fv(location, v)
 	}
 }
 
 function floatVec4Setter(gl: GL, location: WebGLUniformLocation) {
-	return function(v: any) {
+	return (v: any) => {
 		gl.uniform4fv(location, v)
 	}
 }
 
 function intSetter(gl: GL, location: WebGLUniformLocation) {
-	return function(v: any) {
+	return (v: any) => {
 		gl.uniform1i(location, v)
 	}
 }
 
 function intArraySetter(gl: GL, location: WebGLUniformLocation) {
-	return function(v: any) {
+	return (v: any) => {
 		gl.uniform1iv(location, v)
 	}
 }
 
 function intVec2Setter(gl: GL, location: WebGLUniformLocation) {
-	return function(v: any) {
+	return (v: any) => {
 		gl.uniform2iv(location, v)
 	}
 }
 
 function intVec3Setter(gl: GL, location: WebGLUniformLocation) {
-	return function(v: any) {
+	return (v: any) => {
 		gl.uniform3iv(location, v)
 	}
 }
 
 function intVec4Setter(gl: GL, location: WebGLUniformLocation) {
-	return function(v: any) {
+	return (v: any) => {
 		gl.uniform4iv(location, v)
 	}
 }
 
 function uintSetter(gl: any, location: WebGLUniformLocation) {
-	return function(v: any) {
+	return (v: any) => {
 		gl.uniform1ui(location, v)
 	}
 }
 
 function uintArraySetter(gl: any, location: WebGLUniformLocation) {
-	return function(v: any) {
+	return (v: any) => {
 		gl.uniform1uiv(location, v)
 	}
 }
 
 function uintVec2Setter(gl: any, location: WebGLUniformLocation) {
-	return function(v: any) {
+	return (v: any) => {
 		gl.uniform2uiv(location, v)
 	}
 }
 
 function uintVec3Setter(gl: any, location: WebGLUniformLocation) {
-	return function(v: any) {
+	return (v: any) => {
 		gl.uniform3uiv(location, v)
 	}
 }
 
 function uintVec4Setter(gl: any, location: WebGLUniformLocation) {
-	return function(v: any) {
+	return (v: any) => {
 		gl.uniform4uiv(location, v)
 	}
 }
 
 function floatMat2Setter(gl: GL, location: WebGLUniformLocation) {
-	return function(v: any) {
+	return (v: any) => {
 		gl.uniformMatrix2fv(location, false, v)
 	}
 }
 
 function floatMat3Setter(gl: GL, location: WebGLUniformLocation) {
-	return function(v: any) {
+	return (v: any) => {
 		gl.uniformMatrix3fv(location, false, v)
 	}
 }
 
 function floatMat4Setter(gl: GL, location: WebGLUniformLocation) {
-	return function(v: any) {
+	return (v: any) => {
 		gl.uniformMatrix4fv(location, false, v)
 	}
 }
 
 function floatMat23Setter(gl: any, location: WebGLUniformLocation) {
-	return function(v: any) {
+	return (v: any) => {
 		gl.uniformMatrix2x3fv(location, false, v)
 	}
 }
 
 function floatMat32Setter(gl: any, location: WebGLUniformLocation) {
-	return function(v: any) {
+	return (v: any) => {
 		gl.uniformMatrix3x2fv(location, false, v)
 	}
 }
 
 function floatMat24Setter(gl: any, location: WebGLUniformLocation) {
-	return function(v: any) {
+	return (v: any) => {
 		gl.uniformMatrix2x4fv(location, false, v)
 	}
 }
 
 function floatMat42Setter(gl: any, location: WebGLUniformLocation) {
-	return function(v: any) {
+	return (v: any) => {
 		gl.uniformMatrix4x2fv(location, false, v)
 	}
 }
 
 function floatMat34Setter(gl: any, location: WebGLUniformLocation) {
-	return function(v: any) {
+	return (v: any) => {
 		gl.uniformMatrix3x4fv(location, false, v)
 	}
 }
 
 function floatMat43Setter(gl: any, location: WebGLUniformLocation) {
-	return function(v: any) {
+	return (v: any) => {
 		gl.uniformMatrix4x3fv(location, false, v)
 	}
 }
@@ -164,10 +164,10 @@ function samplerSetter(
 	gl: GL,
 	type: number,
 	unit: number,
-	location: WebGLUniformLocation
+	location: WebGLUniformLocation,
 ) {
 	const bindPoint = getBindPointForSamplerType(type)
-	return function(texture: WebGLTexture) {
+	return (texture: WebGLTexture) => {
 		gl.uniform1i(location, unit)
 		gl.activeTexture(gl.TEXTURE0 + unit)
 		gl.bindTexture(bindPoint, texture)
@@ -179,7 +179,7 @@ function samplerArraySetter(
 	type: number,
 	unit: number,
 	location: WebGLUniformLocation,
-	size: number
+	size: number,
 ) {
 	const bindPoint = getBindPointForSamplerType(type)
 	const units = new Int32Array(size)
@@ -187,7 +187,7 @@ function samplerArraySetter(
 		units[i] = unit + i
 	}
 
-	return function(textures: WebGLTexture[]) {
+	return (textures: WebGLTexture[]) => {
 		gl.uniform1iv(location, units)
 		for (const index in textures) {
 			gl.activeTexture(gl.TEXTURE0 + units[index])
@@ -210,14 +210,14 @@ interface UniformTypeInfoSampler {
 		gl: GL,
 		type: number,
 		unit: number,
-		location: WebGLUniformLocation
+		location: WebGLUniformLocation,
 	) => (texture: WebGLTexture) => void
 	arraySetter: (
 		gl: GL,
 		type: number,
 		unit: number,
 		location: WebGLUniformLocation,
-		size: number
+		size: number,
 	) => (textures: WebGLTexture[]) => void
 	bindPoint: number
 }
@@ -233,28 +233,28 @@ const typeMap: { [id: number]: UniformTypeInfo } = {
 		Type: Float32Array,
 		size: 4,
 		setter: floatSetter,
-		arraySetter: floatArraySetter
+		arraySetter: floatArraySetter,
 	},
 	[GL_TYPE.FLOAT_VEC2]: {
 		Type: Float32Array,
 		size: 8,
-		setter: floatVec2Setter
+		setter: floatVec2Setter,
 	},
 	[GL_TYPE.FLOAT_VEC3]: {
 		Type: Float32Array,
 		size: 12,
-		setter: floatVec3Setter
+		setter: floatVec3Setter,
 	},
 	[GL_TYPE.FLOAT_VEC4]: {
 		Type: Float32Array,
 		size: 16,
-		setter: floatVec4Setter
+		setter: floatVec4Setter,
 	},
 	[GL_TYPE.INT]: {
 		Type: Int32Array,
 		size: 4,
 		setter: intSetter,
-		arraySetter: intArraySetter
+		arraySetter: intArraySetter,
 	},
 	[GL_TYPE.INT_VEC2]: { Type: Int32Array, size: 8, setter: intVec2Setter },
 	[GL_TYPE.INT_VEC3]: { Type: Int32Array, size: 12, setter: intVec3Setter },
@@ -263,28 +263,28 @@ const typeMap: { [id: number]: UniformTypeInfo } = {
 		Type: Uint32Array,
 		size: 4,
 		setter: uintSetter,
-		arraySetter: uintArraySetter
+		arraySetter: uintArraySetter,
 	},
 	[GL_TYPE.UNSIGNED_INT_VEC2]: {
 		Type: Uint32Array,
 		size: 8,
-		setter: uintVec2Setter
+		setter: uintVec2Setter,
 	},
 	[GL_TYPE.UNSIGNED_INT_VEC3]: {
 		Type: Uint32Array,
 		size: 12,
-		setter: uintVec3Setter
+		setter: uintVec3Setter,
 	},
 	[GL_TYPE.UNSIGNED_INT_VEC4]: {
 		Type: Uint32Array,
 		size: 16,
-		setter: uintVec4Setter
+		setter: uintVec4Setter,
 	},
 	[GL_TYPE.BOOL]: {
 		Type: Uint32Array,
 		size: 4,
 		setter: intSetter,
-		arraySetter: intArraySetter
+		arraySetter: intArraySetter,
 	},
 	[GL_TYPE.BOOL_VEC2]: { Type: Uint32Array, size: 8, setter: intVec2Setter },
 	[GL_TYPE.BOOL_VEC3]: { Type: Uint32Array, size: 12, setter: intVec3Setter },
@@ -292,157 +292,157 @@ const typeMap: { [id: number]: UniformTypeInfo } = {
 	[GL_TYPE.FLOAT_MAT2]: {
 		Type: Float32Array,
 		size: 16,
-		setter: floatMat2Setter
+		setter: floatMat2Setter,
 	},
 	[GL_TYPE.FLOAT_MAT3]: {
 		Type: Float32Array,
 		size: 36,
-		setter: floatMat3Setter
+		setter: floatMat3Setter,
 	},
 	[GL_TYPE.FLOAT_MAT4]: {
 		Type: Float32Array,
 		size: 64,
-		setter: floatMat4Setter
+		setter: floatMat4Setter,
 	},
 	[GL_TYPE.FLOAT_MAT2X3]: {
 		Type: Float32Array,
 		size: 24,
-		setter: floatMat23Setter
+		setter: floatMat23Setter,
 	},
 	[GL_TYPE.FLOAT_MAT2X4]: {
 		Type: Float32Array,
 		size: 32,
-		setter: floatMat24Setter
+		setter: floatMat24Setter,
 	},
 	[GL_TYPE.FLOAT_MAT3X2]: {
 		Type: Float32Array,
 		size: 24,
-		setter: floatMat32Setter
+		setter: floatMat32Setter,
 	},
 	[GL_TYPE.FLOAT_MAT3X4]: {
 		Type: Float32Array,
 		size: 48,
-		setter: floatMat34Setter
+		setter: floatMat34Setter,
 	},
 	[GL_TYPE.FLOAT_MAT4X2]: {
 		Type: Float32Array,
 		size: 32,
-		setter: floatMat42Setter
+		setter: floatMat42Setter,
 	},
 	[GL_TYPE.FLOAT_MAT4X3]: {
 		Type: Float32Array,
 		size: 48,
-		setter: floatMat43Setter
+		setter: floatMat43Setter,
 	},
 	[GL_TYPE.SAMPLER_2D]: {
 		Type: null,
 		size: 0,
 		setter: samplerSetter,
 		arraySetter: samplerArraySetter,
-		bindPoint: GL_TYPE.TEXTURE_2D
+		bindPoint: GL_TYPE.TEXTURE_2D,
 	},
 	[GL_TYPE.SAMPLER_CUBE]: {
 		Type: null,
 		size: 0,
 		setter: samplerSetter,
 		arraySetter: samplerArraySetter,
-		bindPoint: GL_TYPE.TEXTURE_CUBE_MAP
+		bindPoint: GL_TYPE.TEXTURE_CUBE_MAP,
 	},
 	[GL_TYPE.SAMPLER_3D]: {
 		Type: null,
 		size: 0,
 		setter: samplerSetter,
 		arraySetter: samplerArraySetter,
-		bindPoint: GL_TYPE.TEXTURE_3D
+		bindPoint: GL_TYPE.TEXTURE_3D,
 	},
 	[GL_TYPE.SAMPLER_2D_SHADOW]: {
 		Type: null,
 		size: 0,
 		setter: samplerSetter,
 		arraySetter: samplerArraySetter,
-		bindPoint: GL_TYPE.TEXTURE_2D
+		bindPoint: GL_TYPE.TEXTURE_2D,
 	},
 	[GL_TYPE.SAMPLER_2D_ARRAY]: {
 		Type: null,
 		size: 0,
 		setter: samplerSetter,
 		arraySetter: samplerArraySetter,
-		bindPoint: GL_TYPE.TEXTURE_2D_ARRAY
+		bindPoint: GL_TYPE.TEXTURE_2D_ARRAY,
 	},
 	[GL_TYPE.SAMPLER_2D_ARRAY_SHADOW]: {
 		Type: null,
 		size: 0,
 		setter: samplerSetter,
 		arraySetter: samplerArraySetter,
-		bindPoint: GL_TYPE.TEXTURE_2D_ARRAY
+		bindPoint: GL_TYPE.TEXTURE_2D_ARRAY,
 	},
 	[GL_TYPE.SAMPLER_CUBE_SHADOW]: {
 		Type: null,
 		size: 0,
 		setter: samplerSetter,
 		arraySetter: samplerArraySetter,
-		bindPoint: GL_TYPE.TEXTURE_CUBE_MAP
+		bindPoint: GL_TYPE.TEXTURE_CUBE_MAP,
 	},
 	[GL_TYPE.INT_SAMPLER_2D]: {
 		Type: null,
 		size: 0,
 		setter: samplerSetter,
 		arraySetter: samplerArraySetter,
-		bindPoint: GL_TYPE.TEXTURE_2D
+		bindPoint: GL_TYPE.TEXTURE_2D,
 	},
 	[GL_TYPE.INT_SAMPLER_3D]: {
 		Type: null,
 		size: 0,
 		setter: samplerSetter,
 		arraySetter: samplerArraySetter,
-		bindPoint: GL_TYPE.TEXTURE_3D
+		bindPoint: GL_TYPE.TEXTURE_3D,
 	},
 	[GL_TYPE.INT_SAMPLER_CUBE]: {
 		Type: null,
 		size: 0,
 		setter: samplerSetter,
 		arraySetter: samplerArraySetter,
-		bindPoint: GL_TYPE.TEXTURE_CUBE_MAP
+		bindPoint: GL_TYPE.TEXTURE_CUBE_MAP,
 	},
 	[GL_TYPE.INT_SAMPLER_2D_ARRAY]: {
 		Type: null,
 		size: 0,
 		setter: samplerSetter,
 		arraySetter: samplerArraySetter,
-		bindPoint: GL_TYPE.TEXTURE_2D_ARRAY
+		bindPoint: GL_TYPE.TEXTURE_2D_ARRAY,
 	},
 	[GL_TYPE.UNSIGNED_INT_SAMPLER_2D]: {
 		Type: null,
 		size: 0,
 		setter: samplerSetter,
 		arraySetter: samplerArraySetter,
-		bindPoint: GL_TYPE.TEXTURE_2D
+		bindPoint: GL_TYPE.TEXTURE_2D,
 	},
 	[GL_TYPE.UNSIGNED_INT_SAMPLER_3D]: {
 		Type: null,
 		size: 0,
 		setter: samplerSetter,
 		arraySetter: samplerArraySetter,
-		bindPoint: GL_TYPE.TEXTURE_3D
+		bindPoint: GL_TYPE.TEXTURE_3D,
 	},
 	[GL_TYPE.UNSIGNED_INT_SAMPLER_CUBE]: {
 		Type: null,
 		size: 0,
 		setter: samplerSetter,
 		arraySetter: samplerArraySetter,
-		bindPoint: GL_TYPE.TEXTURE_CUBE_MAP
+		bindPoint: GL_TYPE.TEXTURE_CUBE_MAP,
 	},
 	[GL_TYPE.UNSIGNED_INT_SAMPLER_2D_ARRAY]: {
 		Type: null,
 		size: 0,
 		setter: samplerSetter,
 		arraySetter: samplerArraySetter,
-		bindPoint: GL_TYPE.TEXTURE_2D_ARRAY
-	}
+		bindPoint: GL_TYPE.TEXTURE_2D_ARRAY,
+	},
 }
 
 function floatAttribSetter(gl: GL, location: number, typeInfo: any) {
-	return function(b: AttribContext) {
+	return (b: AttribContext) => {
 		gl.bindBuffer(gl.ARRAY_BUFFER, b.buffer)
 		gl.enableVertexAttribArray(location)
 		gl.vertexAttribPointer(
@@ -451,13 +451,13 @@ function floatAttribSetter(gl: GL, location: number, typeInfo: any) {
 			GL_TYPE.FLOAT,
 			b.normalize || false,
 			b.stride || 0,
-			b.offset || 0
+			b.offset || 0,
 		)
 	}
 }
 
 function intAttribSetter(gl: any, location: number, typeInfo: any) {
-	return function(b: AttribContext) {
+	return (b: AttribContext) => {
 		gl.bindBuffer(gl.ARRAY_BUFFER, b.buffer)
 		gl.enableVertexAttribArray(location)
 		gl.vertexAttribIPointer(
@@ -465,7 +465,7 @@ function intAttribSetter(gl: any, location: number, typeInfo: any) {
 			typeInfo.itemSize,
 			GL_TYPE.INT,
 			b.stride || 0,
-			b.offset || 0
+			b.offset || 0,
 		)
 	}
 }
@@ -474,7 +474,7 @@ function matAttribSetter(gl: GL, location: number, typeInfo: any) {
 	const defaultSize = typeInfo.size
 	const count = typeInfo.count
 
-	return function(b: AttribContext) {
+	return (b: AttribContext) => {
 		gl.bindBuffer(gl.ARRAY_BUFFER, b.buffer)
 
 		const numComponents = defaultSize
@@ -493,7 +493,7 @@ function matAttribSetter(gl: GL, location: number, typeInfo: any) {
 				GL_TYPE.FLOAT,
 				normalize,
 				stride,
-				offset + rowOffset * i
+				offset + rowOffset * i,
 			)
 		}
 	}
@@ -504,7 +504,7 @@ interface AttribTypeInfoNumber {
 	setter: (
 		gl: GL,
 		location: number,
-		typeInfo: any
+		typeInfo: any,
 	) => (b: AttribContext) => void
 	itemSize: number
 }
@@ -514,7 +514,7 @@ interface AttribTypeInfoMat {
 	setter: (
 		gl: GL,
 		location: number,
-		typeInfo: any
+		typeInfo: any,
 	) => (b: AttribContext) => void
 	count: number
 }
@@ -534,17 +534,17 @@ const attrTypeMap: { [id: number]: AttribTypeInfo } = {
 	[GL_TYPE.UNSIGNED_INT_VEC2]: {
 		size: 8,
 		setter: intAttribSetter,
-		itemSize: 2
+		itemSize: 2,
 	},
 	[GL_TYPE.UNSIGNED_INT_VEC3]: {
 		size: 12,
 		setter: intAttribSetter,
-		itemSize: 3
+		itemSize: 3,
 	},
 	[GL_TYPE.UNSIGNED_INT_VEC4]: {
 		size: 16,
 		setter: intAttribSetter,
-		itemSize: 4
+		itemSize: 4,
 	},
 	[GL_TYPE.BOOL]: { size: 4, setter: intAttribSetter, itemSize: 1 },
 	[GL_TYPE.BOOL_VEC2]: { size: 8, setter: intAttribSetter, itemSize: 2 },
@@ -552,7 +552,7 @@ const attrTypeMap: { [id: number]: AttribTypeInfo } = {
 	[GL_TYPE.BOOL_VEC4]: { size: 16, setter: intAttribSetter, itemSize: 4 },
 	[GL_TYPE.FLOAT_MAT2]: { size: 4, setter: matAttribSetter, count: 2 },
 	[GL_TYPE.FLOAT_MAT3]: { size: 9, setter: matAttribSetter, count: 3 },
-	[GL_TYPE.FLOAT_MAT4]: { size: 16, setter: matAttribSetter, count: 4 }
+	[GL_TYPE.FLOAT_MAT4]: { size: 16, setter: matAttribSetter, count: 4 },
 }
 
 export function createUniformSetters(gl: GL, program: WebGLProgram) {
@@ -560,7 +560,7 @@ export function createUniformSetters(gl: GL, program: WebGLProgram) {
 
 	function createUniformSetter(
 		program: WebGLProgram,
-		uniformInfo: WebGLActiveInfo
+		uniformInfo: WebGLActiveInfo,
 	) {
 		const location = gl.getUniformLocation(program, uniformInfo.name)
 		const isArray =
@@ -569,7 +569,7 @@ export function createUniformSetters(gl: GL, program: WebGLProgram) {
 		const typeInfo = typeMap[type]
 
 		if (!typeInfo) {
-			throw 'unknown type: 0x' + type.toString(16) // we should never get here.
+			throw new Error('unknown type: 0x' + type.toString(16)) // we should never get here.
 		}
 		if (location == null) {
 			return
@@ -587,7 +587,7 @@ export function createUniformSetters(gl: GL, program: WebGLProgram) {
 					type,
 					unit,
 					location,
-					uniformInfo.size
+					uniformInfo.size,
 				)
 			} else {
 				setter = typeInfo.setter(gl, type, unit, location)
@@ -663,7 +663,7 @@ export const glTypeToTypedArray = {
 	[GL_TYPE.UNSIGNED_INT_10F_11F_11F_REV]: Uint32Array,
 	[GL_TYPE.UNSIGNED_INT_5_9_9_9_REV]: Uint32Array,
 	[GL_TYPE.FLOAT_32_UNSIGNED_INT_24_8_REV]: Uint32Array,
-	[GL_TYPE.UNSIGNED_INT_24_8]: Uint32Array
+	[GL_TYPE.UNSIGNED_INT_24_8]: Uint32Array,
 }
 
 export function getGLTypeForTypedArray(typedArray: any) {
@@ -691,7 +691,7 @@ export function getGLTypeForTypedArray(typedArray: any) {
 	if (typedArray instanceof Float32Array) {
 		return GL_TYPE.FLOAT
 	}
-	throw 'unsupported typed array type'
+	throw new Error('unsupported typed array type')
 }
 
 export function getGLTypeForTypedArrayType(typedArrayType: any) {
@@ -719,7 +719,7 @@ export function getGLTypeForTypedArrayType(typedArrayType: any) {
 	if (typedArrayType === Float32Array) {
 		return GL_TYPE.FLOAT
 	}
-	throw 'unsupported typed array type'
+	throw new Error('unsupported typed array type')
 }
 
 // Texture helper
@@ -727,7 +727,7 @@ export function getGLTypeForTypedArrayType(typedArrayType: any) {
 export function setTextureParams(
 	gl: GL,
 	data: TextureData = {},
-	oldData: TextureData = {}
+	oldData: TextureData = {},
 ) {
 	if (data.flipY != null && data.flipY !== oldData.flipY) {
 		gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, data.flipY as any)
@@ -765,7 +765,7 @@ export function updateRenderTarget(
 	gl: GL,
 	target: RenderTarget,
 	data?: TextureData,
-	oldData?: TextureData
+	oldData?: TextureData,
 ) {
 	if (target.width == null || target.height == null) {
 		return
@@ -815,7 +815,7 @@ export function updateRenderTarget(
 				0,
 				gl.RGBA,
 				target.textureConfig.type,
-				null
+				null,
 			)
 
 			setTextureParams(gl, data, oldData)
@@ -824,7 +824,7 @@ export function updateRenderTarget(
 				bufferAttachments[i],
 				gl.TEXTURE_2D,
 				texture,
-				0
+				0,
 			)
 		}
 	} else {
@@ -843,7 +843,7 @@ export function updateRenderTarget(
 			0,
 			gl.RGBA,
 			target.textureConfig.type,
-			null
+			null,
 		)
 
 		setTextureParams(gl, data, oldData)
@@ -852,7 +852,7 @@ export function updateRenderTarget(
 			gl.COLOR_ATTACHMENT0,
 			gl.TEXTURE_2D,
 			texture,
-			0
+			0,
 		)
 	}
 
@@ -865,13 +865,13 @@ export function updateRenderTarget(
 		gl.RENDERBUFFER,
 		gl.DEPTH_COMPONENT16,
 		target.width,
-		target.height
+		target.height,
 	)
 	gl.framebufferRenderbuffer(
 		gl.FRAMEBUFFER,
 		gl.DEPTH_ATTACHMENT,
 		gl.RENDERBUFFER,
-		target.depthBuffer
+		target.depthBuffer,
 	)
 
 	const err = gl.checkFramebufferStatus(gl.FRAMEBUFFER)

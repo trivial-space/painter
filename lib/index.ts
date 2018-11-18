@@ -8,10 +8,10 @@ export * from './painter-types'
 
 export const utils = {
 	geometry: {
-		plane
+		plane,
 	},
 	stackgl,
-	context
+	context,
 }
 
 export const lib = aLib

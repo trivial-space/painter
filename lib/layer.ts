@@ -1,11 +1,11 @@
-import { times } from 'tvs-libs/dist/lib/utils/sequence'
+import { times } from 'tvs-libs/dist/utils/sequence'
 import { defaultTextureSettings } from './asset-lib'
 import { Painter } from './painter'
 import { GL, Layer, LayerData, RenderTarget, Uniforms } from './painter-types'
 import {
 	destroyRenderTarget,
 	setTextureParams,
-	updateRenderTarget
+	updateRenderTarget,
 } from './render-utils'
 import { Sketch } from './sketch'
 
@@ -47,7 +47,7 @@ export class StaticLayer implements Layer {
 				this.gl.RGBA,
 				this.gl.RGBA,
 				this.gl.UNSIGNED_BYTE,
-				data.asset
+				data.asset,
 			)
 		}
 
@@ -77,7 +77,7 @@ export class DrawingLayer implements Layer {
 
 	constructor(
 		private gl: GL,
-		public id = 'DrawingLayer' + drawingLayerCount++
+		public id = 'DrawingLayer' + drawingLayerCount++,
 	) {}
 
 	texture(i = 0) {
@@ -103,10 +103,10 @@ export class DrawingLayer implements Layer {
 						type:
 							(data.textureConfig && data.textureConfig.type) ||
 							this.gl.UNSIGNED_BYTE,
-						count: (data.textureConfig && data.textureConfig.count) || 1
-					}
+						count: (data.textureConfig && data.textureConfig.count) || 1,
+					},
 				}),
-				data.doubleBuffered ? 2 : 1
+				data.doubleBuffered ? 2 : 1,
 			) as [RenderTarget, RenderTarget]
 
 			if (!(data.wrap || data.wrapS || data.wrapT)) {
