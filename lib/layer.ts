@@ -89,13 +89,15 @@ export class DrawingLayer implements Layer {
 		return (this.targets && this.targets[0].textures[i]) || null
 	}
 
-	update(data: LayerData) {
+	update(data: LayerData = {}) {
+		data.width = data.width || this.gl.canvas.width
+		data.height = data.height || this.gl.canvas.height
 		if (data.buffered && !this.targets) {
 			this.targets = times<RenderTarget>(
 				i => ({
 					id: this.id + '_target' + (i + 1),
-					width: data.width || this.gl.canvas.width,
-					height: data.height || this.gl.canvas.height,
+					width: data.width!,
+					height: data.height!,
 					frameBuffer: null,
 					textures: [],
 					depthBuffer: null,
@@ -122,8 +124,6 @@ export class DrawingLayer implements Layer {
 			this.targets.forEach(t => updateRenderTarget(this.gl, t, data, this.data))
 		} else if (
 			this.targets &&
-			data.width &&
-			data.height &&
 			(data.width !== this.data.width || data.height !== this.data.height)
 		) {
 			this.targets.forEach(t => {

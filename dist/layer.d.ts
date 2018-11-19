@@ -19,6 +19,6 @@ export declare class DrawingLayer implements Layer {
     sketches?: Sketch[];
     constructor(gl: GL, id?: string);
     texture(i?: number): WebGLTexture | null;
-    update(data: LayerData): this;
+    update(data?: LayerData): this;
     destroy(): void;
 }
