@@ -3,8 +3,10 @@
 	"version": "0.1.0",
 	"description": "trivialspace painter - a low level webgl rendering engine optimized for live coding and post processing",
 	"main": "dist/tvs-painter.js",
-	"typings": "dist/lib/index.d.ts",
-	"types": "dist/lib/index.d.ts",
+	"esnext:main": "dist/index.js",
+	"jsnext:main": "dist/index.js",
+	"typings": "dist/index.d.ts",
+	"types": "dist/index.d.ts",
 	"repository": {
 		"type": "git",
 		"url": "git+https://github.com/trivial-space/painter.git"
@@ -18,7 +20,7 @@
 	"scripts": {
 		"dev": "webpack-dev-server --config webpack.examples.config.js --port 8081",
 		"examples": "npm run dev",
-		"build": "tsc; webpack",
+		"build": "tsc -p \"./tsconfig.build.json\"; webpack",
 		"prepublish": "npm run build"
 	},
 	"author": "Thomas Gorny",
@@ -43,6 +45,8 @@
 		"tslint": "^5.11.0",
 		"typescript": "^3.1.3",
 		"uglifyjs-webpack-plugin": "^2.0.1",
+		"tslint-config-prettier": "^1.16.0",
+		"tslint-config-standard": "^8.0.1",
 		"webpack": "^4.23.1",
 		"webpack-cli": "^3.1.2",
 		"webpack-dev-server": "^3.1.10"

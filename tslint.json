@@ -1,39 +1,28 @@
 {
+	"extends": ["tslint:recommended", "tslint-config-standard", "tslint-config-prettier"],
 	"rules": {
 		"ordered-imports": true,
 		"no-duplicate-variable": true,
 		"no-unused-variable": true,
 		"curly": [true, "ignore-same-line"],
-		"class-name": true,
-		"semicolon": [
-			true,
-			"never"
-		],
 		"triple-equals": [
 			true,
 			"allow-null-check"
 		],
-		"quotemark": [
-			true,
-			"single",
-			"avoid-escape",
-			"jsx-double"
-		],
 		"no-var-keyword": true,
-		"trailing-comma": [ true, {"multiline": "never", "singleline": "never"} ],
 		"prefer-for-of": true,
 		"prefer-const": true,
 		"no-unused-expression": false,
-		"whitespace": [
-			true,
-			"check-branch",
-			"check-decl",
-			"check-module",
-			"check-operator",
-			"check-preblock",
-			"check-separator",
-			"check-type",
-			"check-typecast"
-		]
+		"object-literal-sort-keys": false,
+		"interface-name": false,
+		"max-classes-per-file": false,
+		"member-access": false,
+		"array-type": false,
+		"forin": false,
+		"no-shadowed-variable": false,
+		"no-console": false,
+		"one-variable-per-declaration": false,
+		"no-bitwise": false,
+		"no-empty": false
 	}
 }

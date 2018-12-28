@@ -60,14 +60,14 @@ export class Shade {
 			console.error(
 				'Error Compiling Vertex Shader!\n',
 				gl.getShaderInfoLog(vert),
-				addLineNumbers(vertSource)
+				addLineNumbers(vertSource),
 			)
 		}
 		if (!gl.getShaderParameter(frag, gl.COMPILE_STATUS)) {
 			console.error(
 				'Error Compiling Fragment Shader!\n',
 				gl.getShaderInfoLog(frag),
-				addLineNumbers(fragSource)
+				addLineNumbers(fragSource),
 			)
 		}
 

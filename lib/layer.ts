@@ -1,19 +1,12 @@
-import { times } from 'tvs-libs/dist/lib/utils/sequence'
 import { defaultTextureSettings } from './asset-lib'
-import { Painter } from './painter'
 import {
 	DrawingLayerData,
 	GL,
 	Layer,
-	RenderTarget,
 	StaticLayerData,
-	Uniforms
+	Uniforms,
 } from './painter-types'
-import {
-	destroyRenderTarget,
-	setTextureParams,
-	updateRenderTarget
-} from './render-utils'
+import { setTextureParams } from './render-utils'
 import { Sketch } from './sketch'
 
 let staticLayerCount = 1
@@ -55,7 +48,7 @@ export class StaticLayer implements Layer {
 				gl.RGBA,
 				gl.RGBA,
 				gl.UNSIGNED_BYTE,
-				data.asset
+				data.asset,
 			)
 		}
 
@@ -82,10 +75,7 @@ export class DrawingLayer implements Layer {
 	uniforms?: Uniforms
 	sketches?: Sketch[]
 
-	constructor(
-		private gl: GL,
-		public id = 'DrawingLayer' + drawingLayerCount++
-	) {}
+	constructor(public id = 'DrawingLayer' + drawingLayerCount++) {}
 
 	update(data: DrawingLayerData) {
 		if (data.sketches) {

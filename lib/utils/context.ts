@@ -2,7 +2,7 @@ import { GL } from '../painter-types'
 
 export function getContext(
 	canvas: HTMLCanvasElement,
-	contextAttributes?: WebGLContextAttributes
+	contextAttributes?: WebGLContextAttributes,
 ) {
 	const gl =
 		canvas.getContext('webgl', contextAttributes) ||
@@ -16,7 +16,7 @@ export function getContext(
 export function makeClear(gl: GL, ...clearArray: string[]): number {
 	return clearArray.reduce(
 		(res, item) => res | (gl as any)[item.toUpperCase() + '_BUFFER_BIT'],
-		0
+		0,
 	)
 }
 

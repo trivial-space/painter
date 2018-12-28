@@ -2,7 +2,7 @@ import {
 	defaultForms,
 	defaultShaders,
 	defaultTextureSettings,
-	getDefaultLayerSettings
+	getDefaultLayerSettings,
 } from './asset-lib'
 import { Form } from './form'
 import { DrawingLayer, StaticLayer } from './layer'
@@ -11,13 +11,13 @@ import {
 	GL,
 	Layer,
 	RenderTarget,
-	Uniforms
+	Uniforms,
 } from './painter-types'
 import {
 	applyDrawSettings,
 	destroyRenderTarget,
 	revertDrawSettings,
-	updateRenderTarget
+	updateRenderTarget,
 } from './render-utils'
 import { Shade } from './shade'
 import { Sketch } from './sketch'
@@ -27,7 +27,7 @@ export class Painter {
 	static debug = false
 	targets = [
 		{ id: 'MainTarget_1' } as RenderTarget,
-		{ id: 'MainTarget_2' } as RenderTarget
+		{ id: 'MainTarget_2' } as RenderTarget,
 	]
 	renderQuad: Form
 	result: Sketch
@@ -35,7 +35,7 @@ export class Painter {
 	constructor(public gl: GL) {
 		this.resize({
 			forceUpdateTargets: true,
-			keepCurrentSize: !!(gl.canvas.width && gl.canvas.height)
+			keepCurrentSize: !!(gl.canvas.width && gl.canvas.height),
 		})
 		this.renderQuad = this.createForm().update(defaultForms.renderQuad)
 		this.result = this.createFlatSketch()
@@ -44,7 +44,7 @@ export class Painter {
 	resize({
 		multiplier = 1,
 		forceUpdateTargets = false,
-		keepCurrentSize = false
+		keepCurrentSize = false,
 	} = {}) {
 		const canvas = this.gl.canvas
 		const needUpdate = keepCurrentSize || resizeCanvas(canvas, multiplier)
@@ -56,7 +56,7 @@ export class Painter {
 					t.height = canvas.height
 					t.textureConfig = {
 						count: 1,
-						type: this.gl.UNSIGNED_BYTE
+						type: this.gl.UNSIGNED_BYTE,
 					}
 					updateRenderTarget(this.gl, t, defaultTextureSettings)
 				}
@@ -76,7 +76,7 @@ export class Painter {
 	updateDrawSettings(drawSettings?: DrawSettings) {
 		applyDrawSettings(this.gl, {
 			...getDefaultLayerSettings(this.gl),
-			...drawSettings
+			...drawSettings,
 		})
 		return this
 	}
@@ -94,8 +94,8 @@ export class Painter {
 		return s.update({
 			form: this.renderQuad,
 			shade: this.createShade(s.id + '_defaultShade').update(
-				defaultShaders.basicEffect
-			)
+				defaultShaders.basicEffect,
+			),
 		})
 	}
 	createStaticLayer(id?: string) {
@@ -107,7 +107,7 @@ export class Painter {
 	createEffectLayer(id?: string) {
 		const l = this.createDrawingLayer(id)
 		return l.update({
-			sketches: [this.createFlatSketch(l.id + '_effectSketch')]
+			sketches: [this.createFlatSketch(l.id + '_effectSketch')],
 		})
 	}
 	draw(sketch: Sketch, globalUniforms?: Uniforms) {
@@ -124,7 +124,7 @@ function draw(
 	gl: GL,
 	sketch: Sketch,
 	defaultTexture: WebGLTexture | null,
-	globalUniforms?: Uniforms
+	globalUniforms?: Uniforms,
 ) {
 	const { shade, form, drawSettings, uniforms } = sketch
 
@@ -160,7 +160,7 @@ function drawInstance(
 	gl: GL,
 	sketch: Sketch,
 	defaultTexture: WebGLTexture | null,
-	uniforms?: Uniforms
+	uniforms?: Uniforms,
 ) {
 	if (uniforms) {
 		shadeUniforms(sketch.shade, uniforms, defaultTexture)
@@ -172,7 +172,7 @@ function drawInstance(
 			sketch.form.drawType,
 			sketch.form.itemCount,
 			sketch.form.elements.glType,
-			0
+			0,
 		)
 	} else {
 		gl.drawArrays(sketch.form.drawType, 0, sketch.form.itemCount)
@@ -191,7 +191,7 @@ function shadeForm(shade: Shade, form: Form) {
 function shadeUniforms(
 	shade: Shade,
 	uniforms: Uniforms,
-	defaultTexture?: WebGLTexture | null
+	defaultTexture?: WebGLTexture | null,
 ) {
 	for (const name in uniforms) {
 		const setter = shade.uniformSetters[name]
@@ -215,7 +215,7 @@ function renderLayer(
 	targets: RenderTarget[],
 	uniforms: Uniforms | undefined,
 	resultSketch: Sketch,
-	directRender: boolean
+	directRender: boolean,
 ) {
 	const source = targets[0]
 	const target = targets[1]
@@ -251,7 +251,7 @@ function renderLayer(
 				gl,
 				sketch,
 				(layer.looping && layer.texture()) || source.textures[0],
-				uniforms
+				uniforms,
 			)
 		}
 	} else {
@@ -283,7 +283,7 @@ function composeLayers(
 	gl: GL,
 	layers: Layer[],
 	targets: RenderTarget[],
-	result: Sketch
+	result: Sketch,
 ) {
 	const last = layers.length - 1
 

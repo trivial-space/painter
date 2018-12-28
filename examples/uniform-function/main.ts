@@ -1,5 +1,5 @@
 import { mat4 } from 'gl-matrix'
-import { adjustHue, hslToRGB } from 'tvs-libs/dist/lib/graphics/colors'
+import { adjustHue, hslToRGB } from 'tvs-libs/dist/graphics/colors'
 import { makeClear } from '../../lib/utils/context'
 import { plane } from '../../lib/utils/geometry/plane'
 import { gl, painter } from '../painter'
@@ -19,15 +19,15 @@ const form = painter.createForm().update(plane(2, 2))
 
 const shade = painter.createShade().update({
 	vert: planeVert,
-	frag: planeFrag
+	frag: planeFrag,
 })
 
 const sketch = painter.createSketch().update({
 	form,
 	shade,
 	uniforms: {
-		transform: () => mat4.rotateY(planMat, planMat, rotation)
-	}
+		transform: () => mat4.rotateY(planMat, planMat, rotation),
+	},
 })
 
 const planeLayer = painter.createDrawingLayer().update({
@@ -37,12 +37,12 @@ const planeLayer = painter.createDrawingLayer().update({
 			colorHSL.h = adjustHue(colorHSL.h + 0.001)
 			return hslToRGB(colorHSL)
 		},
-		projection
+		projection,
 	},
 	drawSettings: {
 		clearColor: [0.0, 1.0, 0.0, 1.0],
-		clearBits: makeClear(gl, 'color', 'depth')
-	}
+		clearBits: makeClear(gl, 'color', 'depth'),
+	},
 })
 
 // ===== initialize animation =====
