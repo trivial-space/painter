@@ -1,6 +1,7 @@
 import { Form } from './form'
 import { Shade } from './shade'
 import { Sketch } from './sketch'
+import { Layer } from './layer'
 
 export type GL = WebGLRenderingContext
 export type Color = [number, number, number, number]
@@ -139,7 +140,7 @@ export type Wrap = 'CLAMP_TO_EDGE' | 'REPEAT' | 'MIRRORED_REPEAT'
 
 export type Cull = 'FRONT' | 'BACK' | 'FRONT_AND_BACK'
 
-export type Asset =
+export type Texture =
 	| ImageData
 	| HTMLCanvasElement
 	| HTMLImageElement
@@ -154,10 +155,9 @@ export interface TextureData {
 	magFilter?: MagFilter
 }
 
-export interface Layer {}
-
 export interface FrameData extends TextureData {
 	layers?: Layer[]
+	texture?: Texture // Static asset
 	width?: number // for own RenderTarget
 	height?: number // for own RenderTarget
 	bufferStructure?: BufferType[]
@@ -165,11 +165,7 @@ export interface FrameData extends TextureData {
 	_targetCount?: number
 }
 
-export interface StaticLayerData extends TextureData {
-	asset?: Asset // AssetLayer specific
-}
-
-export interface DrawingLayerData {
+export interface LayerData {
 	drawSettings?: DrawSettings
 	sketches?: Sketch[]
 	uniforms?: Uniforms | Uniforms[] // ShaderLayer specific
