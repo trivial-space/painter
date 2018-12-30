@@ -73,13 +73,6 @@ export interface FormData {
 	elements?: FormBufferStore
 }
 
-export interface AttribContext {
-	buffer: WebGLBuffer | null
-	stride?: number
-	offset?: number
-	normalize?: boolean
-}
-
 // Shade
 
 export interface ShadeData {
@@ -90,6 +83,13 @@ export interface ShadeData {
 export interface UniformSetter {
 	location: WebGLUniformLocation
 	setter: (val: any) => void
+}
+
+export interface AttribContext {
+	buffer: WebGLBuffer | null
+	stride?: number
+	offset?: number
+	normalize?: boolean
 }
 
 export interface AttribSetter {
@@ -162,7 +162,6 @@ export interface FrameData extends TextureData {
 	height?: number // for own RenderTarget
 	bufferStructure?: BufferType[]
 	selfReferencing?: boolean
-	_targetCount?: number
 }
 
 export interface LayerData {
@@ -171,3 +170,5 @@ export interface LayerData {
 	uniforms?: Uniforms | Uniforms[] // ShaderLayer specific
 	frag?: string
 }
+
+export type RenderSources = Array<WebGLTexture | null>

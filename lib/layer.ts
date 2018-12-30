@@ -4,38 +4,38 @@ import { Sketch } from './sketch'
 let layerCount = 1
 
 export class Layer {
-	data: LayerData = {}
-	uniforms?: Uniforms
-	sketches?: Sketch[]
+	_data: LayerData = {}
+	_uniforms: Uniforms[] = []
+	_sketches: Sketch[] = []
 
 	constructor(public id = 'DrawingLayer' + layerCount++) {}
 
 	update(data: LayerData) {
 		if (data.sketches) {
-			this.sketches = data.sketches
+			this._sketches = data.sketches
 		}
 
 		if (data.frag) {
-			const sketch = this.sketches && this.sketches[0]
+			const sketch = this._sketches && this._sketches[0]
 			if (sketch) {
-				sketch.shade.update({ frag: data.frag })
+				sketch._shade.update({ frag: data.frag })
 			}
 		}
 
 		if (data.uniforms) {
-			this.uniforms = data.uniforms
+			this._uniforms = Array.isArray(data.uniforms)
+				? data.uniforms
+				: [data.uniforms]
 		}
 
-		Object.assign(this.data, data)
+		Object.assign(this._data, data)
 
 		return this
 	}
 
 	destroy() {
-		if (this.sketches) {
-			for (const sketch of this.sketches) {
-				sketch.destroy()
-			}
+		for (const sketch of this._sketches) {
+			sketch.destroy()
 		}
 	}
 }

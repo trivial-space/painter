@@ -4,13 +4,15 @@ import { createAttributeSetters, createUniformSetters } from './render-utils'
 let shadeCounter = 1
 
 export class Shade {
-	program!: WebGLProgram | null
-	vert!: WebGLShader | null
-	frag!: WebGLShader | null
 	vertSource?: string
 	fragSource?: string
-	uniformSetters!: { [id: string]: UniformSetter }
-	attributeSetters!: { [id: string]: AttribSetter }
+
+	_program!: WebGLProgram | null
+	_vert!: WebGLShader | null
+	_frag!: WebGLShader | null
+
+	_uniformSetters!: { [id: string]: UniformSetter }
+	_attributeSetters!: { [id: string]: AttribSetter }
 
 	constructor(private gl: GL, public id = 'Shade' + shadeCounter++) {}
 
@@ -39,15 +41,12 @@ export class Shade {
 		const frag = gl.createShader(gl.FRAGMENT_SHADER)
 		const vert = gl.createShader(gl.VERTEX_SHADER)
 
-		// if (!(program && frag && vert)) {
-		// 	throw TypeError('Could not initialize Shade')
-		// }
-
-		this.program = program
-		this.frag = frag
-		this.vert = vert
-
 		if (!(program && vert && frag)) return
+
+		this._program = program
+		this._frag = frag
+		this._vert = vert
+
 		gl.attachShader(program, vert)
 		gl.attachShader(program, frag)
 
@@ -79,8 +78,8 @@ export class Shade {
 			console.error('Error in program linking:', lastError)
 		}
 
-		this.uniformSetters = createUniformSetters(gl, program)
-		this.attributeSetters = createAttributeSetters(gl, program)
+		this._uniformSetters = createUniformSetters(gl, program)
+		this._attributeSetters = createAttributeSetters(gl, program)
 
 		this.fragSource = fragSource
 		this.vertSource = vertSource
@@ -89,9 +88,9 @@ export class Shade {
 	}
 
 	destroy() {
-		this.gl.deleteProgram(this.program)
-		this.gl.deleteShader(this.frag)
-		this.gl.deleteShader(this.vert)
+		this.gl.deleteProgram(this._program)
+		this.gl.deleteShader(this._frag)
+		this.gl.deleteShader(this._vert)
 	}
 }
 
