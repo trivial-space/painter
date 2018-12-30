@@ -8,13 +8,13 @@ import geoVert from './geo.vert'
 import mainFrag from './main.frag'
 
 painter.updateDrawSettings({
-	depthFunc: gl.LEQUAL,
-	blendFunc: [gl.ONE, gl.ONE]
+	// depthFunc: gl.LEQUAL,
+	blendFunc: [gl.ONE, gl.ONE],
 })
 
 const geoShade = painter.createShade().update({
 	vert: geoVert,
-	frag: geoFrag
+	frag: geoFrag,
 })
 
 const cubeStackgl = createCube(1)
@@ -29,7 +29,7 @@ mat4.perspective(
 	Math.PI / 2,
 	gl.canvas.width / gl.canvas.height,
 	0.1,
-	10.0
+	10.0,
 )
 
 const viewMatrix = mat4.create()
@@ -38,7 +38,7 @@ mat4.lookAt(
 	viewMatrix,
 	eyePosition,
 	vec3.fromValues(0, 0, 0),
-	vec3.fromValues(0, 1, 0)
+	vec3.fromValues(0, 1, 0),
 )
 
 const viewProjMatrix = mat4.create()
@@ -56,73 +56,76 @@ mat4.rotateZ(box2, box2, Math.PI / 3)
 const boxes = [
 	{
 		uModelMatrix: box1,
-		uMVP: mat4.create()
+		uMVP: mat4.create(),
 	},
 	{
 		uModelMatrix: box2,
-		uMVP: mat4.create()
-	}
+		uMVP: mat4.create(),
+	},
 ]
 
 const geoSketch = painter.createSketch().update({
 	form: geoForm,
 	shade: geoShade,
-	uniforms: boxes
+	uniforms: boxes,
 })
 
-const geoLayer = painter.createDrawingLayer().update({
-	buffered: true,
-	textureConfig: {
-		count: 3,
-		type: gl.FLOAT
-	},
+const geoLayer = painter.createLayer().update({
 	sketches: [geoSketch],
 	drawSettings: {
-		clearBits: makeClear(gl, 'color', 'depth')
+		enable: [gl.DEPTH_TEST],
+		clearBits: makeClear(gl, 'color', 'depth'),
 	},
-	wrap: 'CLAMP_TO_EDGE',
+})
+
+const geo = painter.createFrame().update({
+	bufferStructure: ['FLOAT', 'FLOAT', 'FLOAT'],
+	layers: [geoLayer],
 	minFilter: 'NEAREST',
-	magFilter: 'NEAREST'
+	magFilter: 'NEAREST',
 })
 
 const lights = [
 	{
 		uLightPosition: vec3.fromValues(0, 1, 0.5),
-		uLightColor: vec3.fromValues(0.8, 0.0, 0.0)
+		uLightColor: vec3.fromValues(0.8, 0.0, 0.0),
 	},
 	{
 		uLightPosition: vec3.fromValues(1, 1, 0.5),
-		uLightColor: vec3.fromValues(0.0, 0.0, 0.8)
+		uLightColor: vec3.fromValues(0.0, 0.0, 0.8),
 	},
 	{
 		uLightPosition: vec3.fromValues(1, 0, 0.5),
-		uLightColor: vec3.fromValues(0.0, 0.8, 0.0)
+		uLightColor: vec3.fromValues(0.0, 0.8, 0.0),
 	},
 	{
 		uLightPosition: vec3.fromValues(0.5, 0, 1),
-		uLightColor: vec3.fromValues(0.0, 0.8, 0.8)
-	}
+		uLightColor: vec3.fromValues(0.0, 0.8, 0.8),
+	},
 ]
 
-const lightLayer = painter.createEffectLayer().update({
+const lightLayer = painter.createEffect().update({
 	frag: mainFrag,
 	uniforms: {
 		uEyePosition: eyePosition,
-		uPositionBuffer: geoLayer.texture(0),
-		uNormalBuffer: geoLayer.texture(1),
-		uUVBuffer: geoLayer.texture(2)
+		uPositionBuffer: geo.image(0),
+		uNormalBuffer: geo.image(1),
+		uUVBuffer: geo.image(2),
 	},
 	drawSettings: {
-		disable: [gl.DEPTH_TEST],
 		enable: [gl.BLEND],
-		clearBits: makeClear(gl, 'color')
-	}
+		clearBits: makeClear(gl, 'color'),
+	},
 })
 
 // Draw each light separately and blend results
-if (lightLayer.sketches) {
-	lightLayer.sketches[0].uniforms = lights
-}
+lightLayer.sketches[0].update({
+	uniforms: lights,
+})
+
+const render = painter.createFrame().update({
+	layers: [lightLayer],
+})
 
 const rotationX = 0.01
 const rotationY = 0.02
@@ -134,10 +137,12 @@ function animate() {
 		mat4.multiply(box.uMVP, viewProjMatrix, box.uModelMatrix)
 	}
 
-	painter.compose(
-		geoLayer,
-		lightLayer
-	)
+	painter
+		.compose(
+			geo,
+			render,
+		)
+		.display(render)
 
 	requestAnimationFrame(animate)
 }

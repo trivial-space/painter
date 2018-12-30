@@ -6,9 +6,6 @@ import effectFrag from './effect.frag'
 import planeFrag from './plane-material.frag'
 import planeVert from './plane-material.vert'
 
-painter.updateDrawSettings()
-painter.resize({ multiplier: window.devicePixelRatio })
-
 const planMat1 = mat4.fromTranslation(mat4.create(), [0, 0, -3])
 const planMat2 = mat4.fromTranslation(mat4.create(), [0, 0, -3])
 const rotation = 0.01
@@ -18,59 +15,59 @@ mat4.rotateY(planMat2, planMat2, Math.PI / 2)
 
 // ===== Setup Render Context =====
 
-const texture = painter.createStaticLayer().update({
-	minFilter: 'LINEAR',
-	magFilter: 'LINEAR'
-})
+const texture = painter.createFrame()
 
-const effect = painter.createEffectLayer().update({
+const effect = painter.createEffect().update({
 	frag: effectFrag,
 	uniforms: {
-		source: null
-	}
+		source: '0',
+	},
 })
 
 const form = painter.createForm().update(plane(2, 2))
 
 const shade = painter.createShade().update({
 	vert: planeVert,
-	frag: planeFrag
+	frag: planeFrag,
 })
-
-console.log(texture)
 
 const plane1 = painter.createSketch().update({
 	form,
 	shade,
 	uniforms: {
-		transform: planMat1
+		transform: planMat1,
 	},
 	drawSettings: {
-		enable: [gl.CULL_FACE]
-	}
+		enable: [gl.CULL_FACE],
+	},
 })
 
 const plane2 = painter.createSketch().update({
 	form,
 	shade,
 	uniforms: {
-		transform: planMat2
+		transform: planMat2,
 	},
 	drawSettings: {
-		enable: [gl.BLEND]
-	}
+		enable: [gl.BLEND],
+	},
 })
 
-const planeLayer = painter.createDrawingLayer().update({
+const planeLayer = painter.createLayer().update({
 	sketches: [plane1, plane2],
 	uniforms: {
 		projection,
-		texture: texture.texture()
+		texture: () => texture.image(),
 	},
 	drawSettings: {
 		clearColor: [0.0, 1.0, 0.0, 1.0],
-		clearBits: makeClear(gl, 'color', 'depth')
-	}
+		clearBits: makeClear(gl, 'color', 'depth'),
+		enable: [gl.DEPTH_TEST],
+	},
+})
+
+const frame = painter.createFrame().update({
+	layers: [planeLayer, effect],
 })
 
 // ===== initialize animation =====
@@ -78,18 +75,17 @@ const planeLayer = painter.createDrawingLayer().update({
 function animate() {
 	mat4.rotateY(planMat1, planMat1, rotation)
 	mat4.rotateY(planMat2, planMat2, rotation)
-	// painter.compose(texture)
-	painter.compose(
-		planeLayer,
-		effect
-	)
+	// painter.display(image)
+	painter.compose(frame).display(frame)
 	requestAnimationFrame(animate)
 }
 
 const img = new Image()
 img.onload = function() {
 	texture.update({
-		asset: img
+		asset: img,
+		// minFilter: 'LINEAR',
+		// magFilter: 'LINEAR',
 	})
 	animate()
 }

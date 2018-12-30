@@ -10,7 +10,7 @@ export function getContext(
 	if (gl == null) {
 		throw Error('Webgl context cannot be initialized')
 	}
-	return gl
+	return gl as WebGLRenderingContext
 }
 
 export function makeClear(gl: GL, ...clearArray: string[]): number {
@@ -20,8 +20,10 @@ export function makeClear(gl: GL, ...clearArray: string[]): number {
 	)
 }
 
-export function setBlendFunc(gl: GL, blendOpts: string[]) {
-	gl.blendFunc.apply(gl, blendOpts.map(opt => (gl as any)[opt.toUpperCase()]))
+export function setBlendFunc(gl: GL, blendOpts: [string, string]) {
+	gl.blendFunc.apply(gl, blendOpts.map(
+		opt => (gl as any)[opt.toUpperCase()],
+	) as [number, number])
 }
 
 /**

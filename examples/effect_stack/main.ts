@@ -1,14 +1,12 @@
-import { Painter } from '../../lib/painter'
 import { painter } from '../painter'
 import shaderCode from './shader.glsl'
-
-Painter.debug = true
 
 painter.resize({ multiplier: window.devicePixelRatio })
 
 // effect
 
 let strength = 10
+let size = 256
 
 const passes: any[] = []
 while (strength >= 1) {
@@ -16,27 +14,29 @@ while (strength >= 1) {
 	passes.push({
 		direction: 0,
 		strength: strength,
-		source: null,
-		size: [256, 256]
+		source: '0',
+		size: [size, size],
 	})
 	passes.push({
 		direction: 1,
 		strength: strength,
-		source: null,
-		size: [256, 256]
+		source: '0',
+		size: [size, size],
 	})
 	strength /= 2
 }
 
-const layer = painter.createEffectLayer().update({
-	buffered: true,
-	doubleBuffered: true,
-	width: 256,
-	height: 256,
-	minFilter: 'LINEAR',
-	magFilter: 'LINEAR',
+const effect = painter.createEffect().update({
 	frag: shaderCode,
-	uniforms: passes
+	uniforms: passes,
+})
+
+const texture = painter.createFrame().update({
+	width: size,
+	height: size,
+	layers: effect,
+	minFilter: 'NEAREST',
+	magFilter: 'NEAREST',
 })
 
 // scene
@@ -44,14 +44,14 @@ const layer = painter.createEffectLayer().update({
 const form = painter.createForm().update({
 	attribs: {
 		position: {
-			buffer: new Float32Array([-0.7, 0.7, -0.5, -0.4, 0.6, 0.5, 0.5, -0.5])
+			buffer: new Float32Array([-0.9, 0.9, -0.7, -0.6, 0.8, 0.7, 0.7, -0.7]),
 		},
 		uv: {
-			buffer: new Float32Array([0, 1, 0, 0, 1, 1, 1, 0])
-		}
+			buffer: new Float32Array([0, 1, 0, 0, 1, 1, 1, 0]),
+		},
 	},
 	drawType: 'TRIANGLE_STRIP',
-	itemCount: 4
+	itemCount: 4,
 })
 
 const shade = painter.createShade().update({
@@ -70,38 +70,37 @@ const shade = painter.createShade().update({
 		void main() {
 			gl_FragColor = texture2D(tex, vUv);
 		}
-	`
+	`,
 })
 
-const scene = painter.createDrawingLayer().update({
-	sketches: [
-		painter.createSketch().update({
-			form,
-			shade,
-			uniforms: { tex: () => layer.texture() }
-		})
-	],
+const scene = painter.createLayer().update({
+	sketches: painter.createSketch().update({
+		form,
+		shade,
+		uniforms: { tex: () => texture.image() },
+	}),
 	drawSettings: {
 		clearColor: [1, 0.7, 0.8, 1],
-		clearBits: painter.gl.COLOR_BUFFER_BIT
-	}
+		clearBits: painter.gl.COLOR_BUFFER_BIT,
+	},
 })
 
-const texture = painter.createStaticLayer().update({
-	minFilter: 'LINEAR',
-	magFilter: 'LINEAR'
-})
+const main = painter.createFrame().update({ layers: scene })
 
 const img = new Image()
+
 img.onload = function() {
 	texture.update({
-		asset: img
+		asset: img,
+		minFilter: 'LINEAR',
+		magFilter: 'LINEAR',
 	})
-	painter.compose(
-		texture,
-		layer,
-		scene
-	)
+	painter
+		.compose(
+			texture,
+			main,
+		)
+		.display(main)
 }
 
 img.src = '../hepatica_256.png'

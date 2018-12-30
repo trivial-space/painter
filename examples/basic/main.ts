@@ -1,19 +1,18 @@
 import { gl, painter } from '../painter'
 
-// painter.resize({ multiplier: window.devicePixelRatio })
-painter.resize()
+painter.resize({ multiplier: window.devicePixelRatio })
 
 const plane = painter.createForm().update({
 	attribs: {
 		position: {
-			buffer: new Float32Array([-0.7, 0.7, -0.5, -0.4, 0.6, 0.5, 0.5, -0.5])
+			buffer: new Float32Array([-0.7, 0.7, -0.5, -0.4, 0.6, 0.5, 0.5, -0.5]),
 		},
 		uv: {
-			buffer: new Float32Array([0, 1, 0, 0, 1, 1, 1, 0])
-		}
+			buffer: new Float32Array([0, 1, 0, 0, 1, 1, 1, 0]),
+		},
 	},
 	drawType: 'TRIANGLE_STRIP',
-	itemCount: 4
+	itemCount: 4,
 })
 
 const red = painter.createShade().update({
@@ -27,21 +26,20 @@ const red = painter.createShade().update({
 		void main() {
 			gl_FragColor = vec4(1.0, 0.0, 0.0, 1.0);
 		}
-	`
+	`,
 })
 
-const textureLayer = painter.createDrawingLayer().update({
-	buffered: true,
+const textureLayer = painter.createLayer().update({
 	sketches: [
 		painter.createSketch().update({
 			form: plane,
-			shade: red
-		})
+			shade: red,
+		}),
 	],
 	drawSettings: {
 		clearColor: [1.0, 0.0, 1.0, 1.0],
-		clearBits: gl.COLOR_BUFFER_BIT
-	}
+		clearBits: gl.COLOR_BUFFER_BIT,
+	},
 })
 
 const paintTexture = painter.createShade().update({
@@ -62,26 +60,26 @@ const paintTexture = painter.createShade().update({
 			vec4 new_color = texture2D(fufu, coords);
 			gl_FragColor = vec4(new_color.g + 0.2, new_color.r + 0.2, new_color.b + 0.2, 1.0);
 		}
-	`
+	`,
 })
 
-const planeLayer = painter.createDrawingLayer().update({
+const planeLayer = painter.createLayer().update({
 	sketches: [
 		painter.createSketch().update({
 			form: plane,
 			shade: paintTexture,
 			uniforms: {
-				fufu: () => textureLayer.texture()
-			}
-		})
+				fufu: '0',
+			},
+		}),
 	],
 	drawSettings: {
 		clearColor: [0.0, 0.0, 0.0, 1.0],
-		clearBits: gl.COLOR_BUFFER_BIT
-	}
+		clearBits: gl.COLOR_BUFFER_BIT,
+	},
 })
 
-const effect = painter.createEffectLayer().update({
+const effect = painter.createEffect().update({
 	frag: `precision mediump float;
 		uniform sampler2D source;
 		varying vec2 coords;
@@ -91,16 +89,12 @@ const effect = painter.createEffectLayer().update({
 		}
 	`,
 	uniforms: {
-		source: null
-	}
+		source: '0',
+	},
 })
 
-painter.compose(
-	textureLayer,
-	planeLayer,
-	effect
-)
+const scene = painter.createFrame().update({
+	layers: [textureLayer, planeLayer, effect],
+})
 
-if (module.hot) {
-	module.hot.accept()
-}
+painter.compose(scene).display(scene)

@@ -19,12 +19,12 @@ import { resizeCanvas } from './utils/context'
 import { Frame } from './frame'
 
 export class Painter {
-	static debug = false
 	_renderQuad: Form
 	_staticSketch: Sketch
 
 	constructor(public gl: GL, { multiplier = 1 } = {}) {
 		this.resize({ multiplier })
+		applyDrawSettings(this.gl, getDefaultLayerSettings(this.gl))
 		this._renderQuad = this.createForm().update(defaultForms.renderQuad)
 		this._staticSketch = this.createFlatSketch()
 	}
@@ -41,7 +41,6 @@ export class Painter {
 
 	updateDrawSettings(drawSettings?: DrawSettings) {
 		applyDrawSettings(this.gl, {
-			...getDefaultLayerSettings(this.gl),
 			...drawSettings,
 		})
 		return this
@@ -73,11 +72,14 @@ export class Painter {
 	createEffect(id?: string) {
 		const l = this.createLayer(id)
 		return l.update({
-			sketches: [this.createFlatSketch(l.id + '_effectSketch')],
+			sketches: this.createFlatSketch(l.id + '_effectSketch'),
 		})
 	}
 	draw(sketch: Sketch, globalUniforms?: Uniforms) {
-		draw(this.gl, sketch, globalUniforms)
+		const gl = this.gl
+		gl.bindFramebuffer(gl.FRAMEBUFFER, null)
+		gl.viewport(0, 0, gl.drawingBufferWidth, gl.drawingBufferHeight)
+		draw(gl, sketch, globalUniforms)
 		return this
 	}
 	compose(...frames: Frame[]) {
@@ -87,9 +89,8 @@ export class Painter {
 		}
 		return this
 	}
-	display(frame: Frame) {
-		draw(this.gl, this._staticSketch, { source: frame.image() })
-		return this
+	display(frame: Frame, idx = 0) {
+		return this.draw(this._staticSketch, { source: frame.image(idx) })
 	}
 }
 
@@ -121,12 +122,8 @@ function draw(
 		applyDrawSettings(gl, drawSettings)
 	}
 
-	if (Array.isArray(uniforms)) {
-		for (const instanceUniforms of uniforms) {
-			drawInstance(gl, sketch, instanceUniforms, sources)
-		}
-	} else {
-		drawInstance(gl, sketch, uniforms, sources)
+	for (let i = 0; i < (uniforms.length || 1); i++) {
+		drawInstance(gl, sketch, uniforms[i], sources)
 	}
 
 	if (drawSettings) {
@@ -178,8 +175,8 @@ function shadeUniforms(
 			if (typeof value === 'function') {
 				value = value()
 			}
-			if (typeof value === 'number' && sources) {
-				setter.setter(sources[value])
+			if (typeof value === 'string' && sources) {
+				setter.setter(sources[value as any])
 			} else {
 				setter.setter(value)
 			}
@@ -196,48 +193,40 @@ function renderLayer(
 ) {
 	if (target) {
 		gl.bindFramebuffer(gl.FRAMEBUFFER, target.frameBuffer)
+		gl.viewport(0, 0, target.width, target.height)
+	} else {
+		gl.bindFramebuffer(gl.FRAMEBUFFER, null)
+		gl.viewport(0, 0, gl.drawingBufferWidth, gl.drawingBufferHeight)
 	}
-
-	gl.viewport(0, 0, gl.drawingBufferWidth, gl.drawingBufferHeight)
 
 	if (layer._data.drawSettings) {
 		applyDrawSettings(gl, layer._data.drawSettings)
 	}
 
-	for (const sketch of layer._sketches) {
+	for (const sketch of layer.sketches) {
 		draw(gl, sketch, uniforms, source)
-	}
-
-	if (process.env.NODE_ENV !== 'production' && Painter.debug) {
-		console.log(`PAINTER: Render success!`)
 	}
 
 	if (layer._data.drawSettings) {
 		revertDrawSettings(gl, layer._data.drawSettings)
 	}
-
-	gl.bindFramebuffer(gl.FRAMEBUFFER, null)
 }
 
 function renderFrame(gl: GL, frame: Frame) {
-	const targetLength = frame._targets.length
-	if (frame._layers.length > 0) {
-		for (let i = 0; i < frame._layers.length; i++) {
-			const layer = frame._layers[i]
-			const layerPasses = layer._uniforms.length || 1
+	for (let i = 0; i < frame._layers.length; i++) {
+		const layer = frame._layers[i]
+		const layerPasses = layer._uniforms.length || 1
 
-			for (let j = 0; j < layerPasses; j++) {
-				const target =
-					targetLength > 0 ? frame._targets[targetLength - 1] : undefined
-				const sources =
-					i + j === 0
-						? frame._textures
-						: frame._targets[1] && frame._targets[1].textures
+		for (let j = 0; j < layerPasses; j++) {
+			const target = frame._targets[0]
+			const sources =
+				i + j === 0
+					? frame._textures
+					: frame._targets[1] && frame._targets[1].textures
 
-				renderLayer(gl, layer, layer._uniforms[j], target, sources)
+			renderLayer(gl, layer, layer._uniforms[j], target, sources)
 
-				frame._swapTargets()
-			}
+			frame._swapTargets()
 		}
 	}
 }

@@ -30,7 +30,7 @@ const sketch = painter.createSketch().update({
 	},
 })
 
-const planeLayer = painter.createDrawingLayer().update({
+const planeLayer = painter.createLayer().update({
 	sketches: [sketch],
 	uniforms: {
 		color: () => {
@@ -45,10 +45,14 @@ const planeLayer = painter.createDrawingLayer().update({
 	},
 })
 
+const main = painter.createFrame().update({
+	layers: planeLayer,
+})
+
 // ===== initialize animation =====
 
 function animate() {
-	painter.compose(planeLayer)
+	painter.compose(main).display(main)
 	requestAnimationFrame(animate)
 }
 

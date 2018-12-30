@@ -4,19 +4,22 @@ import { Sketch } from './sketch'
 let layerCount = 1
 
 export class Layer {
+	sketches: Sketch[] = []
+
 	_data: LayerData = {}
 	_uniforms: Uniforms[] = []
-	_sketches: Sketch[] = []
 
 	constructor(public id = 'DrawingLayer' + layerCount++) {}
 
 	update(data: LayerData) {
 		if (data.sketches) {
-			this._sketches = data.sketches
+			this.sketches = Array.isArray(data.sketches)
+				? data.sketches
+				: [data.sketches]
 		}
 
 		if (data.frag) {
-			const sketch = this._sketches && this._sketches[0]
+			const sketch = this.sketches && this.sketches[0]
 			if (sketch) {
 				sketch._shade.update({ frag: data.frag })
 			}
@@ -34,7 +37,7 @@ export class Layer {
 	}
 
 	destroy() {
-		for (const sketch of this._sketches) {
+		for (const sketch of this.sketches) {
 			sketch.destroy()
 		}
 	}

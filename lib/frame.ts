@@ -1,7 +1,6 @@
 import { equalArray } from 'tvs-libs/dist/utils/predicates'
 import { times } from 'tvs-libs/dist/utils/sequence'
 import { defaultTextureSettings } from './asset-lib'
-import { Painter } from './painter'
 import { FrameData, GL, RenderTarget } from './painter-types'
 import {
 	destroyRenderTarget,
@@ -24,21 +23,20 @@ export class Frame {
 	constructor(private _gl: GL, public id = 'Frame' + frameCount++) {}
 
 	image(i = 0) {
-		if (process.env.NODE_ENV !== 'production' && Painter.debug) {
-			if (this._targets) {
-				console.log(`PAINTER: Using buffer texture ${this._targets[0].id}`)
-			}
-		}
-
 		return (
-			(this._targets.length && this._targets[0].textures[i]) ||
+			(this._targets.length &&
+				this._targets[this._targets.length - 1].textures[i]) ||
 			this._textures[i]
 		)
 	}
 
 	update(data: FrameData) {
 		const gl = this._gl
-		const layers = data.layers || this._layers
+		const layers = Array.isArray(data.layers)
+			? data.layers
+			: data.layers
+			? [data.layers]
+			: this._layers
 		const selfReferencing = data.selfReferencing || this._data.selfReferencing
 		const layerCount = layers.reduce(
 			(count, layer) => count + (layer._uniforms.length || 1),
@@ -92,7 +90,7 @@ export class Frame {
 			})
 		}
 
-		if (data.texture) {
+		if (data.asset) {
 			// Hardcode to one static texture for now
 			if (this._textures[0] == null) {
 				this._textures[0] = gl.createTexture()
@@ -110,7 +108,7 @@ export class Frame {
 				data.magFilter = defaultTextureSettings.magFilter
 			}
 
-			setTextureParams(gl, data, this._data)
+			setTextureParams(gl, data)
 
 			gl.texImage2D(
 				gl.TEXTURE_2D,
@@ -118,7 +116,7 @@ export class Frame {
 				gl.RGBA,
 				gl.RGBA,
 				gl.UNSIGNED_BYTE,
-				data.texture,
+				data.asset,
 			)
 
 			if (data.minFilter && data.minFilter.indexOf('MIPMAP') > 0) {

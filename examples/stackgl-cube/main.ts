@@ -41,7 +41,7 @@ const shade = painter.createShade().update({
 		void main() {
 			gl_FragColor = vec4(abs(vNormal), 1.0);
 		}
-	`
+	`,
 })
 
 const cubeSketch = painter.createSketch().update({
@@ -49,11 +49,11 @@ const cubeSketch = painter.createSketch().update({
 	form: cube,
 	uniforms: {
 		camera: projection,
-		transform: cubeMat
+		transform: cubeMat,
 	},
 	drawSettings: {
-		clearBits: makeClear(painter.gl, 'color', 'depth')
-	}
+		clearBits: makeClear(painter.gl, 'color', 'depth'),
+	},
 })
 
 const sphereSketch = painter.createSketch().update({
@@ -61,12 +61,13 @@ const sphereSketch = painter.createSketch().update({
 	form: sphere,
 	uniforms: {
 		camera: projection,
-		transform: sphereMat
-	}
+		transform: sphereMat,
+	},
 })
 
 painter.updateDrawSettings({
-	clearColor: [1.0, 0.5, 0.8, 1.0]
+	clearColor: [1.0, 0.5, 0.8, 1.0],
+	enable: [painter.gl.DEPTH_TEST],
 })
 
 function animate() {

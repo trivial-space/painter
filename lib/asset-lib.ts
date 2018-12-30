@@ -16,7 +16,6 @@ export const defaultTextureSettings: Readonly<TextureData> = {
 export function getDefaultLayerSettings(gl: GL): DrawSettings {
 	return {
 		clearColor: [0.0, 0.0, 0.0, 1.0],
-		enable: [gl.DEPTH_TEST],
 		blendFunc: [gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA],
 	}
 }

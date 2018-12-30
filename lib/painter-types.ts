@@ -140,7 +140,7 @@ export type Wrap = 'CLAMP_TO_EDGE' | 'REPEAT' | 'MIRRORED_REPEAT'
 
 export type Cull = 'FRONT' | 'BACK' | 'FRONT_AND_BACK'
 
-export type Texture =
+export type TextureAsset =
 	| ImageData
 	| HTMLCanvasElement
 	| HTMLImageElement
@@ -156,8 +156,8 @@ export interface TextureData {
 }
 
 export interface FrameData extends TextureData {
-	layers?: Layer[]
-	texture?: Texture // Static asset
+	layers?: Layer | Layer[]
+	asset?: TextureAsset // Static asset
 	width?: number // for own RenderTarget
 	height?: number // for own RenderTarget
 	bufferStructure?: BufferType[]
@@ -166,7 +166,7 @@ export interface FrameData extends TextureData {
 
 export interface LayerData {
 	drawSettings?: DrawSettings
-	sketches?: Sketch[]
+	sketches?: Sketch | Sketch[]
 	uniforms?: Uniforms | Uniforms[] // ShaderLayer specific
 	frag?: string
 }
