@@ -1,19 +1,18 @@
 import { Form } from './form';
-import { DrawingLayer, StaticLayer } from './layer';
-import { DrawSettings, GL, Layer, RenderTarget, Uniforms } from './painter-types';
+import { Layer } from './layer';
+import { DrawSettings, GL, Uniforms } from './painter-types';
 import { Shade } from './shade';
 import { Sketch } from './sketch';
+import { Frame } from './frame';
 export declare class Painter {
     gl: GL;
-    static debug: boolean;
-    targets: RenderTarget[];
-    renderQuad: Form;
-    result: Sketch;
-    constructor(gl: GL);
-    resize({ multiplier, forceUpdateTargets, keepCurrentSize, }?: {
+    _renderQuad: Form;
+    _staticSketch: Sketch;
+    constructor(gl: GL, { multiplier }?: {
         multiplier?: number | undefined;
-        forceUpdateTargets?: boolean | undefined;
-        keepCurrentSize?: boolean | undefined;
+    });
+    resize({ multiplier }?: {
+        multiplier?: number | undefined;
     }): this;
     destroy(): void;
     updateDrawSettings(drawSettings?: DrawSettings): this;
@@ -21,9 +20,10 @@ export declare class Painter {
     createShade(id?: string): Shade;
     createSketch(id?: string): Sketch;
     createFlatSketch(id?: string): Sketch;
-    createStaticLayer(id?: string): StaticLayer;
-    createDrawingLayer(id?: string): DrawingLayer;
-    createEffectLayer(id?: string): DrawingLayer;
+    createFrame(id?: string): Frame;
+    createLayer(id?: string): Layer;
+    createEffect(id?: string): Layer;
     draw(sketch: Sketch, globalUniforms?: Uniforms): this;
-    compose(...layers: Layer[]): this;
+    compose(...frames: Frame[]): this;
+    display(frame: Frame, idx?: number): this;
 }

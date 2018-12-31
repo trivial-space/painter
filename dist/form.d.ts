@@ -1,17 +1,17 @@
 import { AttribContext, FormData, GL } from './painter-types';
 export declare class Form {
-    private gl;
+    private _gl;
     id: string;
-    drawType: number;
-    itemCount: number;
-    attribs: {
+    _drawType: number;
+    _itemCount: number;
+    _attribs: {
         [id: string]: AttribContext;
     };
-    elements?: {
+    _elements?: {
         buffer: WebGLBuffer | null;
         glType: number | null;
     };
-    constructor(gl: GL, id?: string);
+    constructor(_gl: GL, id?: string);
     update(data: FormData): this;
     destroy(): void;
 }

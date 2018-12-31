@@ -21,14 +21,11 @@ export class Shade {
         const program = gl.createProgram();
         const frag = gl.createShader(gl.FRAGMENT_SHADER);
         const vert = gl.createShader(gl.VERTEX_SHADER);
-        // if (!(program && frag && vert)) {
-        // 	throw TypeError('Could not initialize Shade')
-        // }
-        this.program = program;
-        this.frag = frag;
-        this.vert = vert;
         if (!(program && vert && frag))
             return;
+        this._program = program;
+        this._frag = frag;
+        this._vert = vert;
         gl.attachShader(program, vert);
         gl.attachShader(program, frag);
         gl.shaderSource(vert, vertSource);
@@ -47,16 +44,16 @@ export class Shade {
             const lastError = gl.getProgramInfoLog(program);
             console.error('Error in program linking:', lastError);
         }
-        this.uniformSetters = createUniformSetters(gl, program);
-        this.attributeSetters = createAttributeSetters(gl, program);
+        this._uniformSetters = createUniformSetters(gl, program);
+        this._attributeSetters = createAttributeSetters(gl, program);
         this.fragSource = fragSource;
         this.vertSource = vertSource;
         return this;
     }
     destroy() {
-        this.gl.deleteProgram(this.program);
-        this.gl.deleteShader(this.frag);
-        this.gl.deleteShader(this.vert);
+        this.gl.deleteProgram(this._program);
+        this.gl.deleteShader(this._frag);
+        this.gl.deleteShader(this._vert);
     }
 }
 function addLineNumbers(src) {

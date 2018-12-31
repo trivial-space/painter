@@ -1,24 +1,11 @@
-import { GL, Layer, LayerData, RenderTarget, Uniforms } from './painter-types';
+import { LayerData, Uniforms } from './painter-types';
 import { Sketch } from './sketch';
-export declare class StaticLayer implements Layer {
-    private gl;
+export declare class Layer {
     id: string;
-    _texture: WebGLTexture | null;
-    data: LayerData;
-    constructor(gl: GL, id?: string);
-    texture(): WebGLTexture | null;
+    sketches: Sketch[];
+    _data: LayerData;
+    _uniforms: Uniforms[];
+    constructor(id?: string);
     update(data: LayerData): this;
-    destroy(): void;
-}
-export declare class DrawingLayer implements Layer {
-    private gl;
-    id: string;
-    data: LayerData;
-    targets?: RenderTarget[];
-    uniforms?: Uniforms;
-    sketches?: Sketch[];
-    constructor(gl: GL, id?: string);
-    texture(i?: number): WebGLTexture | null;
-    update(data?: LayerData): this;
     destroy(): void;
 }
