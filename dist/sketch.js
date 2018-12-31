@@ -9,10 +9,10 @@ export class Sketch {
             this._drawSettings = data.drawSettings;
         }
         if (data.form) {
-            this._form = data.form;
+            this.form = data.form;
         }
         if (data.shade) {
-            this._shade = data.shade;
+            this.shade = data.shade;
         }
         if (data.uniforms) {
             this._uniforms = Array.isArray(data.uniforms)
@@ -22,8 +22,10 @@ export class Sketch {
         return this;
     }
     destroy() {
-        this._form && this._form.destroy();
-        this._shade && this._shade.destroy();
+        this.form && this.form.destroy();
+        this.shade && this.shade.destroy();
+        this._drawSettings = undefined;
+        this._uniforms = [];
     }
 }
 //# sourceMappingURL=sketch.js.map

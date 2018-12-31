@@ -1,7 +1,7 @@
 import { Form } from './form'
+import { Layer } from './layer'
 import { Shade } from './shade'
 import { Sketch } from './sketch'
-import { Layer } from './layer'
 
 export type GL = WebGLRenderingContext
 export type Color = [number, number, number, number]

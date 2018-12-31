@@ -4,19 +4,19 @@ import {
 	getDefaultLayerSettings,
 } from './asset-lib'
 import { Form } from './form'
+import { Frame } from './frame'
 import { Layer } from './layer'
 import {
 	DrawSettings,
 	GL,
+	RenderSources,
 	RenderTarget,
 	Uniforms,
-	RenderSources,
 } from './painter-types'
 import { applyDrawSettings, revertDrawSettings } from './render-utils'
 import { Shade } from './shade'
 import { Sketch } from './sketch'
 import { resizeCanvas } from './utils/context'
-import { Frame } from './frame'
 
 export class Painter {
 	_renderQuad: Form
@@ -83,8 +83,7 @@ export class Painter {
 		return this
 	}
 	compose(...frames: Frame[]) {
-		for (let i = 0; i < frames.length; i++) {
-			const frame = frames[i]
+		for (const frame of frames) {
 			renderFrame(this.gl, frame)
 		}
 		return this
@@ -101,8 +100,8 @@ function draw(
 	sources?: RenderSources,
 ) {
 	const {
-		_shade: shade,
-		_form: form,
+		shade: shade,
+		form: form,
 		_drawSettings: drawSettings,
 		_uniforms: uniforms,
 	} = sketch
@@ -138,19 +137,19 @@ function drawInstance(
 	sources?: RenderSources,
 ) {
 	if (uniforms) {
-		shadeUniforms(sketch._shade, uniforms, sources)
+		shadeUniforms(sketch.shade, uniforms, sources)
 	}
 
-	if (sketch._form._elements && sketch._form._elements.glType != null) {
-		gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, sketch._form._elements.buffer)
+	if (sketch.form._elements && sketch.form._elements.glType != null) {
+		gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, sketch.form._elements.buffer)
 		gl.drawElements(
-			sketch._form._drawType,
-			sketch._form._itemCount,
-			sketch._form._elements.glType,
+			sketch.form._drawType,
+			sketch.form._itemCount,
+			sketch.form._elements.glType,
 			0,
 		)
 	} else {
-		gl.drawArrays(sketch._form._drawType, 0, sketch._form._itemCount)
+		gl.drawArrays(sketch.form._drawType, 0, sketch.form._itemCount)
 	}
 }
 
@@ -213,14 +212,14 @@ function renderLayer(
 }
 
 function renderFrame(gl: GL, frame: Frame) {
-	for (let i = 0; i < frame._layers.length; i++) {
-		const layer = frame._layers[i]
+	for (let i = 0; i < frame.layers.length; i++) {
+		const layer = frame.layers[i]
 		const layerPasses = layer._uniforms.length || 1
 
 		for (let j = 0; j < layerPasses; j++) {
 			const target = frame._targets[0]
 			const sources =
-				i + j === 0
+				i + j === 0 && frame._textures.length
 					? frame._textures
 					: frame._targets[1] && frame._targets[1].textures
 

@@ -1,21 +1,21 @@
 import { equalArray } from 'tvs-libs/dist/utils/predicates'
 import { times } from 'tvs-libs/dist/utils/sequence'
 import { defaultTextureSettings } from './asset-lib'
+import { Layer } from './layer'
 import { FrameData, GL, RenderTarget } from './painter-types'
 import {
 	destroyRenderTarget,
-	updateRenderTarget,
 	setTextureParams,
+	updateRenderTarget,
 } from './render-utils'
-import { Layer } from './layer'
 
 let frameCount = 1
 
 export class Frame {
 	width = 0
 	height = 0
+	layers: Layer[] = []
 
-	_layers: Layer[] = []
 	_data: FrameData = {}
 	_targets: RenderTarget[] = []
 	_textures: Array<WebGLTexture | null> = []
@@ -36,7 +36,7 @@ export class Frame {
 			? data.layers
 			: data.layers
 			? [data.layers]
-			: this._layers
+			: this.layers
 		const selfReferencing = data.selfReferencing || this._data.selfReferencing
 		const layerCount = layers.reduce(
 			(count, layer) => count + (layer._uniforms.length || 1),
@@ -127,7 +127,7 @@ export class Frame {
 		}
 
 		Object.assign(this._data, data)
-		this._layers = layers
+		this.layers = layers
 		this.width = width
 		this.height = height
 
@@ -140,10 +140,10 @@ export class Frame {
 			if (tex != null) this._gl.deleteTexture(tex)
 		})
 		this._textures = []
-		this._layers = []
+		this._data = {}
+		this.layers = []
 		this.width = 0
 		this.height = 0
-		this._data = {}
 	}
 
 	_destroyTargets() {

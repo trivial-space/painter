@@ -21,7 +21,7 @@ export class Layer {
 		if (data.frag) {
 			const sketch = this.sketches && this.sketches[0]
 			if (sketch) {
-				sketch._shade.update({ frag: data.frag })
+				sketch.shade.update({ frag: data.frag })
 			}
 		}
 

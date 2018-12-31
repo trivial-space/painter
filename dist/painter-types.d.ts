@@ -1,7 +1,7 @@
 import { Form } from './form';
+import { Layer } from './layer';
 import { Shade } from './shade';
 import { Sketch } from './sketch';
-import { Layer } from './layer';
 export declare type GL = WebGLRenderingContext;
 export declare type Color = [number, number, number, number];
 export declare type TypedArray = Uint8Array | Uint16Array | Uint32Array | Int8Array | Int16Array | Int32Array | Float32Array | Float64Array;

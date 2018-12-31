@@ -1,9 +1,9 @@
 import { Form } from './form';
+import { Frame } from './frame';
 import { Layer } from './layer';
 import { DrawSettings, GL, Uniforms } from './painter-types';
 import { Shade } from './shade';
 import { Sketch } from './sketch';
-import { Frame } from './frame';
 export declare class Painter {
     gl: GL;
     _renderQuad: Form;

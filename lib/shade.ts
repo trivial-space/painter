@@ -91,6 +91,10 @@ export class Shade {
 		this.gl.deleteProgram(this._program)
 		this.gl.deleteShader(this._frag)
 		this.gl.deleteShader(this._vert)
+		this.vertSource = undefined
+		this.fragSource = undefined
+		this._attributeSetters = {}
+		this._uniformSetters = {}
 	}
 }
 

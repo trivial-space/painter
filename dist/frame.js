@@ -1,7 +1,7 @@
 import { equalArray } from 'tvs-libs/dist/utils/predicates';
 import { times } from 'tvs-libs/dist/utils/sequence';
 import { defaultTextureSettings } from './asset-lib';
-import { destroyRenderTarget, updateRenderTarget, setTextureParams, } from './render-utils';
+import { destroyRenderTarget, setTextureParams, updateRenderTarget, } from './render-utils';
 let frameCount = 1;
 export class Frame {
     constructor(_gl, id = 'Frame' + frameCount++) {
@@ -9,7 +9,7 @@ export class Frame {
         this.id = id;
         this.width = 0;
         this.height = 0;
-        this._layers = [];
+        this.layers = [];
         this._data = {};
         this._targets = [];
         this._textures = [];
@@ -25,7 +25,7 @@ export class Frame {
             ? data.layers
             : data.layers
                 ? [data.layers]
-                : this._layers;
+                : this.layers;
         const selfReferencing = data.selfReferencing || this._data.selfReferencing;
         const layerCount = layers.reduce((count, layer) => count + (layer._uniforms.length || 1), 0);
         const targetCount = selfReferencing || layerCount > 1 ? 2 : layerCount;
@@ -87,7 +87,7 @@ export class Frame {
             gl.bindTexture(gl.TEXTURE_2D, null);
         }
         Object.assign(this._data, data);
-        this._layers = layers;
+        this.layers = layers;
         this.width = width;
         this.height = height;
         return this;
@@ -99,10 +99,10 @@ export class Frame {
                 this._gl.deleteTexture(tex);
         });
         this._textures = [];
-        this._layers = [];
+        this._data = {};
+        this.layers = [];
         this.width = 0;
         this.height = 0;
-        this._data = {};
     }
     _destroyTargets() {
         this._targets.forEach(t => destroyRenderTarget(this._gl, t));
