@@ -4,7 +4,9 @@ import { Layer } from './layer'
 import { Shade } from './shade'
 import { Sketch } from './sketch'
 
-export type GL = WebGL2RenderingContext
+export type GL1 = WebGLRenderingContext
+export type GL2 = WebGL2RenderingContext
+export type GL = GL1 | GL2
 
 export type ColorRG = [number, number]
 export type ColorRGB = [number, number, number]
@@ -193,3 +195,10 @@ export interface LayerData {
 }
 
 export type RenderSources = Array<WebGLTexture | null>
+
+// Painter
+
+export type PainterOptions = WebGLContextAttributes & {
+	sizeMultiplier?: number
+	useWebGL1?: boolean
+}

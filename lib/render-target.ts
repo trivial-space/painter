@@ -1,4 +1,5 @@
-import { TextureType, GL, RenderTargetData } from './painter-types'
+import { Painter } from './painter'
+import { RenderTargetData, TextureType } from './painter-types'
 import { setTextureParams } from './render-utils'
 
 let targetCount = 1
@@ -13,10 +14,10 @@ export class RenderTarget {
 
 	_data?: RenderTargetData = {}
 
-	constructor(private gl: GL, public id = 'Form' + targetCount++) {}
+	constructor(private _painter: Painter, public id = 'Form' + targetCount++) {}
 
 	update(data: RenderTargetData) {
-		const gl = this.gl
+		const gl = this._painter.gl
 		const width = data.width || this.width
 		const height = data.height || this.height
 		if (!width || !height) {
@@ -135,7 +136,7 @@ export class RenderTarget {
 	}
 
 	destroy() {
-		const gl = this.gl
+		const gl = this._painter.gl
 		gl.deleteFramebuffer(this.frameBuffer)
 		gl.deleteRenderbuffer(this.depthBuffer)
 		for (const texture of this.textures) {

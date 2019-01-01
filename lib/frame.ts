@@ -2,7 +2,8 @@ import { equalArray } from 'tvs-libs/dist/utils/predicates'
 import { times } from 'tvs-libs/dist/utils/sequence'
 import { defaultTextureSettings } from './asset-lib'
 import { Layer } from './layer'
-import { FrameData, GL } from './painter-types'
+import { Painter } from './painter'
+import { FrameData } from './painter-types'
 import { RenderTarget } from './render-target'
 import { setTextureParams } from './render-utils'
 
@@ -17,7 +18,7 @@ export class Frame {
 	_targets: RenderTarget[] = []
 	_textures: Array<WebGLTexture | null> = []
 
-	constructor(private _gl: GL, public id = 'Frame' + frameCount++) {}
+	constructor(private _painter: Painter, public id = 'Frame' + frameCount++) {}
 
 	image(i = 0) {
 		return (
@@ -28,7 +29,7 @@ export class Frame {
 	}
 
 	update(data: FrameData) {
-		const gl = this._gl
+		const gl = this._painter.gl
 		const layers = Array.isArray(data.layers)
 			? data.layers
 			: data.layers
@@ -53,7 +54,7 @@ export class Frame {
 
 		if (!this._targets.length && targetCount > 0) {
 			this._targets = times(
-				i => new RenderTarget(this._gl, this.id + '_target' + (i + 1)),
+				i => new RenderTarget(this._painter, this.id + '_target' + (i + 1)),
 				targetCount,
 			)
 
@@ -124,7 +125,7 @@ export class Frame {
 	destroy() {
 		this._destroyTargets()
 		this._textures.forEach(tex => {
-			if (tex != null) this._gl.deleteTexture(tex)
+			if (tex != null) this._painter.deleteTexture(tex)
 		})
 		this._textures = []
 		this._data = {}

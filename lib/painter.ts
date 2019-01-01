@@ -6,7 +6,14 @@ import {
 import { Form } from './form'
 import { Frame } from './frame'
 import { Layer } from './layer'
-import { DrawSettings, GL, RenderSources, Uniforms } from './painter-types'
+import {
+	DrawSettings,
+	GL,
+	GL2,
+	PainterOptions,
+	RenderSources,
+	Uniforms,
+} from './painter-types'
 import { RenderTarget } from './render-target'
 import { applyDrawSettings, revertDrawSettings } from './render-utils'
 import { Shade } from './shade'
@@ -14,18 +21,47 @@ import { Sketch } from './sketch'
 import { resizeCanvas } from './utils/context'
 
 export class Painter {
+	sizeMultiplier: number
+	gl: GL
+	isWebGL2: boolean = true
+	maxBufferSamples = 0
 	_renderQuad: Form
 	_staticSketch: Sketch
 
-	constructor(public gl: GL, { multiplier = 1 } = {}) {
-		this.resize({ multiplier })
-		applyDrawSettings(this.gl, getDefaultLayerSettings(this.gl))
+	constructor(public canvas: HTMLCanvasElement, opts: PainterOptions = {}) {
+		let gl: GL | null = null
+		if (!opts.useWebGL1) {
+			gl =
+				canvas.getContext('webgl2', opts) ||
+				canvas.getContext('experimental-webgl2', opts)
+		}
+		if (gl == null) {
+			this.isWebGL2 = false
+			gl =
+				canvas.getContext('webgl', opts) ||
+				canvas.getContext('experimental-webgl', opts)
+		}
+
+		if (gl == null) {
+			throw Error('Cannot initialize WebGL.')
+		}
+
+		this.gl = gl
+		this.sizeMultiplier = opts.sizeMultiplier || 1
+
+		if (this.isWebGL2) {
+			this.maxBufferSamples = gl.getParameter((gl as GL2).MAX_SAMPLES)
+		}
+
+		this.resize()
+		applyDrawSettings(gl, getDefaultLayerSettings(gl))
+
 		this._renderQuad = this.createForm().update(defaultForms.renderQuad)
 		this._staticSketch = this.createFlatSketch()
 	}
 
-	resize({ multiplier = 1 } = {}) {
-		resizeCanvas(this.gl.canvas, multiplier)
+	resize() {
+		resizeCanvas(this.gl.canvas, this.sizeMultiplier)
 		return this
 	}
 
@@ -41,10 +77,10 @@ export class Painter {
 		return this
 	}
 	createForm(id?: string) {
-		return new Form(this.gl, id)
+		return new Form(this, id)
 	}
 	createShade(id?: string) {
-		return new Shade(this.gl, id)
+		return new Shade(this, id)
 	}
 	createSketch(id?: string) {
 		return new Sketch(id)
@@ -59,7 +95,7 @@ export class Painter {
 		})
 	}
 	createFrame(id?: string) {
-		return new Frame(this.gl, id)
+		return new Frame(this, id)
 	}
 	createLayer(id?: string) {
 		return new Layer(id)

@@ -1,4 +1,5 @@
-import { AttribSetter, GL, ShadeData, UniformSetter } from './painter-types'
+import { Painter } from './painter'
+import { AttribSetter, ShadeData, UniformSetter } from './painter-types'
 import { createAttributeSetters, createUniformSetters } from './render-utils'
 
 let shadeCounter = 1
@@ -14,10 +15,13 @@ export class Shade {
 	_uniformSetters!: { [id: string]: UniformSetter }
 	_attributeSetters!: { [id: string]: AttribSetter }
 
-	constructor(private gl: GL, public id = 'Shade' + shadeCounter++) {}
+	constructor(
+		private _painter: Painter,
+		public id = 'Shade' + shadeCounter++,
+	) {}
 
 	update(data: ShadeData) {
-		const gl = this.gl
+		const gl = this._painter.gl
 		const fragSource = (data.frag && data.frag.trim()) || this.fragSource
 		const vertSource = (data.vert && data.vert.trim()) || this.vertSource
 
@@ -88,9 +92,12 @@ export class Shade {
 	}
 
 	destroy() {
-		this.gl.deleteProgram(this._program)
-		this.gl.deleteShader(this._frag)
-		this.gl.deleteShader(this._vert)
+		const gl = this._painter.gl
+
+		gl.deleteProgram(this._program)
+		gl.deleteShader(this._frag)
+		gl.deleteShader(this._vert)
+
 		this.vertSource = undefined
 		this.fragSource = undefined
 		this._attributeSetters = {}

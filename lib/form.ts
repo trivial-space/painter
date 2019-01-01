@@ -1,4 +1,5 @@
-import { AttribContext, FormData, GL } from './painter-types'
+import { Painter } from './painter'
+import { AttribContext, FormData } from './painter-types'
 import { getGLTypeForTypedArray } from './render-utils'
 
 let formCounter = 1
@@ -12,10 +13,11 @@ export class Form {
 		glType: number | null
 	}
 
-	constructor(private _gl: GL, public id = 'Form' + formCounter++) {}
+	constructor(private _painter: Painter, public id = 'Form' + formCounter++) {}
 
 	update(data: FormData) {
-		const gl = this._gl
+		const gl = this._painter.gl
+
 		if (data.drawType) {
 			this._drawType = gl[data.drawType]
 		}
@@ -67,13 +69,15 @@ export class Form {
 	}
 
 	destroy() {
+		const gl = this._painter.gl
+
 		for (const id in this._attribs) {
-			this._gl.deleteBuffer(this._attribs[id].buffer)
+			gl.deleteBuffer(this._attribs[id].buffer)
 		}
 		this._attribs = {}
 
 		if (this._elements) {
-			this._gl.deleteBuffer(this._elements.buffer)
+			gl.deleteBuffer(this._elements.buffer)
 			this._elements = undefined
 		}
 	}
