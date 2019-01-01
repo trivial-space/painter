@@ -1,6 +1,6 @@
 export function getContext(canvas, contextAttributes) {
-    const gl = canvas.getContext('webgl', contextAttributes) ||
-        canvas.getContext('experimental-webgl', contextAttributes);
+    const gl = canvas.getContext('webgl2', contextAttributes) ||
+        canvas.getContext('experimental-webgl2', contextAttributes);
     if (gl == null) {
         throw Error('Webgl context cannot be initialized');
     }

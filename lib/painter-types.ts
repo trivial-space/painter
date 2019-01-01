@@ -3,7 +3,7 @@ import { Layer } from './layer'
 import { Shade } from './shade'
 import { Sketch } from './sketch'
 
-export type GL = WebGLRenderingContext
+export type GL = WebGL2RenderingContext
 export type Color = [number, number, number, number]
 
 export type TypedArray =
@@ -36,16 +36,14 @@ export type TypedArrayTypes =
 	| 'Float32Array'
 	| 'Float64Array'
 
-type BufferType = 'FLOAT' | 'UNSIGNED_BYTE'
+// RenderTarget
 
-export interface RenderTarget {
-	id: string
-	frameBuffer: WebGLFramebuffer | null
-	textures: (WebGLTexture | null)[]
-	depthBuffer: WebGLRenderbuffer | null
-	width: number
-	height: number
-	bufferStructure: BufferType[]
+export type BufferType = 'FLOAT' | 'UNSIGNED_BYTE'
+
+export interface RenderTargetData extends TextureData {
+	width?: number
+	height?: number
+	bufferStructure?: BufferType[]
 }
 
 // Form

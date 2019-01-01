@@ -1,5 +1,5 @@
 import { GL } from '../painter-types';
-export declare function getContext(canvas: HTMLCanvasElement, contextAttributes?: WebGLContextAttributes): WebGLRenderingContext;
+export declare function getContext(canvas: HTMLCanvasElement, contextAttributes?: WebGLContextAttributes): GL;
 export declare function makeClear(gl: GL, ...clearArray: string[]): number;
 export declare function setBlendFunc(gl: GL, blendOpts: [string, string]): void;
 /**

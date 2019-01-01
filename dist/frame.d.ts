@@ -1,5 +1,6 @@
 import { Layer } from './layer';
-import { FrameData, GL, RenderTarget } from './painter-types';
+import { FrameData, GL } from './painter-types';
+import { RenderTarget } from './render-target';
 export declare class Frame {
     private _gl;
     id: string;

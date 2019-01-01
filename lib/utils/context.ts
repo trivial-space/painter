@@ -3,14 +3,14 @@ import { GL } from '../painter-types'
 export function getContext(
 	canvas: HTMLCanvasElement,
 	contextAttributes?: WebGLContextAttributes,
-) {
+): GL {
 	const gl =
-		canvas.getContext('webgl', contextAttributes) ||
-		canvas.getContext('experimental-webgl', contextAttributes)
+		(canvas.getContext('webgl2', contextAttributes) as GL) ||
+		(canvas.getContext('experimental-webgl2', contextAttributes) as GL)
 	if (gl == null) {
 		throw Error('Webgl context cannot be initialized')
 	}
-	return gl as WebGLRenderingContext
+	return gl
 }
 
 export function makeClear(gl: GL, ...clearArray: string[]): number {

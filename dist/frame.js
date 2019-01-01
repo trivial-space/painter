@@ -1,7 +1,8 @@
 import { equalArray } from 'tvs-libs/dist/utils/predicates';
 import { times } from 'tvs-libs/dist/utils/sequence';
 import { defaultTextureSettings } from './asset-lib';
-import { destroyRenderTarget, setTextureParams, updateRenderTarget, } from './render-utils';
+import { RenderTarget } from './render-target';
+import { setTextureParams } from './render-utils';
 let frameCount = 1;
 export class Frame {
     constructor(_gl, id = 'Frame' + frameCount++) {
@@ -29,22 +30,14 @@ export class Frame {
         const selfReferencing = data.selfReferencing || this._data.selfReferencing;
         const layerCount = layers.reduce((count, layer) => count + (layer._uniforms.length || 1), 0);
         const targetCount = selfReferencing || layerCount > 1 ? 2 : layerCount;
-        const width = data.width || this._data.width || gl.drawingBufferWidth;
-        const height = data.height || this._data.width || gl.drawingBufferHeight;
+        data.width = data.width || this.width || gl.drawingBufferWidth;
+        data.height = data.height || this.width || gl.drawingBufferHeight;
         if (targetCount !== this._targets.length ||
             !equalArray(this._data.bufferStructure, data.bufferStructure)) {
             this._destroyTargets();
         }
         if (!this._targets.length && targetCount > 0) {
-            this._targets = times(i => ({
-                id: this.id + '_target' + (i + 1),
-                width,
-                height,
-                frameBuffer: null,
-                textures: [],
-                depthBuffer: null,
-                bufferStructure: data.bufferStructure || ['UNSIGNED_BYTE'],
-            }), targetCount);
+            this._targets = times(i => new RenderTarget(this._gl, this.id + '_target' + (i + 1)), targetCount);
             if (!(data.wrap || data.wrapS || data.wrapT)) {
                 data.wrap = defaultTextureSettings.wrap;
             }
@@ -54,14 +47,12 @@ export class Frame {
             if (!data.magFilter) {
                 data.magFilter = defaultTextureSettings.magFilter;
             }
-            this._targets.forEach(t => updateRenderTarget(gl, t, data, this._data));
+            this._targets.forEach(t => t.update(data));
         }
         else if (this._targets.length &&
-            (width !== this.width || height !== this.height)) {
+            (data.width !== this.width || data.height !== this.height)) {
             this._targets.forEach(t => {
-                t.width = width;
-                t.height = height;
-                updateRenderTarget(gl, t, data, this._data);
+                t.update(data);
             });
         }
         if (data.asset) {
@@ -88,8 +79,8 @@ export class Frame {
         }
         Object.assign(this._data, data);
         this.layers = layers;
-        this.width = width;
-        this.height = height;
+        this.width = data.width;
+        this.height = data.height;
         return this;
     }
     destroy() {
@@ -105,7 +96,7 @@ export class Frame {
         this.height = 0;
     }
     _destroyTargets() {
-        this._targets.forEach(t => destroyRenderTarget(this._gl, t));
+        this._targets.forEach(t => t.destroy());
         this._targets = [];
     }
     _swapTargets() {

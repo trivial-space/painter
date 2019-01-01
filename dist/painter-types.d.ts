@@ -1,21 +1,18 @@
+/// <reference types="webgl2" />
 import { Form } from './form';
 import { Layer } from './layer';
 import { Shade } from './shade';
 import { Sketch } from './sketch';
-export declare type GL = WebGLRenderingContext;
+export declare type GL = WebGL2RenderingContext;
 export declare type Color = [number, number, number, number];
 export declare type TypedArray = Uint8Array | Uint16Array | Uint32Array | Int8Array | Int16Array | Int32Array | Float32Array | Float64Array;
 export declare type TypedArrayConstructor = Uint8ArrayConstructor | Uint16ArrayConstructor | Uint32ArrayConstructor | Int8ArrayConstructor | Int16ArrayConstructor | Int32ArrayConstructor | Float32ArrayConstructor | Float64ArrayConstructor;
 export declare type TypedArrayTypes = 'Uint8Array' | 'Uint16Array' | 'Uint32Array' | 'Int8Array' | 'Int16Array' | 'Int32Array' | 'Float32Array' | 'Float64Array';
-declare type BufferType = 'FLOAT' | 'UNSIGNED_BYTE';
-export interface RenderTarget {
-    id: string;
-    frameBuffer: WebGLFramebuffer | null;
-    textures: (WebGLTexture | null)[];
-    depthBuffer: WebGLRenderbuffer | null;
-    width: number;
-    height: number;
-    bufferStructure: BufferType[];
+export declare type BufferType = 'FLOAT' | 'UNSIGNED_BYTE';
+export interface RenderTargetData extends TextureData {
+    width?: number;
+    height?: number;
+    bufferStructure?: BufferType[];
 }
 export declare type FormDrawType = 'TRIANGLES' | 'TRIANGLE_STRIP' | 'TRIANGLE_FAN' | 'POINTS' | 'LINES' | 'LINE_LOOP' | 'LINE_STRIP';
 export declare type FormStoreType = 'DYNAMIC' | 'STATIC';
@@ -100,4 +97,3 @@ export interface LayerData {
     frag?: string;
 }
 export declare type RenderSources = Array<WebGLTexture | null>;
-export {};

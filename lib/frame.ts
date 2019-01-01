@@ -2,12 +2,9 @@ import { equalArray } from 'tvs-libs/dist/utils/predicates'
 import { times } from 'tvs-libs/dist/utils/sequence'
 import { defaultTextureSettings } from './asset-lib'
 import { Layer } from './layer'
-import { FrameData, GL, RenderTarget } from './painter-types'
-import {
-	destroyRenderTarget,
-	setTextureParams,
-	updateRenderTarget,
-} from './render-utils'
+import { FrameData, GL } from './painter-types'
+import { RenderTarget } from './render-target'
+import { setTextureParams } from './render-utils'
 
 let frameCount = 1
 
@@ -44,8 +41,8 @@ export class Frame {
 		)
 		const targetCount = selfReferencing || layerCount > 1 ? 2 : layerCount
 
-		const width = data.width || this._data.width || gl.drawingBufferWidth
-		const height = data.height || this._data.width || gl.drawingBufferHeight
+		data.width = data.width || this.width || gl.drawingBufferWidth
+		data.height = data.height || this.width || gl.drawingBufferHeight
 
 		if (
 			targetCount !== this._targets.length ||
@@ -55,16 +52,8 @@ export class Frame {
 		}
 
 		if (!this._targets.length && targetCount > 0) {
-			this._targets = times<RenderTarget>(
-				i => ({
-					id: this.id + '_target' + (i + 1),
-					width,
-					height,
-					frameBuffer: null,
-					textures: [],
-					depthBuffer: null,
-					bufferStructure: data.bufferStructure || ['UNSIGNED_BYTE'],
-				}),
+			this._targets = times(
+				i => new RenderTarget(this._gl, this.id + '_target' + (i + 1)),
 				targetCount,
 			)
 
@@ -78,15 +67,13 @@ export class Frame {
 				data.magFilter = defaultTextureSettings.magFilter
 			}
 
-			this._targets.forEach(t => updateRenderTarget(gl, t, data, this._data))
+			this._targets.forEach(t => t.update(data))
 		} else if (
 			this._targets.length &&
-			(width !== this.width || height !== this.height)
+			(data.width !== this.width || data.height !== this.height)
 		) {
 			this._targets.forEach(t => {
-				t.width = width
-				t.height = height
-				updateRenderTarget(gl, t, data, this._data)
+				t.update(data)
 			})
 		}
 
@@ -128,8 +115,8 @@ export class Frame {
 
 		Object.assign(this._data, data)
 		this.layers = layers
-		this.width = width
-		this.height = height
+		this.width = data.width
+		this.height = data.height
 
 		return this
 	}
@@ -147,7 +134,7 @@ export class Frame {
 	}
 
 	_destroyTargets() {
-		this._targets.forEach(t => destroyRenderTarget(this._gl, t))
+		this._targets.forEach(t => t.destroy())
 		this._targets = []
 	}
 

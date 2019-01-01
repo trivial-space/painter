@@ -6,13 +6,8 @@ import {
 import { Form } from './form'
 import { Frame } from './frame'
 import { Layer } from './layer'
-import {
-	DrawSettings,
-	GL,
-	RenderSources,
-	RenderTarget,
-	Uniforms,
-} from './painter-types'
+import { DrawSettings, GL, RenderSources, Uniforms } from './painter-types'
+import { RenderTarget } from './render-target'
 import { applyDrawSettings, revertDrawSettings } from './render-utils'
 import { Shade } from './shade'
 import { Sketch } from './sketch'

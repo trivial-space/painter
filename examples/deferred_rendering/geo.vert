@@ -1,13 +1,14 @@
-attribute vec3 position;
-attribute vec3 normal;
-attribute vec2 uv;
+#version 300 es
+in vec3 position;
+in vec3 normal;
+in vec2 uv;
 
 uniform mat4 uMVP;
 uniform mat4 uModelMatrix;
 
-varying vec4 vPosition;
-varying vec4 vNormal;
-varying vec4 vUv;
+out vec4 vPosition;
+out vec4 vNormal;
+out vec4 vUv;
 
 void main() {
 	vPosition = uModelMatrix * vec4(position, 1.0);
