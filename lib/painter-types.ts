@@ -1,10 +1,14 @@
+import { TEXTURE_FORMAT, TEXTURE_FORMAT_INTERNAL } from './contants'
 import { Form } from './form'
 import { Layer } from './layer'
 import { Shade } from './shade'
 import { Sketch } from './sketch'
 
 export type GL = WebGL2RenderingContext
-export type Color = [number, number, number, number]
+
+export type ColorRG = [number, number]
+export type ColorRGB = [number, number, number]
+export type ColorRGBA = [number, number, number, number]
 
 export type TypedArray =
 	| Uint8Array
@@ -36,14 +40,51 @@ export type TypedArrayTypes =
 	| 'Float32Array'
 	| 'Float64Array'
 
-// RenderTarget
+// Texture
 
-export type BufferType = 'FLOAT' | 'UNSIGNED_BYTE'
+export type TextureType =
+	| 'UNSIGNED_BYTE'
+	| 'UNSIGNED_SHORT'
+	| 'UNSIGNED_INT'
+	| 'FLOAT'
 
-export interface RenderTargetData extends TextureData {
+export type TextureFormat = keyof (typeof TEXTURE_FORMAT)
+export type TextureInternalFormat = keyof (typeof TEXTURE_FORMAT_INTERNAL)
+
+export type TextureAsset =
+	| ImageData
+	| HTMLCanvasElement
+	| HTMLImageElement
+	| HTMLVideoElement
+
+export interface TextureOptions {
+	wrap?: Wrap
+	wrapT?: Wrap
+	wrapS?: Wrap
+	minFilter?: MinFilter
+	magFilter?: MagFilter
+
+	type?: TextureType
+	format?: TextureFormat
+	internalFormat?: TextureInternalFormat
+
+	flipY?: boolean
+	premultiplyAlpha?: boolean
+	compareMode?: number
+	compareFunc?: number
+}
+
+export interface TextureData extends TextureOptions {
+	asset?: TextureAsset // Static asset
+	data?: TypedArray
+}
+
+// Render target
+
+export interface RenderTargetData {
 	width?: number
 	height?: number
-	bufferStructure?: BufferType[]
+	bufferStructure?: TextureOptions[]
 }
 
 // Form
@@ -102,7 +143,7 @@ export interface Uniforms {
 }
 
 export interface DrawSettings {
-	clearColor?: Color
+	clearColor?: ColorRGBA
 	clearDepth?: number
 	clearBits?: number
 	depthMask?: boolean
@@ -138,27 +179,9 @@ export type Wrap = 'CLAMP_TO_EDGE' | 'REPEAT' | 'MIRRORED_REPEAT'
 
 export type Cull = 'FRONT' | 'BACK' | 'FRONT_AND_BACK'
 
-export type TextureAsset =
-	| ImageData
-	| HTMLCanvasElement
-	| HTMLImageElement
-	| HTMLVideoElement
-
-export interface TextureData {
-	flipY?: boolean
-	wrap?: Wrap
-	wrapT?: Wrap
-	wrapS?: Wrap
-	minFilter?: MinFilter
-	magFilter?: MagFilter
-}
-
-export interface FrameData extends TextureData {
+export interface FrameData extends RenderTargetData {
 	layers?: Layer | Layer[]
-	asset?: TextureAsset // Static asset
-	width?: number // for own RenderTarget
-	height?: number // for own RenderTarget
-	bufferStructure?: BufferType[]
+	texture?: TextureData
 	selfReferencing?: boolean
 }
 

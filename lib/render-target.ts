@@ -1,4 +1,4 @@
-import { BufferType, GL, RenderTargetData } from './painter-types'
+import { TextureType, GL, RenderTargetData } from './painter-types'
 import { setTextureParams } from './render-utils'
 
 let targetCount = 1
@@ -9,7 +9,7 @@ export class RenderTarget {
 	depthBuffer: WebGLRenderbuffer | null = null
 	width: number = 0
 	height: number = 0
-	bufferStructure: BufferType[] = ['UNSIGNED_BYTE']
+	bufferStructure: TextureType[] = ['UNSIGNED_BYTE']
 
 	_data?: RenderTargetData = {}
 
