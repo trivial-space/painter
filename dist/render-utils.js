@@ -128,7 +128,7 @@ function samplerSetter(gl, type, unit, location) {
     return (texture) => {
         gl.uniform1i(location, unit);
         gl.activeTexture(gl.TEXTURE0 + unit);
-        gl.bindTexture(bindPoint, texture);
+        gl.bindTexture(bindPoint, texture._texture);
     };
 }
 function samplerArraySetter(gl, type, unit, location, size) {
@@ -141,7 +141,7 @@ function samplerArraySetter(gl, type, unit, location, size) {
         gl.uniform1iv(location, units);
         for (const index in textures) {
             gl.activeTexture(gl.TEXTURE0 + units[index]);
-            gl.bindTexture(bindPoint, textures[index]);
+            gl.bindTexture(bindPoint, textures[index]._texture);
         }
     };
 }
@@ -568,32 +568,6 @@ export function getGLTypeForTypedArrayType(typedArrayType) {
         return GL_TYPE.FLOAT;
     }
     throw new Error('unsupported typed array type');
-}
-// Texture helper
-export function setTextureParams(gl, data = {}, oldData = {}) {
-    if (data.flipY != null && data.flipY !== oldData.flipY) {
-        gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, data.flipY);
-    }
-    if ((data.wrap && data.wrap !== oldData.wrap) ||
-        (data.wrapS && data.wrapS !== oldData.wrapS) ||
-        (data.wrapT && data.wrapT !== oldData.wrapT)) {
-        let wrapS, wrapT;
-        if (data.wrap) {
-            wrapS = wrapT = data.wrap;
-        }
-        else {
-            wrapT = data.wrapT || 'CLAMP_TO_EDGE';
-            wrapS = data.wrapS || 'CLAMP_TO_EDGE';
-        }
-        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl[wrapS]);
-        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl[wrapT]);
-    }
-    if (data.magFilter && data.magFilter !== oldData.magFilter) {
-        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl[data.magFilter]);
-    }
-    if (data.minFilter && data.minFilter !== oldData.minFilter) {
-        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl[data.minFilter]);
-    }
 }
 // Settings
 export function applyDrawSettings(gl, settings) {

@@ -1,10 +1,12 @@
 import { mat4 } from 'gl-matrix'
 import { makeClear } from '../../lib/utils/context'
 import { plane } from '../../lib/utils/geometry/plane'
-import { gl, painter } from '../painter'
+import { painter } from '../painter'
 import effectFrag from './effect.frag'
 import planeFrag from './plane-material.frag'
 import planeVert from './plane-material.vert'
+
+const { gl } = painter
 
 const planMat1 = mat4.fromTranslation(mat4.create(), [0, 0, -3])
 const planMat2 = mat4.fromTranslation(mat4.create(), [0, 0, -3])
@@ -81,11 +83,11 @@ function animate() {
 }
 
 const img = new Image()
-img.onload = function() {
+img.onload = () => {
 	texture.update({
-		asset: img,
-		// minFilter: 'LINEAR',
-		// magFilter: 'LINEAR',
+		texture: {
+			asset: img,
+		},
 	})
 	animate()
 }

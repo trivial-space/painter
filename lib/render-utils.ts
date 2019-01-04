@@ -6,6 +6,7 @@ import {
 	GL,
 	UniformSetter,
 } from './painter-types'
+import { Texture } from './texture'
 
 // Attrib and Uniform Setters
 
@@ -164,10 +165,10 @@ function samplerSetter(
 	location: WebGLUniformLocation,
 ) {
 	const bindPoint = getBindPointForSamplerType(type)
-	return (texture: WebGLTexture) => {
+	return (texture: Texture) => {
 		gl.uniform1i(location, unit)
 		gl.activeTexture(gl.TEXTURE0 + unit)
-		gl.bindTexture(bindPoint, texture)
+		gl.bindTexture(bindPoint, texture._texture)
 	}
 }
 
@@ -184,11 +185,11 @@ function samplerArraySetter(
 		units[i] = unit + i
 	}
 
-	return (textures: WebGLTexture[]) => {
+	return (textures: Texture[]) => {
 		gl.uniform1iv(location, units)
 		for (const index in textures) {
 			gl.activeTexture(gl.TEXTURE0 + units[index])
-			gl.bindTexture(bindPoint, textures[index])
+			gl.bindTexture(bindPoint, textures[index]._texture)
 		}
 	}
 }
@@ -208,14 +209,14 @@ interface UniformTypeInfoSampler {
 		type: number,
 		unit: number,
 		location: WebGLUniformLocation,
-	) => (texture: WebGLTexture) => void
+	) => (texture: Texture) => void
 	arraySetter: (
 		gl: GL,
 		type: number,
 		unit: number,
 		location: WebGLUniformLocation,
 		size: number,
-	) => (textures: WebGLTexture[]) => void
+	) => (textures: Texture[]) => void
 	bindPoint: number
 }
 

@@ -9,6 +9,7 @@ import { Layer } from './layer'
 import {
 	DrawSettings,
 	GL,
+	GL1,
 	GL2,
 	PainterOptions,
 	RenderSources,
@@ -32,14 +33,14 @@ export class Painter {
 		let gl: GL | null = null
 		if (!opts.useWebGL1) {
 			gl =
-				canvas.getContext('webgl2', opts) ||
-				canvas.getContext('experimental-webgl2', opts)
+				(canvas.getContext('webgl2', opts) as GL2) ||
+				canvas.getContext('experimental-webgl2', opts as GL2)
 		}
 		if (gl == null) {
 			this.isWebGL2 = false
 			gl =
-				canvas.getContext('webgl', opts) ||
-				canvas.getContext('experimental-webgl', opts)
+				(canvas.getContext('webgl', opts) as GL1) ||
+				(canvas.getContext('experimental-webgl', opts) as GL1)
 		}
 
 		if (gl == null) {

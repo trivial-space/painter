@@ -1,11 +1,17 @@
 import { mat4, vec3 } from 'gl-matrix'
 import createCube from 'primitive-cube'
+import { Painter } from '../../lib'
 import { makeClear } from '../../lib/utils/context'
 import { convertStackGLGeometry } from '../../lib/utils/stackgl'
-import { gl, painter } from '../painter'
+import geoFragFallback from './geo-fallback.frag'
+import geoVertFallback from './geo-fallback.vert'
 import geoFrag from './geo.frag'
 import geoVert from './geo.vert'
 import mainFrag from './main.frag'
+
+const canvas = document.getElementById('canvas') as HTMLCanvasElement
+const painter = new Painter(canvas, { useWebGL1: false })
+const { gl } = painter
 
 painter.updateDrawSettings({
 	// depthFunc: gl.LEQUAL,
@@ -13,8 +19,8 @@ painter.updateDrawSettings({
 })
 
 const geoShade = painter.createShade().update({
-	vert: geoVert,
-	frag: geoFrag,
+	vert: painter.isWebGL2 ? geoVert : geoVertFallback,
+	frag: painter.isWebGL2 ? geoFrag : geoFragFallback,
 })
 
 const cubeStackgl = createCube(1)
@@ -79,10 +85,8 @@ const geoLayer = painter.createLayer().update({
 })
 
 const geo = painter.createFrame().update({
-	bufferStructure: ['FLOAT', 'FLOAT', 'FLOAT'],
+	bufferStructure: [{ type: 'FLOAT' }, { type: 'FLOAT' }, { type: 'FLOAT' }],
 	layers: [geoLayer],
-	minFilter: 'NEAREST',
-	magFilter: 'NEAREST',
 })
 
 const lights = [

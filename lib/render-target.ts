@@ -1,16 +1,19 @@
+import { equalObject } from 'tvs-libs/dist/utils/predicates'
 import { Painter } from './painter'
-import { RenderTargetData, TextureType } from './painter-types'
-import { setTextureParams } from './render-utils'
+import { GL2, RenderTargetData, TextureOptions } from './painter-types'
+import { Texture } from './texture'
 
 let targetCount = 1
 
 export class RenderTarget {
-	frameBuffer: WebGLFramebuffer | null = null
-	textures: (WebGLTexture | null)[] = []
-	depthBuffer: WebGLRenderbuffer | null = null
 	width: number = 0
 	height: number = 0
-	bufferStructure: TextureType[] = ['UNSIGNED_BYTE']
+
+	frameBuffer: WebGLFramebuffer | null = null
+	textures: Texture[] = []
+	depthBuffer: WebGLRenderbuffer | null = null
+
+	bufferStructure: TextureOptions[] = []
 
 	_data?: RenderTargetData = {}
 
@@ -20,8 +23,18 @@ export class RenderTarget {
 		const gl = this._painter.gl
 		const width = data.width || this.width
 		const height = data.height || this.height
-		if (!width || !height) {
+		if (!(width && height)) {
 			return this
+		} else if (width === this.width && height === this.height) {
+			if (!data.bufferStructure) return this
+			if (
+				data.bufferStructure.length === this.bufferStructure.length &&
+				this.bufferStructure.every((buf, i) =>
+					equalObject(buf, data.bufferStructure![i]),
+				)
+			) {
+				return this
+			}
 		}
 
 		if (this.frameBuffer == null) {
@@ -32,76 +45,55 @@ export class RenderTarget {
 
 		if (data.bufferStructure && data.bufferStructure.length) {
 			this.bufferStructure = data.bufferStructure
-			if (this.bufferStructure.some(t => t === 'FLOAT')) {
-				gl.getExtension('EXT_color_buffer_float')
+			if (this.bufferStructure.some(t => t.type === 'FLOAT')) {
+				if (this._painter.isWebGL2) {
+					gl.getExtension('EXT_color_buffer_float')
+				} else {
+					gl.getExtension('OES_texture_float')
+				}
 			}
 		}
 
-		const texCount = this.bufferStructure.length
+		const texCount = this.bufferStructure.length || 1
+		const bufferAttachments = [gl.COLOR_ATTACHMENT0]
+
 		if (texCount > 1) {
-			const bufferAttachments: number[] = []
+			let glx!: WEBGL_draw_buffers
+			if (!this._painter.isWebGL2) {
+				glx = gl.getExtension('WEBGL_draw_buffers')!
+			}
 
+			const attachment = this._painter.isWebGL2
+				? gl.COLOR_ATTACHMENT0
+				: glx.COLOR_ATTACHMENT0_WEBGL
 			for (let i = 0; i < texCount; i++) {
-				bufferAttachments.push((gl as any)[`COLOR_ATTACHMENT${i}`])
+				bufferAttachments[i] = attachment + i
 			}
 
-			gl.drawBuffers(bufferAttachments)
+			this._painter.isWebGL2
+				? (gl as GL2).drawBuffers(bufferAttachments)
+				: glx.drawBuffersWEBGL(bufferAttachments)
+		}
 
-			for (let i = 0; i < texCount; i++) {
-				if (this.textures[i] == null) {
-					this.textures[i] = gl.createTexture()
-				}
-				const texture = this.textures[i]
-
-				const type = this.bufferStructure[i]
-
-				gl.bindTexture(gl.TEXTURE_2D, texture)
-				gl.texImage2D(
-					gl.TEXTURE_2D,
-					0,
-					type === 'FLOAT' ? gl.RGBA32F : gl.RGBA,
-					width,
-					height,
-					0,
-					gl.RGBA,
-					gl[type],
-					null,
-				)
-
-				setTextureParams(gl, data, this._data)
-				gl.framebufferTexture2D(
-					gl.FRAMEBUFFER,
-					bufferAttachments[i],
-					gl.TEXTURE_2D,
-					texture,
-					0,
-				)
+		for (let i = 0; i < texCount; i++) {
+			if (!this.textures[i]) {
+				this.textures[i] = new Texture(this._painter, this.id + '_Texture' + i)
 			}
-		} else {
-			if (this.textures[0] == null) {
-				this.textures[0] = gl.createTexture()
-			}
-			const texture = this.textures[0]
-
-			gl.bindTexture(gl.TEXTURE_2D, texture)
-			setTextureParams(gl, data, this._data)
-			gl.texImage2D(
-				gl.TEXTURE_2D,
-				0,
-				gl.RGBA,
+			const texture = this.textures[i]
+			texture.update({
+				minFilter: 'NEAREST',
+				magFilter: 'NEAREST',
+				...this.bufferStructure[i],
+				data: null,
 				width,
 				height,
-				0,
-				gl.RGBA,
-				gl[this.bufferStructure[0]],
-				null,
-			)
+			})
 
 			gl.framebufferTexture2D(
 				gl.FRAMEBUFFER,
-				gl.COLOR_ATTACHMENT0,
+				bufferAttachments[i],
 				gl.TEXTURE_2D,
-				texture,
+				texture._texture,
 				0,
 			)
 		}
@@ -143,5 +135,11 @@ export class RenderTarget {
 			gl.deleteTexture(texture)
 		}
 		this.textures = []
+		this.frameBuffer = null
+		this.depthBuffer = null
+		this._data = {}
+		this.bufferStructure = []
+		this.width = 0
+		this.height = 0
 	}
 }

@@ -1,4 +1,4 @@
-import { GL, GL2 } from '../painter-types'
+import { GL } from '../painter-types'
 
 export function makeClear(gl: GL, ...clearArray: string[]): number {
 	return clearArray.reduce(

@@ -1,15 +1,17 @@
-import { BufferType, GL, RenderTargetData } from './painter-types';
+import { Painter } from './painter';
+import { RenderTargetData, TextureOptions } from './painter-types';
+import { Texture } from './texture';
 export declare class RenderTarget {
-    private gl;
+    private _painter;
     id: string;
-    frameBuffer: WebGLFramebuffer | null;
-    textures: (WebGLTexture | null)[];
-    depthBuffer: WebGLRenderbuffer | null;
     width: number;
     height: number;
-    bufferStructure: BufferType[];
+    frameBuffer: WebGLFramebuffer | null;
+    textures: Texture[];
+    depthBuffer: WebGLRenderbuffer | null;
+    bufferStructure: TextureOptions[];
     _data?: RenderTargetData;
-    constructor(gl: GL, id?: string);
+    constructor(_painter: Painter, id?: string);
     update(data: RenderTargetData): this;
     destroy(): void;
 }

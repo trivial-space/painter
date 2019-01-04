@@ -1,25 +1,26 @@
 import { painter } from '../painter'
 import shaderCode from './shader.glsl'
 
-painter.resize({ multiplier: window.devicePixelRatio })
+painter.sizeMultiplier = window.devicePixelRatio
+painter.resize()
 
 // effect
 
 let strength = 10
-let size = 256
+const size = 256
 
 const passes: any[] = []
 while (strength >= 1) {
 	console.log(strength)
 	passes.push({
 		direction: 0,
-		strength: strength,
+		strength,
 		source: '0',
 		size: [size, size],
 	})
 	passes.push({
 		direction: 1,
-		strength: strength,
+		strength,
 		source: '0',
 		size: [size, size],
 	})
@@ -31,12 +32,16 @@ const effect = painter.createEffect().update({
 	uniforms: passes,
 })
 
-const texture = painter.createFrame().update({
+const image = painter.createFrame().update({
 	width: size,
 	height: size,
 	layers: effect,
-	minFilter: 'NEAREST',
-	magFilter: 'NEAREST',
+	bufferStructure: [
+		{
+			minFilter: 'NEAREST',
+			magFilter: 'NEAREST',
+		},
+	],
 })
 
 // scene
@@ -77,7 +82,7 @@ const scene = painter.createLayer().update({
 	sketches: painter.createSketch().update({
 		form,
 		shade,
-		uniforms: { tex: () => texture.image() },
+		uniforms: { tex: () => image.image() },
 	}),
 	drawSettings: {
 		clearColor: [1, 0.7, 0.8, 1],
@@ -89,15 +94,17 @@ const main = painter.createFrame().update({ layers: scene })
 
 const img = new Image()
 
-img.onload = function() {
-	texture.update({
-		asset: img,
-		minFilter: 'LINEAR',
-		magFilter: 'LINEAR',
+img.onload = () => {
+	image.update({
+		texture: {
+			asset: img,
+			minFilter: 'LINEAR',
+			magFilter: 'LINEAR',
+		},
 	})
 	painter
 		.compose(
-			texture,
+			image,
 			main,
 		)
 		.display(main)

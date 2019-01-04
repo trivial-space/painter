@@ -78,7 +78,9 @@ export interface TextureOptions {
 
 export interface TextureData extends TextureOptions {
 	asset?: TextureAsset // Static asset
-	data?: TypedArray
+	data?: TypedArray | null
+	width?: number
+	height?: number
 }
 
 // Render target

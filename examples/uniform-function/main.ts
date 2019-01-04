@@ -2,11 +2,12 @@ import { mat4 } from 'gl-matrix'
 import { adjustHue, hslToRGB } from 'tvs-libs/dist/graphics/colors'
 import { makeClear } from '../../lib/utils/context'
 import { plane } from '../../lib/utils/geometry/plane'
-import { gl, painter } from '../painter'
+import { painter } from '../painter'
 import planeFrag from './plane-material.frag'
 import planeVert from './plane-material.vert'
 
-painter.resize({ multiplier: window.devicePixelRatio })
+painter.sizeMultiplier = window.devicePixelRatio
+painter.resize()
 
 const planMat = mat4.fromTranslation(mat4.create(), [0, 0, -3])
 const rotation = 0.01
@@ -41,7 +42,7 @@ const planeLayer = painter.createLayer().update({
 	},
 	drawSettings: {
 		clearColor: [0.0, 1.0, 0.0, 1.0],
-		clearBits: makeClear(gl, 'color', 'depth'),
+		clearBits: makeClear(painter.gl, 'color', 'depth'),
 	},
 })
 

@@ -1,6 +1,7 @@
-import { AttribContext, FormData, GL } from './painter-types';
+import { Painter } from './painter';
+import { AttribContext, FormData } from './painter-types';
 export declare class Form {
-    private _gl;
+    private _painter;
     id: string;
     _drawType: number;
     _itemCount: number;
@@ -11,7 +12,7 @@ export declare class Form {
         buffer: WebGLBuffer | null;
         glType: number | null;
     };
-    constructor(_gl: GL, id?: string);
+    constructor(_painter: Painter, id?: string);
     update(data: FormData): this;
     destroy(): void;
 }

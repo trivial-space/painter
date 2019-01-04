@@ -1,6 +1,7 @@
-import { AttribSetter, GL, ShadeData, UniformSetter } from './painter-types';
+import { Painter } from './painter';
+import { AttribSetter, ShadeData, UniformSetter } from './painter-types';
 export declare class Shade {
-    private gl;
+    private _painter;
     id: string;
     vertSource?: string;
     fragSource?: string;
@@ -13,7 +14,7 @@ export declare class Shade {
     _attributeSetters: {
         [id: string]: AttribSetter;
     };
-    constructor(gl: GL, id?: string);
+    constructor(_painter: Painter, id?: string);
     update(data: ShadeData): this | undefined;
     destroy(): void;
 }

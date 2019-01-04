@@ -30,6 +30,9 @@ export class Layer {
         for (const sketch of this.sketches) {
             sketch.destroy();
         }
+        this._data.sketches = [];
+        this._data = {};
+        this._uniforms = [];
     }
 }
 //# sourceMappingURL=layer.js.map

@@ -7,15 +7,37 @@ import { Shade } from './shade';
 import { Sketch } from './sketch';
 import { resizeCanvas } from './utils/context';
 export class Painter {
-    constructor(gl, { multiplier = 1 } = {}) {
+    constructor(canvas, opts = {}) {
+        this.canvas = canvas;
+        this.isWebGL2 = true;
+        this.maxBufferSamples = 0;
+        let gl = null;
+        if (!opts.useWebGL1) {
+            gl =
+                canvas.getContext('webgl2', opts) ||
+                    canvas.getContext('experimental-webgl2', opts);
+        }
+        if (gl == null) {
+            this.isWebGL2 = false;
+            gl =
+                canvas.getContext('webgl', opts) ||
+                    canvas.getContext('experimental-webgl', opts);
+        }
+        if (gl == null) {
+            throw Error('Cannot initialize WebGL.');
+        }
         this.gl = gl;
-        this.resize({ multiplier });
-        applyDrawSettings(this.gl, getDefaultLayerSettings(this.gl));
+        this.sizeMultiplier = opts.sizeMultiplier || 1;
+        if (this.isWebGL2) {
+            this.maxBufferSamples = gl.getParameter(gl.MAX_SAMPLES);
+        }
+        this.resize();
+        applyDrawSettings(gl, getDefaultLayerSettings(gl));
         this._renderQuad = this.createForm().update(defaultForms.renderQuad);
         this._staticSketch = this.createFlatSketch();
     }
-    resize({ multiplier = 1 } = {}) {
-        resizeCanvas(this.gl.canvas, multiplier);
+    resize() {
+        resizeCanvas(this.gl.canvas, this.sizeMultiplier);
         return this;
     }
     destroy() {
@@ -27,10 +49,10 @@ export class Painter {
         return this;
     }
     createForm(id) {
-        return new Form(this.gl, id);
+        return new Form(this, id);
     }
     createShade(id) {
-        return new Shade(this.gl, id);
+        return new Shade(this, id);
     }
     createSketch(id) {
         return new Sketch(id);
@@ -43,7 +65,7 @@ export class Painter {
         });
     }
     createFrame(id) {
-        return new Frame(this.gl, id);
+        return new Frame(this, id);
     }
     createLayer(id) {
         return new Layer(id);

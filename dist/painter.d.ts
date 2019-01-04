@@ -1,19 +1,19 @@
 import { Form } from './form';
 import { Frame } from './frame';
 import { Layer } from './layer';
-import { DrawSettings, GL, Uniforms } from './painter-types';
+import { DrawSettings, GL, PainterOptions, Uniforms } from './painter-types';
 import { Shade } from './shade';
 import { Sketch } from './sketch';
 export declare class Painter {
+    canvas: HTMLCanvasElement;
+    sizeMultiplier: number;
     gl: GL;
+    isWebGL2: boolean;
+    maxBufferSamples: number;
     _renderQuad: Form;
     _staticSketch: Sketch;
-    constructor(gl: GL, { multiplier }?: {
-        multiplier?: number | undefined;
-    });
-    resize({ multiplier }?: {
-        multiplier?: number | undefined;
-    }): this;
+    constructor(canvas: HTMLCanvasElement, opts?: PainterOptions);
+    resize(): this;
     destroy(): void;
     updateDrawSettings(drawSettings?: DrawSettings): this;
     createForm(id?: string): Form;

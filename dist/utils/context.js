@@ -1,11 +1,3 @@
-export function getContext(canvas, contextAttributes) {
-    const gl = canvas.getContext('webgl2', contextAttributes) ||
-        canvas.getContext('experimental-webgl2', contextAttributes);
-    if (gl == null) {
-        throw Error('Webgl context cannot be initialized');
-    }
-    return gl;
-}
 export function makeClear(gl, ...clearArray) {
     return clearArray.reduce((res, item) => res | gl[item.toUpperCase() + '_BUFFER_BIT'], 0);
 }

@@ -1,6 +1,9 @@
-import { gl, painter } from '../painter'
+import { painter } from '../painter'
 
-painter.resize({ multiplier: window.devicePixelRatio })
+const { gl } = painter
+
+painter.sizeMultiplier = window.devicePixelRatio
+painter.resize()
 
 const plane = painter.createForm().update({
 	attribs: {

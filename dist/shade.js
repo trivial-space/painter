@@ -1,12 +1,12 @@
 import { createAttributeSetters, createUniformSetters } from './render-utils';
 let shadeCounter = 1;
 export class Shade {
-    constructor(gl, id = 'Shade' + shadeCounter++) {
-        this.gl = gl;
+    constructor(_painter, id = 'Shade' + shadeCounter++) {
+        this._painter = _painter;
         this.id = id;
     }
     update(data) {
-        const gl = this.gl;
+        const gl = this._painter.gl;
         const fragSource = (data.frag && data.frag.trim()) || this.fragSource;
         const vertSource = (data.vert && data.vert.trim()) || this.vertSource;
         if (!(fragSource &&
@@ -51,9 +51,10 @@ export class Shade {
         return this;
     }
     destroy() {
-        this.gl.deleteProgram(this._program);
-        this.gl.deleteShader(this._frag);
-        this.gl.deleteShader(this._vert);
+        const gl = this._painter.gl;
+        gl.deleteProgram(this._program);
+        gl.deleteShader(this._frag);
+        gl.deleteShader(this._vert);
         this.vertSource = undefined;
         this.fragSource = undefined;
         this._attributeSetters = {};
