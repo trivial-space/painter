@@ -18,7 +18,7 @@ export class Frame {
             this._targets[this._targets.length - 1].textures[i]) ||
             this._textures[i]);
     }
-    update(data) {
+    update(data = {}) {
         const gl = this._painter.gl;
         const layers = Array.isArray(data.layers)
             ? data.layers
@@ -28,17 +28,18 @@ export class Frame {
         const selfReferencing = data.selfReferencing || this._data.selfReferencing;
         const layerCount = layers.reduce((count, layer) => count + (layer._uniforms.length || 1), 0);
         const targetCount = selfReferencing || layerCount > 1 ? 2 : layerCount;
-        data.width = data.width || this.width || gl.drawingBufferWidth;
-        data.height = data.height || this.width || gl.drawingBufferHeight;
+        const width = data.width || this._data.width || gl.drawingBufferWidth;
+        const height = data.height || this._data.height || gl.drawingBufferHeight;
         if (targetCount !== this._targets.length) {
             this._destroyTargets();
         }
+        const targetData = Object.assign({}, data, { width, height });
         if (!this._targets.length && targetCount > 0) {
-            this._targets = times(i => new RenderTarget(this._painter, this.id + '_target' + (i + 1)).update(data), targetCount);
+            this._targets = times(i => new RenderTarget(this._painter, this.id + '_target' + (i + 1)).update(targetData), targetCount);
         }
         else if (this._targets.length) {
             this._targets.forEach(t => {
-                t.update(data);
+                t.update(targetData);
             });
         }
         if (data.texture) {
@@ -46,14 +47,14 @@ export class Frame {
             if (!this._textures[0]) {
                 this._textures[0] = new Texture(this._painter, this.id + '_Texture0');
             }
-            data.texture.width = data.texture.width || data.width;
-            data.texture.height = data.texture.height || data.height;
+            data.texture.width = data.texture.width || width;
+            data.texture.height = data.texture.height || height;
             this._textures[0].update(data.texture);
         }
         Object.assign(this._data, data);
         this.layers = layers;
-        this.width = data.width;
-        this.height = data.height;
+        this.width = width;
+        this.height = height;
         return this;
     }
     destroy() {

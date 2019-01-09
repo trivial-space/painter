@@ -14,7 +14,7 @@ export declare class Frame {
     _textures: Texture[];
     constructor(_painter: Painter, id?: string);
     image(i?: number): Texture;
-    update(data: FrameData): this;
+    update(data?: FrameData): this;
     destroy(): void;
     _destroyTargets(): void;
     _swapTargets(): void;
