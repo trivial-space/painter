@@ -8,9 +8,10 @@ export function makeClear(gl: GL, ...clearArray: string[]): number {
 }
 
 export function setBlendFunc(gl: GL, blendOpts: [string, string]) {
-	gl.blendFunc.apply(gl, blendOpts.map(
-		opt => (gl as any)[opt.toUpperCase()],
-	) as [number, number])
+	gl.blendFunc.apply(
+		gl,
+		blendOpts.map(opt => (gl as any)[opt.toUpperCase()]) as [number, number],
+	)
 }
 
 /**
@@ -18,9 +19,17 @@ export function setBlendFunc(gl: GL, blendOpts: [string, string]) {
  * @param {number} [multiplier] optional `window.devicePixelRatio`.
  * @return {boolean} true if the canvas was resized.
  */
-export function resizeCanvas(canvas: HTMLCanvasElement, multiplier = 1) {
-	const width = (canvas.clientWidth * multiplier) | 0
-	const height = (canvas.clientHeight * multiplier) | 0
+export function resizeCanvas(
+	canvas: HTMLCanvasElement | OffscreenCanvas,
+	multiplier = 1,
+) {
+	let width = canvas.width
+	let height = canvas.height
+
+	if ('clientWidth' in canvas && 'clientHeight' in canvas) {
+		width = (canvas.clientWidth * multiplier) | 0
+		height = (canvas.clientHeight * multiplier) | 0
+	}
 
 	if (canvas.width !== width || canvas.height !== height) {
 		canvas.width = width

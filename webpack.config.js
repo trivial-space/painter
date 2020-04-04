@@ -1,37 +1,36 @@
 const { resolve } = require('path')
 const webpack = require('webpack')
 
-
 module.exports = {
 	mode: 'production',
 
-	entry: resolve(__dirname, "lib", "index.ts"),
+	entry: resolve(__dirname, 'lib', 'index.ts'),
 
 	output: {
-		path: resolve(__dirname, "dist"),
-		filename: "tvs-painter.js",
+		path: resolve(__dirname, 'dist'),
+		filename: 'tvs-painter.js',
 		library: 'tvsPainter',
-		libraryTarget: "umd"
+		libraryTarget: 'umd',
 	},
 
 	module: {
-		rules: [{
-			test: /\.ts$/,
-			exclude: /node_modules/,
-			loader: 'ts-loader',
-			options: {
-				compilerOptions: {
-					"outDir": "",
-					"declaration": false
-				}
-			}
-		}]
+		rules: [
+			{
+				test: /\.ts$/,
+				exclude: /node_modules/,
+				loader: 'ts-loader',
+				options: {
+					compilerOptions: {
+						outDir: '',
+						declaration: false,
+					},
+				},
+			},
+		],
 	},
 
 	resolve: {
 		extensions: ['.ts', '.js'],
-		modules: [
-			'node_modules'
-		],
+		modules: ['node_modules'],
 	},
 }

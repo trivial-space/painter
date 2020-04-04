@@ -1,52 +1,58 @@
 {
-	"name": "tvs-painter",
-	"version": "0.1.0",
-	"description": "trivialspace painter - a low level webgl rendering engine optimized for live coding and post processing",
-	"main": "dist/tvs-painter.js",
-	"esnext:main": "dist/index.js",
-	"jsnext:main": "dist/index.js",
-	"typings": "dist/index.d.ts",
-	"types": "dist/index.d.ts",
-	"repository": {
-		"type": "git",
-		"url": "git+https://github.com/trivial-space/painter.git"
-	},
-	"keywords": [
-		"webgl",
-		"graphics engine",
-		"live coding",
-		"post processing"
-	],
-	"scripts": {
-		"dev": "webpack-dev-server --config webpack.examples.config.js --port 8081",
-		"examples": "npm run dev",
-		"build": "tsc -p \"./tsconfig.build.json\"; webpack",
-		"prepublish": "npm run build"
-	},
-	"author": "Thomas Gorny",
-	"license": "MIT",
-	"bugs": {
-		"url": "https://github.com/trivial-space/painter/issues"
-	},
-	"homepage": "https://github.com/trivial-space/painter#readme",
-	"dependencies": {
-		"tvs-libs": "^0.5.0"
-	},
-	"devDependencies": {
-		"@types/gl-matrix": "^2.4.4",
-		"@types/node": "^10.12.18",
-		"@types/webgl2": "^0.0.5",
-		"gl-matrix": "3.3.0",
-		"glsl-fast-gaussian-blur": "^1.0.2",
-		"glslify-loader": "^2.0.0",
-		"primitive-cube": "^2.0.1",
-		"primitive-sphere": "^3.0.0",
-		"raw-loader": "^4.0.0",
-		"ts-loader": "^6.2.2",
-		"typescript": "^3.2.2",
-		"uglifyjs-webpack-plugin": "^2.1.1",
-		"webpack": "^4.28.3",
-		"webpack-cli": "^3.1.2",
-		"webpack-dev-server": "^3.1.14"
-	}
+  "name": "tvs-painter",
+  "version": "0.1.0",
+  "description": "trivialspace painter - a low level webgl rendering engine optimized for live coding and post processing",
+  "main": "dist/tvs-painter.js",
+  "esnext:main": "dist/index.js",
+  "jsnext:main": "dist/index.js",
+  "module": "dist/index.js",
+  "typings": "dist/index.d.ts",
+  "types": "dist/index.d.ts",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/trivial-space/painter.git"
+  },
+  "keywords": [
+    "webgl",
+    "graphics engine",
+    "live coding",
+    "post processing"
+  ],
+  "scripts": {
+    "dev": "webpack-dev-server --config webpack.examples.config.js --port 8081",
+    "examples": "npm run dev",
+    "build": "tsc -p \"./tsconfig.build.json\"; webpack",
+    "prepublish": "npm run build"
+  },
+  "author": "Thomas Gorny",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/trivial-space/painter/issues"
+  },
+  "homepage": "https://github.com/trivial-space/painter#readme",
+  "dependencies": {
+    "tvs-libs": "^0.5.0"
+  },
+  "devDependencies": {
+    "@types/node": "12.*",
+    "@typescript-eslint/eslint-plugin": "^2.26.0",
+    "@typescript-eslint/parser": "^2.26.0",
+    "eslint": "^6.8.0",
+    "eslint-config-prettier": "^6.10.1",
+    "eslint-plugin-import": "^2.20.2",
+    "eslint-plugin-prettier": "^3.1.2",
+    "gl-matrix": "3.3.0",
+    "glsl-fast-gaussian-blur": "^1.0.2",
+    "glslify-loader": "^2.0.0",
+    "prettier": "^2.0.2",
+    "primitive-cube": "^2.0.1",
+    "primitive-sphere": "^3.0.0",
+    "raw-loader": "^4.0.0",
+    "ts-loader": "^6.2.2",
+    "typescript": "^3.8.3",
+    "uglifyjs-webpack-plugin": "^2.1.1",
+    "webpack": "^4.28.3",
+    "webpack-cli": "^3.1.2",
+    "webpack-dev-server": "^3.1.14"
+  }
 }

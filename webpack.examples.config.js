@@ -1,19 +1,18 @@
 const { resolve } = require('path')
 const webpack = require('webpack')
 
-
 module.exports = {
 	mode: 'development',
 
 	entry: {
-		'basic': ['./basic/main.ts'],
+		basic: ['./basic/main.ts'],
 		'stackgl-cube': ['./stackgl-cube/main.ts'],
-		'instances': ['./instances/main.ts'],
-		'asset': ['./asset/main.ts'],
-		'shader': ['./shader/main.ts'],
-		'deferred_rendering': ['./deferred_rendering/main.ts'],
-		'effect_stack': ['./effect_stack/main.ts'],
-		'uniform-function': ['./uniform-function/main.ts']
+		instances: ['./instances/main.ts'],
+		asset: ['./asset/main.ts'],
+		shader: ['./shader/main.ts'],
+		deferred_rendering: ['./deferred_rendering/main.ts'],
+		effect_stack: ['./effect_stack/main.ts'],
+		'uniform-function': ['./uniform-function/main.ts'],
 	},
 
 	context: resolve(__dirname, 'examples'),
@@ -22,22 +21,24 @@ module.exports = {
 		path: resolve(__dirname, 'examples'),
 		publicPath: '/',
 		filename: '[name]/build.js',
-		hotUpdateChunkFilename: "[id].[hash].hot-update.js",
-		hotUpdateMainFilename: "[hash].hot-update.json"
+		hotUpdateChunkFilename: '[id].[hash].hot-update.js',
+		hotUpdateMainFilename: '[hash].hot-update.json',
 	},
 
 	module: {
 		rules: [
 			{ test: /\.ts$/, use: 'ts-loader', exclude: /node_modules/ },
-			{ test: /\.(glsl|frag|vert)$/, use: ['raw-loader', 'glslify-loader'], exclude: /node_modules/ },
-		]
+			{
+				test: /\.(glsl|frag|vert)$/,
+				use: ['raw-loader', 'glslify-loader'],
+				exclude: /node_modules/,
+			},
+		],
 	},
 
 	resolve: {
-		modules: [
-			'node_modules'
-		],
-		extensions: ['.js', '.ts']
+		modules: ['node_modules'],
+		extensions: ['.js', '.ts'],
 	},
 
 	devtool: 'cheap-module-eval-source-map',
@@ -49,7 +50,7 @@ module.exports = {
 		contentBase: resolve(__dirname, 'examples'),
 		// match the output path
 
-		publicPath: '/'
+		publicPath: '/',
 		// match the output `publicPath`
 	},
 

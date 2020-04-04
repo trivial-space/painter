@@ -1,4 +1,4 @@
-import { mat4, quat } from 'gl-matrix'
+import { mat4, quat, vec3 } from 'gl-matrix'
 import { makeClear } from '../../lib/utils/context'
 import { painter } from '../painter'
 
@@ -47,8 +47,8 @@ const cubes = dimensions.map(vals => ({
 	transform: mat4.fromRotationTranslationScale(
 		mat4.create(),
 		vals.rot,
-		vals.pos,
-		vals.scale,
+		vals.pos as vec3,
+		vals.scale as vec3,
 	),
 	color: new Float32Array([Math.random(), Math.random(), Math.random(), 0.8]),
 }))

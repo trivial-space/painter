@@ -10,8 +10,12 @@ export function setBlendFunc(gl, blendOpts) {
  * @return {boolean} true if the canvas was resized.
  */
 export function resizeCanvas(canvas, multiplier = 1) {
-    const width = (canvas.clientWidth * multiplier) | 0;
-    const height = (canvas.clientHeight * multiplier) | 0;
+    let width = canvas.width;
+    let height = canvas.height;
+    if ('clientWidth' in canvas && 'clientHeight' in canvas) {
+        width = (canvas.clientWidth * multiplier) | 0;
+        height = (canvas.clientHeight * multiplier) | 0;
+    }
     if (canvas.width !== width || canvas.height !== height) {
         canvas.width = width;
         canvas.height = height;

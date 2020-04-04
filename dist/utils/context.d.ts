@@ -6,4 +6,4 @@ export declare function setBlendFunc(gl: GL, blendOpts: [string, string]): void;
  * @param {number} [multiplier] optional `window.devicePixelRatio`.
  * @return {boolean} true if the canvas was resized.
  */
-export declare function resizeCanvas(canvas: HTMLCanvasElement, multiplier?: number): boolean;
+export declare function resizeCanvas(canvas: HTMLCanvasElement | OffscreenCanvas, multiplier?: number): boolean;
