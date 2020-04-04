@@ -33,7 +33,7 @@ export class Frame {
         if (targetCount !== this._targets.length) {
             this._destroyTargets();
         }
-        const targetData = Object.assign({}, data, { width, height });
+        const targetData = Object.assign(Object.assign({}, data), { width, height });
         if (!this._targets.length && targetCount > 0) {
             this._targets = times(i => new RenderTarget(this._painter, this.id + '_target' + (i + 1)).update(targetData), targetCount);
         }

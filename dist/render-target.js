@@ -65,7 +65,7 @@ export class RenderTarget {
                 this.textures[i] = new Texture(this._painter, this.id + '_Texture' + i);
             }
             const texture = this.textures[i];
-            texture.update(Object.assign({ minFilter: 'NEAREST', magFilter: 'NEAREST' }, this.bufferStructure[i], { data: null, width,
+            texture.update(Object.assign(Object.assign({ minFilter: 'NEAREST', magFilter: 'NEAREST' }, this.bufferStructure[i]), { data: null, width,
                 height }));
             gl.framebufferTexture2D(gl.FRAMEBUFFER, bufferAttachments[i], gl.TEXTURE_2D, texture._texture, 0);
         }

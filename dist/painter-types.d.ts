@@ -1,4 +1,3 @@
-/// <reference types="webgl2" />
 import { TEXTURE_FORMAT, TEXTURE_FORMAT_INTERNAL } from './contants';
 import { Form } from './form';
 import { Layer } from './layer';
