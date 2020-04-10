@@ -21,7 +21,7 @@
   "scripts": {
     "dev": "webpack-dev-server --config webpack.examples.config.js --port 8081",
     "examples": "npm run dev",
-    "build": "tsc -p \"./tsconfig.build.json\"; webpack",
+    "build": "rm -rf ./dist && tsc -p \"./tsconfig.build.json\" && webpack",
     "prepublish": "npm run build"
   },
   "author": "Thomas Gorny",
