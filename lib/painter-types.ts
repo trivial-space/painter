@@ -50,8 +50,8 @@ export type TextureType =
 	| 'UNSIGNED_INT'
 	| 'FLOAT'
 
-export type TextureFormat = keyof (typeof TEXTURE_FORMAT)
-export type TextureInternalFormat = keyof (typeof TEXTURE_FORMAT_INTERNAL)
+export type TextureFormat = keyof typeof TEXTURE_FORMAT
+export type TextureInternalFormat = keyof typeof TEXTURE_FORMAT_INTERNAL
 
 export type TextureAsset =
 	| ImageData
@@ -89,6 +89,7 @@ export interface RenderTargetData {
 	width?: number
 	height?: number
 	bufferStructure?: TextureOptions[]
+	antialias?: boolean
 }
 
 // Form

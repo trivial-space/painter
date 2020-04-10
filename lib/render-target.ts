@@ -8,8 +8,11 @@ let targetCount = 1
 export class RenderTarget {
 	width: number = 0
 	height: number = 0
+	antialias?: boolean = false
 
 	frameBuffer: WebGLFramebuffer | null = null
+	antiAliasFrameBuffer: WebGLFramebuffer | null = null
+	antiAliasRenderBuffer: WebGLFramebuffer | null = null
 	textures: Texture[] = []
 	depthBuffer: WebGLRenderbuffer | null = null
 
@@ -40,8 +43,9 @@ export class RenderTarget {
 		if (this.frameBuffer == null) {
 			this.frameBuffer = gl.createFramebuffer()
 		}
-
-		gl.bindFramebuffer(gl.FRAMEBUFFER, this.frameBuffer)
+		if (this.depthBuffer == null) {
+			this.depthBuffer = gl.createRenderbuffer()
+		}
 
 		if (data.bufferStructure && data.bufferStructure.length) {
 			this.bufferStructure = data.bufferStructure
@@ -56,6 +60,8 @@ export class RenderTarget {
 
 		const texCount = this.bufferStructure.length || 1
 		const bufferAttachments = [gl.COLOR_ATTACHMENT0]
+
+		gl.bindFramebuffer(gl.FRAMEBUFFER, this.frameBuffer)
 
 		if (texCount > 1) {
 			let glx!: WEBGL_draw_buffers
@@ -73,6 +79,69 @@ export class RenderTarget {
 			this._painter.isWebGL2
 				? (gl as GL2).drawBuffers(bufferAttachments)
 				: glx.drawBuffersWEBGL(bufferAttachments)
+		}
+
+		this.antialias =
+			texCount === 1 &&
+			this._painter.isWebGL2 &&
+			(data.antialias || this._data?.antialias)
+
+		if (this.antialias) {
+			const gl2 = gl as GL2
+			if (this.antiAliasFrameBuffer == null) {
+				this.antiAliasFrameBuffer = gl.createFramebuffer()
+			}
+			if (this.antiAliasRenderBuffer == null) {
+				this.antiAliasRenderBuffer = gl.createRenderbuffer()
+			}
+
+			gl.bindFramebuffer(gl.FRAMEBUFFER, this.antiAliasFrameBuffer)
+			gl.bindRenderbuffer(gl.RENDERBUFFER, this.antiAliasRenderBuffer)
+			gl2.renderbufferStorageMultisample(
+				gl.RENDERBUFFER,
+				Math.min(4, gl.getParameter(gl2.MAX_SAMPLES)),
+				gl2.RGBA8,
+				width,
+				height,
+			)
+			gl.framebufferRenderbuffer(
+				gl.FRAMEBUFFER,
+				gl.COLOR_ATTACHMENT0,
+				gl.RENDERBUFFER,
+				this.antiAliasRenderBuffer,
+			)
+
+			gl.bindRenderbuffer(gl.RENDERBUFFER, this.depthBuffer)
+			gl2.renderbufferStorageMultisample(
+				gl.RENDERBUFFER,
+				Math.min(4, gl.getParameter(gl2.MAX_SAMPLES)),
+				gl.DEPTH_COMPONENT16,
+				width,
+				height,
+			)
+			gl.framebufferRenderbuffer(
+				gl.FRAMEBUFFER,
+				gl.DEPTH_ATTACHMENT,
+				gl.RENDERBUFFER,
+				this.depthBuffer,
+			)
+
+			gl.bindFramebuffer(gl.FRAMEBUFFER, this.frameBuffer)
+		} else {
+			gl.bindRenderbuffer(gl.RENDERBUFFER, this.depthBuffer)
+			gl.renderbufferStorage(
+				gl.RENDERBUFFER,
+				gl.DEPTH_COMPONENT16,
+				width,
+				height,
+			)
+
+			gl.framebufferRenderbuffer(
+				gl.FRAMEBUFFER,
+				gl.DEPTH_ATTACHMENT,
+				gl.RENDERBUFFER,
+				this.depthBuffer,
+			)
 		}
 
 		for (let i = 0; i < texCount; i++) {
@@ -98,18 +167,14 @@ export class RenderTarget {
 			)
 		}
 
-		if (this.depthBuffer == null) {
-			this.depthBuffer = gl.createRenderbuffer()
+		if (this.antialias) {
+			gl.bindFramebuffer(gl.FRAMEBUFFER, this.antiAliasFrameBuffer)
+			const err = gl.checkFramebufferStatus(gl.FRAMEBUFFER)
+			if (err !== gl.FRAMEBUFFER_COMPLETE) {
+				console.error('antialias framebuffer error', err, data)
+			}
+			gl.bindFramebuffer(gl.FRAMEBUFFER, this.frameBuffer)
 		}
-
-		gl.bindRenderbuffer(gl.RENDERBUFFER, this.depthBuffer)
-		gl.renderbufferStorage(gl.RENDERBUFFER, gl.DEPTH_COMPONENT16, width, height)
-		gl.framebufferRenderbuffer(
-			gl.FRAMEBUFFER,
-			gl.DEPTH_ATTACHMENT,
-			gl.RENDERBUFFER,
-			this.depthBuffer,
-		)
 
 		const err = gl.checkFramebufferStatus(gl.FRAMEBUFFER)
 		if (err !== gl.FRAMEBUFFER_COMPLETE) {
@@ -133,6 +198,12 @@ export class RenderTarget {
 		gl.deleteRenderbuffer(this.depthBuffer)
 		for (const texture of this.textures) {
 			gl.deleteTexture(texture)
+		}
+		if (this.antiAliasFrameBuffer) {
+			gl.deleteFramebuffer(this.antiAliasFrameBuffer)
+		}
+		if (this.antiAliasRenderBuffer) {
+			gl.deleteRenderbuffer(this.antiAliasRenderBuffer)
 		}
 		this.textures = []
 		this.frameBuffer = null

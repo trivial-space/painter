@@ -6,7 +6,10 @@ export declare class RenderTarget {
     id: string;
     width: number;
     height: number;
+    antialias?: boolean;
     frameBuffer: WebGLFramebuffer | null;
+    antiAliasFrameBuffer: WebGLFramebuffer | null;
+    antiAliasRenderBuffer: WebGLFramebuffer | null;
     textures: Texture[];
     depthBuffer: WebGLRenderbuffer | null;
     bufferStructure: TextureOptions[];

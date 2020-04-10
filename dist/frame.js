@@ -30,10 +30,11 @@ export class Frame {
         const targetCount = selfReferencing || layerCount > 1 ? 2 : layerCount;
         const width = data.width || this._data.width || gl.drawingBufferWidth;
         const height = data.height || this._data.height || gl.drawingBufferHeight;
+        const antialias = data.antialias || this._data.antialias || true;
         if (targetCount !== this._targets.length) {
             this._destroyTargets();
         }
-        const targetData = Object.assign(Object.assign({}, data), { width, height });
+        const targetData = Object.assign(Object.assign({}, data), { width, height, antialias });
         if (!this._targets.length && targetCount > 0) {
             this._targets = times(i => new RenderTarget(this._painter, this.id + '_target' + (i + 1)).update(targetData), targetCount);
         }

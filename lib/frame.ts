@@ -42,11 +42,12 @@ export class Frame {
 
 		const width = data.width || this._data.width || gl.drawingBufferWidth
 		const height = data.height || this._data.height || gl.drawingBufferHeight
+		const antialias = data.antialias || this._data.antialias || true
 
 		if (targetCount !== this._targets.length) {
 			this._destroyTargets()
 		}
-		const targetData = { ...data, width, height }
+		const targetData = { ...data, width, height, antialias }
 		if (!this._targets.length && targetCount > 0) {
 			this._targets = times(
 				i =>

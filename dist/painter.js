@@ -152,7 +152,7 @@ function shadeUniforms(shade, uniforms, sources) {
 }
 function renderLayer(gl, layer, uniforms, target, source) {
     if (target) {
-        gl.bindFramebuffer(gl.FRAMEBUFFER, target.frameBuffer);
+        gl.bindFramebuffer(gl.FRAMEBUFFER, target.antialias ? target.antiAliasFrameBuffer : target.frameBuffer);
         gl.viewport(0, 0, target.width, target.height);
     }
     else {
@@ -164,6 +164,14 @@ function renderLayer(gl, layer, uniforms, target, source) {
     }
     for (const sketch of layer.sketches) {
         draw(gl, sketch, uniforms, source);
+    }
+    if (target && target.antialias) {
+        const gl2 = gl;
+        // "blit" the cube into the color buffer, which adds antialiasing
+        gl.bindFramebuffer(gl2.READ_FRAMEBUFFER, target.antiAliasFrameBuffer);
+        gl.bindFramebuffer(gl2.DRAW_FRAMEBUFFER, target.frameBuffer);
+        gl2.clearBufferfv(gl2.COLOR, 0, [1.0, 1.0, 1.0, 1.0]);
+        gl2.blitFramebuffer(0, 0, target.width, target.height, 0, 0, target.width, target.height, gl.COLOR_BUFFER_BIT, gl.LINEAR);
     }
     if (layer._data.drawSettings) {
         revertDrawSettings(gl, layer._data.drawSettings);

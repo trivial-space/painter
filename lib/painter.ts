@@ -223,7 +223,10 @@ function renderLayer(
 	source?: RenderSources,
 ) {
 	if (target) {
-		gl.bindFramebuffer(gl.FRAMEBUFFER, target.frameBuffer)
+		gl.bindFramebuffer(
+			gl.FRAMEBUFFER,
+			target.antialias ? target.antiAliasFrameBuffer : target.frameBuffer,
+		)
 		gl.viewport(0, 0, target.width, target.height)
 	} else {
 		gl.bindFramebuffer(gl.FRAMEBUFFER, null)
@@ -236,6 +239,26 @@ function renderLayer(
 
 	for (const sketch of layer.sketches) {
 		draw(gl, sketch, uniforms, source)
+	}
+
+	if (target && target.antialias) {
+		const gl2 = gl as GL2
+		// "blit" the cube into the color buffer, which adds antialiasing
+		gl.bindFramebuffer(gl2.READ_FRAMEBUFFER, target.antiAliasFrameBuffer)
+		gl.bindFramebuffer(gl2.DRAW_FRAMEBUFFER, target.frameBuffer)
+		gl2.clearBufferfv(gl2.COLOR, 0, [1.0, 1.0, 1.0, 1.0])
+		gl2.blitFramebuffer(
+			0,
+			0,
+			target.width,
+			target.height,
+			0,
+			0,
+			target.width,
+			target.height,
+			gl.COLOR_BUFFER_BIT,
+			gl.LINEAR,
+		)
 	}
 
 	if (layer._data.drawSettings) {
