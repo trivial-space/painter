@@ -40,8 +40,18 @@ export class Frame {
 		)
 		const targetCount = selfReferencing || layerCount > 1 ? 2 : layerCount
 
-		const width = data.width || this._data.width || gl.drawingBufferWidth
-		const height = data.height || this._data.height || gl.drawingBufferHeight
+		const width =
+			data.width ||
+			data.texture?.width ||
+			this._data.width ||
+			this._data.texture?.width ||
+			gl.drawingBufferWidth
+		const height =
+			data.height ||
+			data.texture?.height ||
+			this._data.height ||
+			this._data.texture?.height ||
+			gl.drawingBufferHeight
 		const antialias = data.antialias || this._data.antialias || true
 
 		if (targetCount !== this._targets.length) {
@@ -67,8 +77,8 @@ export class Frame {
 			if (!this._textures[0]) {
 				this._textures[0] = new Texture(this._painter, this.id + '_Texture0')
 			}
-			data.texture.width = data.texture.width || width
-			data.texture.height = data.texture.height || height
+			data.texture.width = width
+			data.texture.height = height
 			this._textures[0].update(data.texture)
 		}
 

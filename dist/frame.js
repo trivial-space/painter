@@ -19,6 +19,7 @@ export class Frame {
             this._textures[i]);
     }
     update(data = {}) {
+        var _a, _b, _c, _d;
         const gl = this._painter.gl;
         const layers = Array.isArray(data.layers)
             ? data.layers
@@ -28,8 +29,12 @@ export class Frame {
         const selfReferencing = data.selfReferencing || this._data.selfReferencing;
         const layerCount = layers.reduce((count, layer) => count + (layer._uniforms.length || 1), 0);
         const targetCount = selfReferencing || layerCount > 1 ? 2 : layerCount;
-        const width = data.width || this._data.width || gl.drawingBufferWidth;
-        const height = data.height || this._data.height || gl.drawingBufferHeight;
+        const width = data.width || ((_a = data.texture) === null || _a === void 0 ? void 0 : _a.width) ||
+            this._data.width || ((_b = this._data.texture) === null || _b === void 0 ? void 0 : _b.width) ||
+            gl.drawingBufferWidth;
+        const height = data.height || ((_c = data.texture) === null || _c === void 0 ? void 0 : _c.height) ||
+            this._data.height || ((_d = this._data.texture) === null || _d === void 0 ? void 0 : _d.height) ||
+            gl.drawingBufferHeight;
         const antialias = data.antialias || this._data.antialias || true;
         if (targetCount !== this._targets.length) {
             this._destroyTargets();
@@ -48,8 +53,8 @@ export class Frame {
             if (!this._textures[0]) {
                 this._textures[0] = new Texture(this._painter, this.id + '_Texture0');
             }
-            data.texture.width = data.texture.width || width;
-            data.texture.height = data.texture.height || height;
+            data.texture.width = width;
+            data.texture.height = height;
             this._textures[0].update(data.texture);
         }
         Object.assign(this._data, data);
