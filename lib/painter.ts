@@ -110,7 +110,7 @@ export class Painter {
 	draw(sketch: Sketch, globalUniforms?: Uniforms) {
 		const gl = this.gl
 		gl.bindFramebuffer(gl.FRAMEBUFFER, null)
-		gl.viewport(0, 0, gl.drawingBufferWidth, gl.drawingBufferHeight)
+		gl.viewport(0, 0, gl.canvas.width, gl.canvas.height)
 		draw(gl, sketch, globalUniforms)
 		return this
 	}
@@ -230,7 +230,7 @@ function renderLayer(
 		gl.viewport(0, 0, target.width, target.height)
 	} else {
 		gl.bindFramebuffer(gl.FRAMEBUFFER, null)
-		gl.viewport(0, 0, gl.drawingBufferWidth, gl.drawingBufferHeight)
+		gl.viewport(0, 0, gl.canvas.width, gl.canvas.height)
 	}
 
 	if (layer._data.drawSettings) {

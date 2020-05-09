@@ -45,13 +45,13 @@ export class Frame {
 			data.texture?.width ||
 			this._data.width ||
 			this._data.texture?.width ||
-			gl.drawingBufferWidth
+			gl.canvas.width
 		const height =
 			data.height ||
 			data.texture?.height ||
 			this._data.height ||
 			this._data.texture?.height ||
-			gl.drawingBufferHeight
+			gl.canvas.height
 		const antialias = data.antialias || this._data.antialias || true
 
 		if (targetCount !== this._targets.length) {
