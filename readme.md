@@ -28,12 +28,12 @@ examples.
 ## TODO
 
 - [ ] customize render target textures, with accessible depth texture
-- [ ] enable sampled render targets
-- [ ] add data texture support, with custom texture formats
+- [x] enable sampled render targets
+- [x] add data texture support, with custom texture formats
 - [ ] migrate to vertex array objects
 
 ## License
 
 MIT, see the LICENSE file in the repository.
 
-Copyright (c) 2016 - 2017 Thomas Gorny
+Copyright (c) 2016 - 2020 Thomas Gorny
