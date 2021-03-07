@@ -1,5 +1,4 @@
 const { resolve } = require('path')
-const webpack = require('webpack')
 
 module.exports = {
 	mode: 'development',
@@ -21,8 +20,6 @@ module.exports = {
 		path: resolve(__dirname, 'examples'),
 		publicPath: '/',
 		filename: '[name]/build.js',
-		hotUpdateChunkFilename: '[id].[hash].hot-update.js',
-		hotUpdateMainFilename: '[hash].hot-update.json',
 	},
 
 	module: {
@@ -30,7 +27,8 @@ module.exports = {
 			{ test: /\.ts$/, use: 'ts-loader', exclude: /node_modules/ },
 			{
 				test: /\.(glsl|frag|vert)$/,
-				use: ['raw-loader', 'glslify-loader'],
+				type: 'asset/source',
+				use: 'glslify-loader',
 				exclude: /node_modules/,
 			},
 		],
@@ -41,7 +39,7 @@ module.exports = {
 		extensions: ['.js', '.ts'],
 	},
 
-	devtool: 'cheap-module-eval-source-map',
+	devtool: 'eval-cheap-module-source-map',
 
 	devServer: {
 		hot: true,
@@ -53,9 +51,4 @@ module.exports = {
 		publicPath: '/',
 		// match the output `publicPath`
 	},
-
-	plugins: [
-		new webpack.HotModuleReplacementPlugin(),
-		// enable HMR globally
-	],
 }

@@ -4,6 +4,7 @@ import * as context from './utils/context';
 import * as plane from './utils/geometry/plane';
 import * as stackgl from './utils/stackgl';
 export * from './painter';
+export * from './painter-types';
 export const utils = {
     geometry: {
         plane,
