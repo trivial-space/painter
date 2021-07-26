@@ -1,5 +1,5 @@
 import { mat4, quat, vec3 } from 'gl-matrix'
-import { makeClear } from '../../lib/utils/context'
+import { makeClear } from '../../src/utils/context'
 import { painter } from '../painter'
 
 const { gl } = painter

@@ -3,7 +3,7 @@ const { resolve } = require('path')
 module.exports = {
 	mode: 'production',
 
-	entry: resolve(__dirname, 'lib', 'index.ts'),
+	entry: resolve(__dirname, 'src', 'index.ts'),
 
 	output: {
 		path: resolve(__dirname, 'dist'),

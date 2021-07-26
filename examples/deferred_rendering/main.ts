@@ -1,8 +1,8 @@
 import { mat4, vec3 } from 'gl-matrix'
 import createCube from 'primitive-cube'
-import { Painter } from '../../lib'
-import { makeClear } from '../../lib/utils/context'
-import { convertStackGLGeometry } from '../../lib/utils/stackgl'
+import { Painter } from '../../src'
+import { makeClear } from '../../src/utils/context'
+import { convertStackGLGeometry } from '../../src/utils/stackgl'
 import geoFragFallback from './geo-fallback.frag'
 import geoVertFallback from './geo-fallback.vert'
 import geoFrag from './geo.frag'
@@ -141,12 +141,7 @@ function animate() {
 		mat4.multiply(box.uMVP, viewProjMatrix, box.uModelMatrix)
 	}
 
-	painter
-		.compose(
-			geo,
-			render,
-		)
-		.display(render)
+	painter.compose(geo, render).display(render)
 
 	requestAnimationFrame(animate)
 }

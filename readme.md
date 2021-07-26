@@ -18,7 +18,7 @@ within the repository. The development server with the examples runs on
 `localhost:8081`.
 
 The API is defined in
-[lib/painter-types.ts](https://github.com/trivial-space/painter/blob/master/lib/painter-types.ts).
+[src/painter-types.ts](https://github.com/trivial-space/painter/blob/master/src/painter-types.ts).
 
 Painter is used primarily in the
 [trivial space playground](https://github.com/trivial-space/playground) to

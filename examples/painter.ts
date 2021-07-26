@@ -1,4 +1,4 @@
-import { Painter } from '../lib/painter'
+import { Painter } from '../src/painter'
 
 export const canvas = document.getElementById('canvas') as HTMLCanvasElement
 
