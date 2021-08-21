@@ -33,12 +33,12 @@ export class Frame {
             ((_a = data.texture) === null || _a === void 0 ? void 0 : _a.width) ||
             this._data.width ||
             ((_b = this._data.texture) === null || _b === void 0 ? void 0 : _b.width) ||
-            gl.canvas.width;
+            gl.drawingBufferWidth;
         const height = data.height ||
             ((_c = data.texture) === null || _c === void 0 ? void 0 : _c.height) ||
             this._data.height ||
             ((_d = this._data.texture) === null || _d === void 0 ? void 0 : _d.height) ||
-            gl.canvas.height;
+            gl.drawingBufferHeight;
         const antialias = data.antialias || this._data.antialias || true;
         if (targetCount !== this._targets.length) {
             this._destroyTargets();
