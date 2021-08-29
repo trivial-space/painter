@@ -1,5 +1,5 @@
 import { Form } from './form'
-import { DrawSettings, SketchData, Uniforms } from './painter-types'
+import { DrawSettings, EffectData, SketchData, Uniforms } from './painter-types'
 import { Shade } from './shade'
 
 let sketchCounter = 1
@@ -40,5 +40,33 @@ export class Sketch {
 		this.shade && this.shade.destroy()
 		this._drawSettings = undefined
 		this._uniforms = []
+	}
+}
+
+let effectCounter = 1
+
+export class Effect extends Sketch {
+	constructor(
+		_form: Form,
+		_shade: Shade,
+		public id = 'Effect' + effectCounter++,
+	) {
+		super(id)
+		this.form = _form
+		this.shade = _shade
+	}
+
+	update(data: EffectData) {
+		if (data.frag) {
+			this.shade.update({ frag: data.frag })
+		}
+
+		if (data.uniforms) {
+			this._uniforms = Array.isArray(data.uniforms)
+				? data.uniforms
+				: [data.uniforms]
+		}
+
+		return this
 	}
 }

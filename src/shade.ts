@@ -45,7 +45,7 @@ export class Shade {
 		const frag = gl.createShader(gl.FRAGMENT_SHADER)
 		const vert = gl.createShader(gl.VERTEX_SHADER)
 
-		if (!(program && vert && frag)) return
+		if (!(program && vert && frag)) return this
 
 		this._program = program
 		this._frag = frag

@@ -17,7 +17,7 @@ mat4.rotateY(planMat2, planMat2, Math.PI / 2)
 
 // ===== Setup Render Context =====
 
-const texture = painter.createFrame()
+const texture = painter.createLayer()
 
 const effect = painter.createEffect().update({
 	frag: effectFrag,
