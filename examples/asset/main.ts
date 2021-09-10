@@ -55,8 +55,9 @@ const plane2 = painter.createSketch().update({
 	},
 })
 
-const planeLayer = painter.createLayer().update({
+const scene = painter.createLayer().update({
 	sketches: [plane1, plane2],
+	effects: effect,
 	uniforms: {
 		projection,
 		texture: () => texture.image(),
@@ -66,19 +67,17 @@ const planeLayer = painter.createLayer().update({
 		clearBits: makeClear(gl, 'color', 'depth'),
 		enable: [gl.DEPTH_TEST],
 	},
-})
-
-const frame = painter.createFrame().update({
-	layers: [planeLayer, effect],
+	// directRender: true,
 })
 
 // ===== initialize animation =====
 
 function animate() {
+	console.log('animating')
 	mat4.rotateY(planMat1, planMat1, rotation)
 	mat4.rotateY(planMat2, planMat2, rotation)
-	// painter.display(image)
-	painter.compose(frame).display(frame)
+	painter.compose(scene).show(scene)
+	// painter.show(texture)
 	requestAnimationFrame(animate)
 }
 

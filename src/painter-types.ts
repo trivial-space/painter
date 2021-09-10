@@ -1,6 +1,5 @@
 import { TEXTURE_FORMAT, TEXTURE_FORMAT_INTERNAL } from './contants'
 import { Form } from './form'
-import { Layer } from './layer'
 import { Shade } from './shade'
 import { Effect, Sketch } from './sketch'
 

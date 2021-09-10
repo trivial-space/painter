@@ -1,4 +1,3 @@
-import { isArray } from 'util'
 import {
 	defaultForms,
 	defaultShaders,
@@ -28,7 +27,7 @@ export class Painter {
 	isWebGL2: boolean = true
 	maxBufferSamples = 0
 	_renderQuad: Form
-	_staticSketch: Sketch
+	_staticEffect: Sketch
 	_defaultLayer: Layer
 
 	constructor(public canvas: HTMLCanvasElement, opts: PainterOptions = {}) {
@@ -60,7 +59,7 @@ export class Painter {
 		applyDrawSettings(gl, getDefaultLayerSettings(gl))
 
 		this._renderQuad = this.createForm().update(defaultForms.renderQuad)
-		this._staticSketch = this.createEffect()
+		this._staticEffect = this.createEffect()
 		this._defaultLayer = this.createLayer()
 	}
 
@@ -71,7 +70,7 @@ export class Painter {
 
 	destroy() {
 		this._defaultLayer.destroy()
-		this._staticSketch.destroy()
+		this._staticEffect.destroy()
 		this._renderQuad.destroy()
 	}
 
@@ -116,7 +115,7 @@ export class Painter {
 	}
 	show(layer: Layer, idx = 0) {
 		return this.draw({
-			sketches: this._staticSketch,
+			effects: this._staticEffect,
 			uniforms: { source: layer.image(idx) },
 		})
 	}
@@ -265,13 +264,14 @@ function renderLayer(gl: GL, layer: Layer) {
 	}
 
 	if (layer.effects) {
+		console.log('rendering effects', layer.effects)
 		let remainingPasses = layer._passCount
 		for (let j = 0; j < layer.effects.length; j++) {
 			const effect = layer.effects[j]
-			if (effect._drawSettings) {
-				applyDrawSettings(gl, effect._drawSettings)
-			}
-			if (Array.isArray(effect._uniforms)) {
+			// if (effect._drawSettings) {
+			// 	applyDrawSettings(gl, effect._drawSettings)
+			// }
+			if (effect._uniforms.length) {
 				for (let i = 0; i < effect._uniforms.length; i++) {
 					remainingPasses--
 					const target = remainingPasses > 0 ? layer._targets[0] : undefined
@@ -290,6 +290,7 @@ function renderLayer(gl: GL, layer: Layer) {
 					layer._swapTargets()
 				}
 			} else {
+				remainingPasses--
 				const target = remainingPasses > 0 ? layer._targets[0] : undefined
 				const sources =
 					j === 0 && layer._textures.length && !layer.sketches
@@ -300,15 +301,14 @@ function renderLayer(gl: GL, layer: Layer) {
 
 				uniformsArray.length = 0
 				layer._uniforms && uniformsArray.push(layer._uniforms)
-				effect._uniforms && uniformsArray.push(effect._uniforms)
 				render(gl, effect.shade, effect.form, uniformsArray, sources)
 
 				layer._swapTargets()
 			}
 
-			if (effect._drawSettings) {
-				revertDrawSettings(gl, effect._drawSettings)
-			}
+			// if (effect._drawSettings) {
+			// 	revertDrawSettings(gl, effect._drawSettings)
+			// }
 		}
 	}
 
