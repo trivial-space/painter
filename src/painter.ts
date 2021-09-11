@@ -253,19 +253,22 @@ function renderLayer(gl: GL, layer: Layer) {
 		applyDrawSettings(gl, layer._data.drawSettings)
 	}
 
-	if (layer.sketches) {
-		const target = layer._targets[0]
+	let remainingPasses = layer._passCount
+	console.log(remainingPasses)
+
+	if (layer.sketches.length) {
+		console.log('rendering sketches', layer.sketches)
+		const target = remainingPasses > 0 ? layer._targets[0] : undefined
 		const sources = layer._textures.length
 			? layer._textures
 			: layer._targets[1] && layer._targets[1].textures
 
 		renderSketches(gl, layer.sketches, layer._uniforms, target, sources)
 		layer._swapTargets()
+		remainingPasses--
 	}
 
-	if (layer.effects) {
-		console.log('rendering effects', layer.effects)
-		let remainingPasses = layer._passCount
+	if (layer.effects.length) {
 		for (let j = 0; j < layer.effects.length; j++) {
 			const effect = layer.effects[j]
 			// if (effect._drawSettings) {
@@ -273,8 +276,13 @@ function renderLayer(gl: GL, layer: Layer) {
 			// }
 			if (effect._uniforms.length) {
 				for (let i = 0; i < effect._uniforms.length; i++) {
-					remainingPasses--
 					const target = remainingPasses > 0 ? layer._targets[0] : undefined
+					console.log(
+						'effect uniforms',
+						target,
+						remainingPasses,
+						layer._passCount,
+					)
 					const sources =
 						i + j === 0 && layer._textures.length && !layer.sketches
 							? layer._textures
@@ -288,10 +296,16 @@ function renderLayer(gl: GL, layer: Layer) {
 					render(gl, effect.shade, effect.form, uniformsArray, sources)
 
 					layer._swapTargets()
+					remainingPasses--
 				}
 			} else {
-				remainingPasses--
 				const target = remainingPasses > 0 ? layer._targets[0] : undefined
+				console.log(
+					'no effect uniforms',
+					target,
+					remainingPasses,
+					layer._passCount,
+				)
 				const sources =
 					j === 0 && layer._textures.length && !layer.sketches
 						? layer._textures
@@ -304,6 +318,7 @@ function renderLayer(gl: GL, layer: Layer) {
 				render(gl, effect.shade, effect.form, uniformsArray, sources)
 
 				layer._swapTargets()
+				remainingPasses--
 			}
 
 			// if (effect._drawSettings) {

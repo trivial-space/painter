@@ -11,6 +11,7 @@ const main = painter.createLayer().update({
 	effects: painter.createEffect().update({
 		frag: shaderCode,
 	}),
+	// directRender: true,
 })
 
 painter.compose(main).show(main)
