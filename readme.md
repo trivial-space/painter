@@ -1,9 +1,9 @@
 # trivial space painter
 
-A library that enables to declaratively define and change WebGL scenes.
-Optimized for live coding and post processing.
-
-Developed and build for usage with TypeScript.
+A Typescript WebGL rendering library, that enables to declaratively define and
+change scenes. Rendering is organised as a graph of Layers, for easy compositing
+and render-to-texture effects. There is no scenegraph here. Optimized for live
+coding and post processing.
 
 _This library is currently alpha state, in heavy development and APIs are
 changing frequently!_
@@ -17,7 +17,7 @@ by cloning this repository, and executing
 within the repository. The development server with the examples runs on
 `localhost:8081`.
 
-The API is defined in
+The API interfaces are defined in
 [src/painter-types.ts](https://github.com/trivial-space/painter/blob/master/src/painter-types.ts).
 
 Painter is used primarily in the
@@ -27,13 +27,13 @@ examples.
 
 ## TODO
 
-- [ ] customize render target textures, with accessible depth texture
-- [x] enable sampled render targets
+- [x] enable sampled render targets (WebGL2 only)
 - [x] add data texture support, with custom texture formats
+- [ ] customize render target textures, with accessible depth texture
 - [ ] migrate to vertex array objects
 
 ## License
 
 MIT, see the LICENSE file in the repository.
 
-Copyright (c) 2016 - 2020 Thomas Gorny
+Copyright (c) 2016 - 2021 Thomas Gorny
