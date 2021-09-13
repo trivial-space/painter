@@ -27,15 +27,9 @@ export const automaton = painter.createLayer().update({
 	width: bufferSize,
 	height: bufferSize,
 	selfReferencing: true,
-	// bufferStructure: [
-	// 	{
-	// 		flipY: true,
-	// 	},
-	// ],
-	directRender: true,
 })
 
-painter.compose(automaton) //.show(automaton)
+painter.compose(automaton).show(automaton)
 
 effect.update({
 	uniforms: {
@@ -44,7 +38,4 @@ effect.update({
 	},
 })
 
-setTimeout(() => painter.compose(automaton), 1000)
-// setTimeout(() => painter.compose(automaton).show(automaton), 2000)
-// setTimeout(() => painter.compose(automaton).show(automaton), 3000)
-// setTimeout(() => painter.compose(automaton).show(automaton), 4000)
+setInterval(() => painter.compose(automaton).show(automaton), 200)

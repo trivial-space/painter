@@ -82,11 +82,7 @@ const geoLayer = painter.createLayer().update({
 		enable: [gl.DEPTH_TEST],
 		clearBits: makeClear(gl, 'color', 'depth'),
 	},
-})
-
-const geo = painter.createFrame().update({
 	bufferStructure: [{ type: 'FLOAT' }, { type: 'FLOAT' }, { type: 'FLOAT' }],
-	layers: [geoLayer],
 })
 
 const lights = [
@@ -108,27 +104,27 @@ const lights = [
 	},
 ]
 
-const lightLayer = painter.createEffect().update({
+const lightEffect = painter.createEffect().update({
 	frag: mainFrag,
+	uniforms: lights,
+})
+
+const render = painter.createLayer().update({
+	// treat effect as sketch with instances here,
+	// because we don't want a swapping framebuffer compositing stack,
+	// but instead all lights drawn into the same framebuffer.
+	sketches: lightEffect,
 	uniforms: {
 		uEyePosition: eyePosition,
-		uPositionBuffer: geo.image(0),
-		uNormalBuffer: geo.image(1),
-		uUVBuffer: geo.image(2),
+		uPositionBuffer: geoLayer.image(0),
+		uNormalBuffer: geoLayer.image(1),
+		uUVBuffer: geoLayer.image(2),
 	},
 	drawSettings: {
 		enable: [gl.BLEND],
 		clearBits: makeClear(gl, 'color'),
 	},
-})
-
-// Draw each light separately and blend results
-lightLayer.sketches[0].update({
-	uniforms: lights,
-})
-
-const render = painter.createFrame().update({
-	layers: [lightLayer],
+	directRender: true,
 })
 
 const rotationX = 0.01
@@ -141,7 +137,7 @@ function animate() {
 		mat4.multiply(box.uMVP, viewProjMatrix, box.uModelMatrix)
 	}
 
-	painter.compose(geo, render).display(render)
+	painter.compose(geoLayer, render)
 
 	requestAnimationFrame(animate)
 }

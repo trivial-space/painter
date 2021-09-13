@@ -75,9 +75,8 @@ const scene = painter.createLayer().update({
 function animate() {
 	mat4.rotateY(planMat1, planMat1, rotation)
 	mat4.rotateY(planMat2, planMat2, rotation)
-	painter.compose(scene) //.show(scene)
-	painter.show(texture)
-	// requestAnimationFrame(animate)
+	painter.compose(scene)
+	requestAnimationFrame(animate)
 }
 
 const img = new Image()

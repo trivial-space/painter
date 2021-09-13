@@ -2,9 +2,6 @@ import { painter } from '../painter'
 
 const { gl } = painter
 
-painter.sizeMultiplier = window.devicePixelRatio
-painter.resize()
-
 const plane = painter.createForm().update({
 	attribs: {
 		position: {
@@ -92,7 +89,6 @@ const planeLayer = painter.createLayer().update({
 		clearColor: [0.0, 0.0, 0.0, 1.0],
 		clearBits: gl.COLOR_BUFFER_BIT,
 	},
-	// directRender: true,
 })
 
 painter.compose(textureLayer, planeLayer).show(planeLayer)

@@ -31,8 +31,8 @@ const sketch = painter.createSketch().update({
 	},
 })
 
-const planeLayer = painter.createLayer().update({
-	sketches: [sketch],
+const scene = painter.createLayer().update({
+	sketches: sketch,
 	uniforms: {
 		color: () => {
 			colorHSL.h = adjustHue(colorHSL.h + 0.001)
@@ -44,16 +44,13 @@ const planeLayer = painter.createLayer().update({
 		clearColor: [0.0, 1.0, 0.0, 1.0],
 		clearBits: makeClear(painter.gl, 'color', 'depth'),
 	},
-})
-
-const main = painter.createFrame().update({
-	layers: planeLayer,
+	directRender: true,
 })
 
 // ===== initialize animation =====
 
 function animate() {
-	painter.compose(main).display(main)
+	painter.compose(scene)
 	requestAnimationFrame(animate)
 }
 
