@@ -42,6 +42,7 @@ const image = painter.createLayer().update({
 			magFilter: 'NEAREST',
 		},
 	],
+	directRender: true,
 })
 
 // scene
@@ -100,7 +101,7 @@ img.onload = () => {
 			magFilter: 'LINEAR',
 		},
 	})
-	painter.compose(image, scene).show(scene)
+	painter.compose(image) //.show(image)
 }
 
 img.src = '../hepatica_256.png'

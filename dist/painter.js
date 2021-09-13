@@ -1,10 +1,9 @@
 import { defaultForms, defaultShaders, getDefaultLayerSettings, } from './asset-lib';
 import { Form } from './form';
-import { Frame } from './frame';
 import { Layer } from './layer';
 import { applyDrawSettings, revertDrawSettings } from './render-utils';
 import { Shade } from './shade';
-import { Sketch } from './sketch';
+import { Effect, Sketch } from './sketch';
 import { resizeCanvas } from './utils/context';
 export class Painter {
     constructor(canvas, opts = {}) {
@@ -34,14 +33,16 @@ export class Painter {
         this.resize();
         applyDrawSettings(gl, getDefaultLayerSettings(gl));
         this._renderQuad = this.createForm().update(defaultForms.renderQuad);
-        this._staticSketch = this.createFlatSketch();
+        this._staticEffect = this.createEffect();
+        this._defaultLayer = this.createLayer();
     }
     resize() {
         resizeCanvas(this.gl.canvas, this.sizeMultiplier);
         return this;
     }
     destroy() {
-        this._staticSketch.destroy();
+        this._defaultLayer.destroy();
+        this._staticEffect.destroy();
         this._renderQuad.destroy();
     }
     updateDrawSettings(drawSettings) {
@@ -57,72 +58,49 @@ export class Painter {
     createSketch(id) {
         return new Sketch(id);
     }
-    createFlatSketch(id) {
-        const s = this.createSketch(id);
-        return s.update({
-            form: this._renderQuad,
-            shade: this.createShade(s.id + '_defaultShade').update(defaultShaders.basicEffect),
-        });
-    }
-    createFrame(id) {
-        return new Frame(this, id);
+    createEffect(id) {
+        return new Effect(this._renderQuad, this.createShade(id && id + '_effectShade').update(defaultShaders.basicEffect), id);
     }
     createLayer(id) {
-        return new Layer(id);
+        return new Layer(this, id);
     }
-    createEffect(id) {
-        const l = this.createLayer(id);
-        return l.update({
-            sketches: this.createFlatSketch(l.id + '_effectSketch'),
-        });
-    }
-    draw(sketch, globalUniforms) {
-        const gl = this.gl;
-        gl.bindFramebuffer(gl.FRAMEBUFFER, null);
-        gl.viewport(0, 0, gl.canvas.width, gl.canvas.height);
-        draw(gl, sketch, globalUniforms);
+    draw(opts) {
+        this._defaultLayer.update(Object.assign(Object.assign({}, opts), { directRender: true }));
+        this.compose(this._defaultLayer);
+        this._defaultLayer.clear();
         return this;
     }
-    compose(...frames) {
-        for (const frame of frames) {
-            renderFrame(this.gl, frame);
+    compose(...layers) {
+        for (const layer of layers) {
+            renderLayer(this.gl, layer);
         }
         return this;
     }
-    display(frame, idx = 0) {
-        return this.draw(this._staticSketch, { source: frame.image(idx) });
+    show(layer, idx) {
+        console.log(layer.image(idx));
+        return this.draw({
+            effects: this._staticEffect,
+            uniforms: { source: layer.image(idx) },
+        });
     }
 }
-function draw(gl, sketch, globalUniforms, sources) {
-    const { shade: shade, form: form, _drawSettings: drawSettings, _uniforms: uniforms, } = sketch;
-    if (!(shade && form)) {
-        throw Error('cannot draw, shader or geometry are not set');
-    }
+function render(gl, shade, form, uniforms, sources) {
     gl.useProgram(shade._program);
     shadeForm(shade, form);
-    if (globalUniforms) {
-        shadeUniforms(shade, globalUniforms, sources);
+    if (Array.isArray(uniforms)) {
+        for (const uniform of uniforms) {
+            shadeUniforms(shade, uniform, sources);
+        }
     }
-    if (drawSettings) {
-        applyDrawSettings(gl, drawSettings);
+    else if (uniforms) {
+        shadeUniforms(shade, uniforms, sources);
     }
-    for (let i = 0; i < (uniforms.length || 1); i++) {
-        drawInstance(gl, sketch, uniforms[i], sources);
-    }
-    if (drawSettings) {
-        revertDrawSettings(gl, drawSettings);
-    }
-}
-function drawInstance(gl, sketch, uniforms, sources) {
-    if (uniforms) {
-        shadeUniforms(sketch.shade, uniforms, sources);
-    }
-    if (sketch.form._elements && sketch.form._elements.glType != null) {
-        gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, sketch.form._elements.buffer);
-        gl.drawElements(sketch.form._drawType, sketch.form._itemCount, sketch.form._elements.glType, 0);
+    if (form._elements && form._elements.glType != null) {
+        gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, form._elements.buffer);
+        gl.drawElements(form._drawType, form._itemCount, form._elements.glType, 0);
     }
     else {
-        gl.drawArrays(sketch.form._drawType, 0, sketch.form._itemCount);
+        gl.drawArrays(form._drawType, 0, form._itemCount);
     }
 }
 function shadeForm(shade, form) {
@@ -134,6 +112,7 @@ function shadeForm(shade, form) {
     }
 }
 function shadeUniforms(shade, uniforms, sources) {
+    // console.log('shading uniforms', uniforms, shade.id)
     for (const name in uniforms) {
         const setter = shade._uniformSetters[name];
         if (setter) {
@@ -150,21 +129,19 @@ function shadeUniforms(shade, uniforms, sources) {
         }
     }
 }
-function renderLayer(gl, layer, uniforms, target, source) {
+const uniformsArray = [];
+function prepareTargetBuffer(gl, target) {
     if (target) {
+        console.log('binding target', target);
         gl.bindFramebuffer(gl.FRAMEBUFFER, target.antialias ? target.antiAliasFrameBuffer : target.frameBuffer);
         gl.viewport(0, 0, target.width, target.height);
     }
     else {
         gl.bindFramebuffer(gl.FRAMEBUFFER, null);
-        gl.viewport(0, 0, gl.canvas.width, gl.canvas.height);
+        gl.viewport(0, 0, gl.drawingBufferWidth, gl.drawingBufferHeight);
     }
-    if (layer._data.drawSettings) {
-        applyDrawSettings(gl, layer._data.drawSettings);
-    }
-    for (const sketch of layer.sketches) {
-        draw(gl, sketch, uniforms, source);
-    }
+}
+function antialiasTargetBuffer(gl, target) {
     if (target && target.antialias) {
         const gl2 = gl;
         // "blit" the cube into the color buffer, which adds antialiasing
@@ -173,22 +150,99 @@ function renderLayer(gl, layer, uniforms, target, source) {
         gl2.clearBufferfv(gl2.COLOR, 0, [1.0, 1.0, 1.0, 1.0]);
         gl2.blitFramebuffer(0, 0, target.width, target.height, 0, 0, target.width, target.height, gl.COLOR_BUFFER_BIT, gl.LINEAR);
     }
-    if (layer._data.drawSettings) {
-        revertDrawSettings(gl, layer._data.drawSettings);
+}
+function renderSketches(gl, sketches, uniforms, source) {
+    for (const sketch of sketches) {
+        if (sketch._drawSettings) {
+            applyDrawSettings(gl, sketch._drawSettings);
+        }
+        if (Array.isArray(sketch._uniforms) && sketch._uniforms.length) {
+            for (const uniform of sketch._uniforms) {
+                uniformsArray.length = 0;
+                uniforms && uniformsArray.push(uniforms);
+                uniformsArray.push(uniform);
+                render(gl, sketch.shade, sketch.form, uniformsArray, source);
+            }
+        }
+        else {
+            uniformsArray.length = 0;
+            uniforms && uniformsArray.push(uniforms);
+            sketch._uniforms && uniformsArray.push(sketch._uniforms);
+            render(gl, sketch.shade, sketch.form, uniformsArray, source);
+        }
+        if (sketch._drawSettings) {
+            revertDrawSettings(gl, sketch._drawSettings);
+        }
     }
 }
-function renderFrame(gl, frame) {
-    for (let i = 0; i < frame.layers.length; i++) {
-        const layer = frame.layers[i];
-        const layerPasses = layer._uniforms.length || 1;
-        for (let j = 0; j < layerPasses; j++) {
-            const target = frame._targets[0];
-            const sources = i + j === 0 && frame._textures.length
-                ? frame._textures
-                : frame._targets[1] && frame._targets[1].textures;
-            renderLayer(gl, layer, layer._uniforms[j], target, sources);
-            frame._swapTargets();
+function renderLayer(gl, layer) {
+    let remainingPasses = layer._passCount;
+    if (layer.sketches.length) {
+        const target = remainingPasses > 0 ? layer._targets[0] : undefined;
+        const sources = layer._textures.length
+            ? layer._textures
+            : layer._targets[1] && layer._targets[1].textures;
+        console.log('rendering layer sketches', target, sources, layer._targets, remainingPasses, layer._passCount);
+        prepareTargetBuffer(gl, target);
+        if (layer._data.drawSettings) {
+            applyDrawSettings(gl, layer._data.drawSettings);
         }
+        renderSketches(gl, layer.sketches, layer._uniforms, sources);
+        antialiasTargetBuffer(gl, target);
+        layer._swapTargets();
+        remainingPasses--;
+    }
+    if (layer.effects.length) {
+        for (let j = 0; j < layer.effects.length; j++) {
+            const effect = layer.effects[j];
+            if (effect._uniforms.length) {
+                for (let i = 0; i < effect._uniforms.length; i++) {
+                    const target = remainingPasses > 0 ? layer._targets[0] : undefined;
+                    const sources = i + j === 0 && layer._textures.length && !layer.sketches.length
+                        ? layer._textures
+                        : layer._targets[1] && layer._targets[1].textures;
+                    console.log('rendering effect with uniforms', target, sources, layer._targets, remainingPasses, layer._passCount);
+                    prepareTargetBuffer(gl, target);
+                    if (layer._data.drawSettings) {
+                        applyDrawSettings(gl, layer._data.drawSettings);
+                    }
+                    if (effect._drawSettings) {
+                        applyDrawSettings(gl, effect._drawSettings);
+                    }
+                    uniformsArray.length = 0;
+                    layer._uniforms && uniformsArray.push(layer._uniforms);
+                    uniformsArray.push(effect._uniforms[i]);
+                    render(gl, effect.shade, effect.form, uniformsArray, sources);
+                    layer._swapTargets();
+                    remainingPasses--;
+                }
+            }
+            else {
+                const target = remainingPasses > 0 ? layer._targets[0] : undefined;
+                const sources = j === 0 && layer._textures.length && !layer.sketches.length
+                    ? layer._textures
+                    : layer._targets[1] && layer._targets[1].textures;
+                console.log('rendering effect w/o uniforms', target, sources, layer._targets, remainingPasses, layer._passCount, layer._uniforms);
+                prepareTargetBuffer(gl, target);
+                if (layer._data.drawSettings) {
+                    applyDrawSettings(gl, layer._data.drawSettings);
+                }
+                if (effect._drawSettings) {
+                    applyDrawSettings(gl, effect._drawSettings);
+                }
+                uniformsArray.length = 0;
+                layer._uniforms && uniformsArray.push(layer._uniforms);
+                render(gl, effect.shade, effect.form, uniformsArray, sources);
+                layer._swapTargets();
+                remainingPasses--;
+            }
+            if (effect._drawSettings) {
+                revertDrawSettings(gl, effect._drawSettings);
+            }
+        }
+    }
+    if (layer._data.drawSettings) {
+        revertDrawSettings(gl, layer._data.drawSettings);
     }
 }
 //# sourceMappingURL=painter.js.map

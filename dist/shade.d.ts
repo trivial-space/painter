@@ -15,6 +15,6 @@ export declare class Shade {
         [id: string]: AttribSetter;
     };
     constructor(_painter: Painter, id?: string);
-    update(data: ShadeData): this | undefined;
+    update(data: ShadeData): this;
     destroy(): void;
 }

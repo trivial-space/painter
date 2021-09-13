@@ -97,7 +97,10 @@ function animate() {
 		mat4.rotateZ(transform, transform, rotationZ * (i / triangleCount))
 		mat4.rotateX(transform, transform, 1.78 * rotationZ)
 	})
-	painter.draw({ sketches: sketch, uniforms: { camera: projection } })
+	painter.draw({
+		sketches: sketch,
+		uniforms: { camera: projection },
+	})
 	requestAnimationFrame(animate)
 }
 

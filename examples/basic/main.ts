@@ -33,12 +33,11 @@ const red = painter.createShade().update({
 })
 
 const textureLayer = painter.createLayer().update({
-	sketches: [
-		painter.createSketch().update({
-			form: plane,
-			shade: red,
-		}),
-	],
+	sketches: painter.createSketch().update({
+		form: plane,
+		shade: red,
+	}),
+
 	drawSettings: {
 		clearColor: [1.0, 0.0, 1.0, 1.0],
 		clearBits: gl.COLOR_BUFFER_BIT,
@@ -85,7 +84,7 @@ const planeLayer = painter.createLayer().update({
 		form: plane,
 		shade: paintTexture,
 		uniforms: {
-			fufu: '0',
+			fufu: () => textureLayer.image(),
 		},
 	}),
 	effects: effect,
@@ -93,6 +92,7 @@ const planeLayer = painter.createLayer().update({
 		clearColor: [0.0, 0.0, 0.0, 1.0],
 		clearBits: gl.COLOR_BUFFER_BIT,
 	},
+	// directRender: true,
 })
 
 painter.compose(textureLayer, planeLayer).show(planeLayer)

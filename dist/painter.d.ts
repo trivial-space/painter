@@ -1,9 +1,8 @@
 import { Form } from './form';
-import { Frame } from './frame';
 import { Layer } from './layer';
-import { DrawSettings, GL, PainterOptions, Uniforms } from './painter-types';
+import { DrawSettings, GL, LayerData, PainterOptions } from './painter-types';
 import { Shade } from './shade';
-import { Sketch } from './sketch';
+import { Effect, Sketch } from './sketch';
 export declare class Painter {
     canvas: HTMLCanvasElement;
     sizeMultiplier: number;
@@ -11,7 +10,8 @@ export declare class Painter {
     isWebGL2: boolean;
     maxBufferSamples: number;
     _renderQuad: Form;
-    _staticSketch: Sketch;
+    _staticEffect: Effect;
+    _defaultLayer: Layer;
     constructor(canvas: HTMLCanvasElement, opts?: PainterOptions);
     resize(): this;
     destroy(): void;
@@ -19,11 +19,9 @@ export declare class Painter {
     createForm(id?: string): Form;
     createShade(id?: string): Shade;
     createSketch(id?: string): Sketch;
-    createFlatSketch(id?: string): Sketch;
-    createFrame(id?: string): Frame;
+    createEffect(id?: string): Effect;
     createLayer(id?: string): Layer;
-    createEffect(id?: string): Layer;
-    draw(sketch: Sketch, globalUniforms?: Uniforms): this;
-    compose(...frames: Frame[]): this;
-    display(frame: Frame, idx?: number): this;
+    draw(opts: LayerData): this;
+    compose(...layers: Layer[]): this;
+    show(layer: Layer, idx?: number): this;
 }

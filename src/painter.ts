@@ -27,7 +27,7 @@ export class Painter {
 	isWebGL2: boolean = true
 	maxBufferSamples = 0
 	_renderQuad: Form
-	_staticEffect: Sketch
+	_staticEffect: Effect
 	_defaultLayer: Layer
 
 	constructor(public canvas: HTMLCanvasElement, opts: PainterOptions = {}) {
@@ -113,7 +113,8 @@ export class Painter {
 		}
 		return this
 	}
-	show(layer: Layer, idx = 0) {
+	show(layer: Layer, idx?: number) {
+		console.log(layer.image(idx))
 		return this.draw({
 			effects: this._staticEffect,
 			uniforms: { source: layer.image(idx) },
@@ -161,6 +162,7 @@ function shadeUniforms(
 	uniforms: Uniforms,
 	sources?: RenderSources,
 ) {
+	// console.log('shading uniforms', uniforms, shade.id)
 	for (const name in uniforms) {
 		const setter = shade._uniformSetters[name]
 		if (setter) {
@@ -181,6 +183,7 @@ const uniformsArray: Uniforms[] = []
 
 function prepareTargetBuffer(gl: GL, target?: RenderTarget | undefined) {
 	if (target) {
+		console.log('binding target', target)
 		gl.bindFramebuffer(
 			gl.FRAMEBUFFER,
 			target.antialias ? target.antiAliasFrameBuffer : target.frameBuffer,
@@ -217,17 +220,14 @@ function antialiasTargetBuffer(gl: GL, target?: RenderTarget) {
 function renderSketches(
 	gl: GL,
 	sketches: Sketch[],
-	uniforms?: Uniforms,
-	target?: RenderTarget,
+	uniforms?: Uniforms | null,
 	source?: RenderSources,
 ) {
-	prepareTargetBuffer(gl, target)
-
 	for (const sketch of sketches) {
 		if (sketch._drawSettings) {
 			applyDrawSettings(gl, sketch._drawSettings)
 		}
-		if (Array.isArray(sketch._uniforms)) {
+		if (Array.isArray(sketch._uniforms) && sketch._uniforms.length) {
 			for (const uniform of sketch._uniforms) {
 				uniformsArray.length = 0
 				uniforms && uniformsArray.push(uniforms)
@@ -244,26 +244,36 @@ function renderSketches(
 			revertDrawSettings(gl, sketch._drawSettings)
 		}
 	}
-
-	antialiasTargetBuffer(gl, target)
 }
 
 function renderLayer(gl: GL, layer: Layer) {
-	if (layer._data.drawSettings) {
-		applyDrawSettings(gl, layer._data.drawSettings)
-	}
-
 	let remainingPasses = layer._passCount
-	console.log(remainingPasses)
 
 	if (layer.sketches.length) {
-		console.log('rendering sketches', layer.sketches)
 		const target = remainingPasses > 0 ? layer._targets[0] : undefined
 		const sources = layer._textures.length
 			? layer._textures
 			: layer._targets[1] && layer._targets[1].textures
 
-		renderSketches(gl, layer.sketches, layer._uniforms, target, sources)
+		console.log(
+			'rendering layer sketches',
+			target,
+			sources,
+			layer._targets,
+			remainingPasses,
+			layer._passCount,
+		)
+
+		prepareTargetBuffer(gl, target)
+
+		if (layer._data.drawSettings) {
+			applyDrawSettings(gl, layer._data.drawSettings)
+		}
+
+		renderSketches(gl, layer.sketches, layer._uniforms, sources)
+
+		antialiasTargetBuffer(gl, target)
+
 		layer._swapTargets()
 		remainingPasses--
 	}
@@ -271,24 +281,32 @@ function renderLayer(gl: GL, layer: Layer) {
 	if (layer.effects.length) {
 		for (let j = 0; j < layer.effects.length; j++) {
 			const effect = layer.effects[j]
-			// if (effect._drawSettings) {
-			// 	applyDrawSettings(gl, effect._drawSettings)
-			// }
+
 			if (effect._uniforms.length) {
 				for (let i = 0; i < effect._uniforms.length; i++) {
 					const target = remainingPasses > 0 ? layer._targets[0] : undefined
-					console.log(
-						'effect uniforms',
-						target,
-						remainingPasses,
-						layer._passCount,
-					)
 					const sources =
-						i + j === 0 && layer._textures.length && !layer.sketches
+						i + j === 0 && layer._textures.length && !layer.sketches.length
 							? layer._textures
 							: layer._targets[1] && layer._targets[1].textures
 
+					console.log(
+						'rendering effect with uniforms',
+						target,
+						sources,
+						layer._targets,
+						remainingPasses,
+						layer._passCount,
+					)
+
 					prepareTargetBuffer(gl, target)
+
+					if (layer._data.drawSettings) {
+						applyDrawSettings(gl, layer._data.drawSettings)
+					}
+					if (effect._drawSettings) {
+						applyDrawSettings(gl, effect._drawSettings)
+					}
 
 					uniformsArray.length = 0
 					layer._uniforms && uniformsArray.push(layer._uniforms)
@@ -300,18 +318,29 @@ function renderLayer(gl: GL, layer: Layer) {
 				}
 			} else {
 				const target = remainingPasses > 0 ? layer._targets[0] : undefined
-				console.log(
-					'no effect uniforms',
-					target,
-					remainingPasses,
-					layer._passCount,
-				)
 				const sources =
-					j === 0 && layer._textures.length && !layer.sketches
+					j === 0 && layer._textures.length && !layer.sketches.length
 						? layer._textures
 						: layer._targets[1] && layer._targets[1].textures
 
+				console.log(
+					'rendering effect w/o uniforms',
+					target,
+					sources,
+					layer._targets,
+					remainingPasses,
+					layer._passCount,
+					layer._uniforms,
+				)
+
 				prepareTargetBuffer(gl, target)
+
+				if (layer._data.drawSettings) {
+					applyDrawSettings(gl, layer._data.drawSettings)
+				}
+				if (effect._drawSettings) {
+					applyDrawSettings(gl, effect._drawSettings)
+				}
 
 				uniformsArray.length = 0
 				layer._uniforms && uniformsArray.push(layer._uniforms)
@@ -321,9 +350,9 @@ function renderLayer(gl: GL, layer: Layer) {
 				remainingPasses--
 			}
 
-			// if (effect._drawSettings) {
-			// 	revertDrawSettings(gl, effect._drawSettings)
-			// }
+			if (effect._drawSettings) {
+				revertDrawSettings(gl, effect._drawSettings)
+			}
 		}
 	}
 

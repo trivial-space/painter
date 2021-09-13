@@ -18,7 +18,7 @@ export class Layer {
 	_passCount = 0
 
 	_data: LayerData = {}
-	_uniforms: Uniforms = {}
+	_uniforms: Uniforms | null = null
 
 	constructor(private _painter: Painter, public id = 'Layer' + layerCount++) {}
 
@@ -51,12 +51,13 @@ export class Layer {
 			(count, effect) => count + (effect._uniforms.length || 1),
 			this.sketches.length ? 1 : 0,
 		)
+
+		const targetCount = selfReferencing || passCount > 1 ? 2 : passCount
+
 		if (data.directRender || this._data.directRender) {
 			passCount -= 1
 		}
 		this._passCount = passCount
-
-		const targetCount = selfReferencing || passCount > 1 ? 2 : passCount
 
 		const gl = this._painter.gl
 
@@ -125,7 +126,7 @@ export class Layer {
 		this.height = 0
 		this._data = {}
 		this._textures = []
-		this._uniforms = []
+		this._uniforms = null
 	}
 
 	_destroyTargets() {
