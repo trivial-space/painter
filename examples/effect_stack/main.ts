@@ -32,10 +32,10 @@ const effect = painter.createEffect().update({
 	uniforms: passes,
 })
 
-const image = painter.createFrame().update({
+const image = painter.createLayer().update({
 	width: size,
 	height: size,
-	layers: effect,
+	effects: effect,
 	bufferStructure: [
 		{
 			minFilter: 'NEAREST',
@@ -88,9 +88,8 @@ const scene = painter.createLayer().update({
 		clearColor: [1, 0.7, 0.8, 1],
 		clearBits: painter.gl.COLOR_BUFFER_BIT,
 	},
+	directRender: true,
 })
-
-const main = painter.createFrame().update({ layers: scene })
 
 const img = new Image()
 
@@ -102,12 +101,7 @@ img.onload = () => {
 			magFilter: 'LINEAR',
 		},
 	})
-	painter
-		.compose(
-			image,
-			main,
-		)
-		.display(main)
+	painter.compose(image, scene)
 }
 
 img.src = '../hepatica_256.png'

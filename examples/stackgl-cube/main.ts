@@ -77,8 +77,7 @@ function animate() {
 	mat4.rotateY(sphereMat, sphereMat, rotationX)
 	mat4.rotateZ(sphereMat, sphereMat, rotationZ)
 	mat4.rotateX(sphereMat, sphereMat, 1.78 * rotationZ)
-	painter.draw(cubeSketch)
-	painter.draw(sphereSketch)
+	painter.draw({ sketches: [cubeSketch, sphereSketch] })
 	requestAnimationFrame(animate)
 }
 

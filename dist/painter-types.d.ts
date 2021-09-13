@@ -1,8 +1,7 @@
 import { TEXTURE_FORMAT, TEXTURE_FORMAT_INTERNAL } from './contants';
 import { Form } from './form';
-import { Layer } from './layer';
 import { Shade } from './shade';
-import { Sketch } from './sketch';
+import { Effect, Sketch } from './sketch';
 export declare type GL1 = WebGLRenderingContext;
 export declare type GL2 = WebGL2RenderingContext;
 export declare type GL = GL1 | GL2;
@@ -91,26 +90,28 @@ export interface DrawSettings {
     frontFace?: number;
     lineWidth?: number;
 }
+export interface EffectData {
+    frag?: string;
+    uniforms?: Uniforms | Uniforms[];
+}
 export interface SketchData {
     form?: Form;
     shade?: Shade;
-    uniforms?: Uniforms | Uniforms[];
     drawSettings?: DrawSettings;
+    uniforms?: Uniforms | Uniforms[];
 }
 export declare type MagFilter = 'LINEAR' | 'NEAREST';
 export declare type MinFilter = MagFilter | 'LINEAR_MIPMAP_LINEAR' | 'LINEAR_MIPMAP_NEAREST' | 'NEAREST_MIPMAP_LINEAR' | 'NEAREST_MIPMAP_NEAREST';
 export declare type Wrap = 'CLAMP_TO_EDGE' | 'REPEAT' | 'MIRRORED_REPEAT';
 export declare type Cull = 'FRONT' | 'BACK' | 'FRONT_AND_BACK';
-export interface FrameData extends RenderTargetData {
-    layers?: Layer | Layer[];
+export interface LayerData extends RenderTargetData {
     texture?: TextureData;
-    selfReferencing?: boolean;
-}
-export interface LayerData {
-    drawSettings?: DrawSettings;
     sketches?: Sketch | Sketch[];
-    uniforms?: Uniforms | Uniforms[];
-    frag?: string;
+    effects?: Effect | Effect[];
+    uniforms?: Uniforms;
+    drawSettings?: DrawSettings;
+    selfReferencing?: boolean;
+    directRender?: boolean;
 }
 export declare type RenderSources = Array<WebGLTexture | null>;
 export declare type PainterOptions = WebGLContextAttributes & {

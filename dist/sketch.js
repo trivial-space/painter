@@ -28,4 +28,24 @@ export class Sketch {
         this._uniforms = [];
     }
 }
+let effectCounter = 1;
+export class Effect extends Sketch {
+    constructor(_form, _shade, id = 'Effect' + effectCounter++) {
+        super(id);
+        this.id = id;
+        this.form = _form;
+        this.shade = _shade;
+    }
+    update(data) {
+        if (data.frag) {
+            this.shade.update({ frag: data.frag });
+        }
+        if (data.uniforms) {
+            this._uniforms = Array.isArray(data.uniforms)
+                ? data.uniforms
+                : [data.uniforms];
+        }
+        return this;
+    }
+}
 //# sourceMappingURL=sketch.js.map

@@ -2,9 +2,6 @@ import { painter } from '../painter'
 
 const { gl } = painter
 
-painter.sizeMultiplier = window.devicePixelRatio
-painter.resize()
-
 const plane = painter.createForm().update({
 	attribs: {
 		position: {
@@ -33,12 +30,11 @@ const red = painter.createShade().update({
 })
 
 const textureLayer = painter.createLayer().update({
-	sketches: [
-		painter.createSketch().update({
-			form: plane,
-			shade: red,
-		}),
-	],
+	sketches: painter.createSketch().update({
+		form: plane,
+		shade: red,
+	}),
+
 	drawSettings: {
 		clearColor: [1.0, 0.0, 1.0, 1.0],
 		clearBits: gl.COLOR_BUFFER_BIT,
@@ -66,22 +62,6 @@ const paintTexture = painter.createShade().update({
 	`,
 })
 
-const planeLayer = painter.createLayer().update({
-	sketches: [
-		painter.createSketch().update({
-			form: plane,
-			shade: paintTexture,
-			uniforms: {
-				fufu: '0',
-			},
-		}),
-	],
-	drawSettings: {
-		clearColor: [0.0, 0.0, 0.0, 1.0],
-		clearBits: gl.COLOR_BUFFER_BIT,
-	},
-})
-
 const effect = painter.createEffect().update({
 	frag: `precision mediump float;
 		uniform sampler2D source;
@@ -96,8 +76,19 @@ const effect = painter.createEffect().update({
 	},
 })
 
-const scene = painter.createFrame().update({
-	layers: [textureLayer, planeLayer, effect],
+const planeLayer = painter.createLayer().update({
+	sketches: painter.createSketch().update({
+		form: plane,
+		shade: paintTexture,
+		uniforms: {
+			fufu: () => textureLayer.image(),
+		},
+	}),
+	effects: effect,
+	drawSettings: {
+		clearColor: [0.0, 0.0, 0.0, 1.0],
+		clearBits: gl.COLOR_BUFFER_BIT,
+	},
 })
 
-painter.compose(scene).display(scene)
+painter.compose(textureLayer, planeLayer).show(planeLayer)

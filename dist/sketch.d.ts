@@ -1,5 +1,5 @@
 import { Form } from './form';
-import { DrawSettings, SketchData, Uniforms } from './painter-types';
+import { DrawSettings, EffectData, SketchData, Uniforms } from './painter-types';
 import { Shade } from './shade';
 export declare class Sketch {
     id: string;
@@ -10,4 +10,9 @@ export declare class Sketch {
     constructor(id?: string);
     update(data: SketchData): this;
     destroy(): void;
+}
+export declare class Effect extends Sketch {
+    id: string;
+    constructor(_form: Form, _shade: Shade, id?: string);
+    update(data: EffectData): this;
 }
