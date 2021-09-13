@@ -1,6 +1,6 @@
 # trivial space painter
 
-A Typescript WebGL rendering library, that enables to declaratively define and
+A Typescript WebGL and WebGL2 rendering library, that enables to declaratively define and
 change scenes. Rendering is organised as a graph of Layers, for easy compositing
 and render-to-texture effects. There is no scenegraph here. Optimized for live
 coding and post processing.
