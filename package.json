@@ -21,6 +21,7 @@
   "scripts": {
     "dev": "webpack serve --config webpack.examples.config.js --port 8081",
     "examples": "npm run dev",
+    "test:types": "tsc --noEmit",
     "build": "rm -rf ./dist && tsc -p \"./tsconfig.build.json\" && webpack",
     "prepublish": "npm run build"
   },

@@ -22,8 +22,8 @@ export class Sketch {
         return this;
     }
     destroy() {
-        this.form && this.form.destroy();
-        this.shade && this.shade.destroy();
+        this.form = null;
+        this.shade = null;
         this._drawSettings = undefined;
         this._uniforms = [];
     }
@@ -37,8 +37,12 @@ export class Effect extends Sketch {
         this.shade = _shade;
     }
     update(data) {
+        var _a;
         if (data.frag) {
-            this.shade.update({ frag: data.frag });
+            (_a = this.shade) === null || _a === void 0 ? void 0 : _a.update({ frag: data.frag });
+        }
+        if (data.drawSettings) {
+            this._drawSettings = data.drawSettings;
         }
         if (data.uniforms) {
             this._uniforms = Array.isArray(data.uniforms)

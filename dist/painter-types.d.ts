@@ -92,6 +92,7 @@ export interface DrawSettings {
 }
 export interface EffectData {
     frag?: string;
+    drawSettings?: DrawSettings;
     uniforms?: Uniforms | Uniforms[];
 }
 export interface SketchData {

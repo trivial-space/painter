@@ -5,8 +5,8 @@ import { Shade } from './shade'
 let sketchCounter = 1
 
 export class Sketch {
-	form!: Form
-	shade!: Shade
+	form!: Form | null
+	shade!: Shade | null
 
 	_drawSettings?: DrawSettings
 	_uniforms: Uniforms[] = []
@@ -36,8 +36,8 @@ export class Sketch {
 	}
 
 	destroy() {
-		this.form && this.form.destroy()
-		this.shade && this.shade.destroy()
+		this.form = null
+		this.shade = null
 		this._drawSettings = undefined
 		this._uniforms = []
 	}
@@ -58,7 +58,11 @@ export class Effect extends Sketch {
 
 	update(data: EffectData) {
 		if (data.frag) {
-			this.shade.update({ frag: data.frag })
+			this.shade?.update({ frag: data.frag })
+		}
+
+		if (data.drawSettings) {
+			this._drawSettings = data.drawSettings
 		}
 
 		if (data.uniforms) {

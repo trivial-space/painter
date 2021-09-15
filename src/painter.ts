@@ -221,6 +221,9 @@ function renderSketches(
 	source?: RenderSources,
 ) {
 	for (const sketch of sketches) {
+		if (!(sketch.form && sketch.shade)) {
+			throw Error('cannot render incomplete sketch')
+		}
 		if (sketch._drawSettings) {
 			applyDrawSettings(gl, sketch._drawSettings)
 		}
@@ -269,6 +272,9 @@ function renderLayer(gl: GL, layer: Layer) {
 	if (layer.effects.length) {
 		for (let j = 0; j < layer.effects.length; j++) {
 			const effect = layer.effects[j]
+			if (!(effect.form && effect.shade)) {
+				throw Error('cannot render incomplete effect')
+			}
 
 			if (effect._uniforms.length) {
 				for (let i = 0; i < effect._uniforms.length; i++) {
