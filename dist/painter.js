@@ -128,9 +128,11 @@ function shadeUniforms(shade, uniforms, sources) {
     }
 }
 const uniformsArray = [];
-function prepareTargetBuffer(gl, target) {
+function prepareTargetBuffer(gl, target, antialias) {
     if (target) {
-        gl.bindFramebuffer(gl.FRAMEBUFFER, target.antialias ? target.antiAliasFrameBuffer : target.frameBuffer);
+        gl.bindFramebuffer(gl.FRAMEBUFFER, target.antialias && antialias
+            ? target.antiAliasFrameBuffer
+            : target.frameBuffer);
         gl.viewport(0, 0, target.width, target.height);
     }
     else {
@@ -182,7 +184,7 @@ function renderLayer(gl, layer) {
         const sources = layer._textures.length
             ? layer._textures
             : layer._targets[1] && layer._targets[1].textures;
-        prepareTargetBuffer(gl, target);
+        prepareTargetBuffer(gl, target, true);
         if (layer._data.drawSettings) {
             applyDrawSettings(gl, layer._data.drawSettings);
         }
@@ -203,7 +205,7 @@ function renderLayer(gl, layer) {
                     const sources = i + j === 0 && layer._textures.length && !layer.sketches.length
                         ? layer._textures
                         : layer._targets[1] && layer._targets[1].textures;
-                    prepareTargetBuffer(gl, target);
+                    prepareTargetBuffer(gl, target, false);
                     if (layer._data.drawSettings) {
                         applyDrawSettings(gl, layer._data.drawSettings);
                     }
@@ -214,7 +216,6 @@ function renderLayer(gl, layer) {
                     layer._uniforms && uniformsArray.push(layer._uniforms);
                     uniformsArray.push(effect._uniforms[i]);
                     render(gl, effect.shade, effect.form, uniformsArray, sources);
-                    antialiasTargetBuffer(gl, target);
                     layer._swapTargets();
                     remainingPasses--;
                 }
@@ -224,7 +225,7 @@ function renderLayer(gl, layer) {
                 const sources = j === 0 && layer._textures.length && !layer.sketches.length
                     ? layer._textures
                     : layer._targets[1] && layer._targets[1].textures;
-                prepareTargetBuffer(gl, target);
+                prepareTargetBuffer(gl, target, false);
                 if (layer._data.drawSettings) {
                     applyDrawSettings(gl, layer._data.drawSettings);
                 }
@@ -234,7 +235,6 @@ function renderLayer(gl, layer) {
                 uniformsArray.length = 0;
                 layer._uniforms && uniformsArray.push(layer._uniforms);
                 render(gl, effect.shade, effect.form, uniformsArray, sources);
-                antialiasTargetBuffer(gl, target);
                 layer._swapTargets();
                 remainingPasses--;
             }

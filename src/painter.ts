@@ -179,11 +179,17 @@ function shadeUniforms(
 
 const uniformsArray: Uniforms[] = []
 
-function prepareTargetBuffer(gl: GL, target?: RenderTarget | undefined) {
+function prepareTargetBuffer(
+	gl: GL,
+	target: RenderTarget | undefined,
+	antialias: boolean,
+) {
 	if (target) {
 		gl.bindFramebuffer(
 			gl.FRAMEBUFFER,
-			target.antialias ? target.antiAliasFrameBuffer : target.frameBuffer,
+			target.antialias && antialias
+				? target.antiAliasFrameBuffer
+				: target.frameBuffer,
 		)
 		gl.viewport(0, 0, target.width, target.height)
 	} else {
@@ -255,7 +261,7 @@ function renderLayer(gl: GL, layer: Layer) {
 			? layer._textures
 			: layer._targets[1] && layer._targets[1].textures
 
-		prepareTargetBuffer(gl, target)
+		prepareTargetBuffer(gl, target, true)
 
 		if (layer._data.drawSettings) {
 			applyDrawSettings(gl, layer._data.drawSettings)
@@ -284,7 +290,7 @@ function renderLayer(gl: GL, layer: Layer) {
 							? layer._textures
 							: layer._targets[1] && layer._targets[1].textures
 
-					prepareTargetBuffer(gl, target)
+					prepareTargetBuffer(gl, target, false)
 
 					if (layer._data.drawSettings) {
 						applyDrawSettings(gl, layer._data.drawSettings)
@@ -298,8 +304,6 @@ function renderLayer(gl: GL, layer: Layer) {
 					uniformsArray.push(effect._uniforms[i])
 					render(gl, effect.shade, effect.form, uniformsArray, sources)
 
-					antialiasTargetBuffer(gl, target)
-
 					layer._swapTargets()
 					remainingPasses--
 				}
@@ -310,7 +314,7 @@ function renderLayer(gl: GL, layer: Layer) {
 						? layer._textures
 						: layer._targets[1] && layer._targets[1].textures
 
-				prepareTargetBuffer(gl, target)
+				prepareTargetBuffer(gl, target, false)
 
 				if (layer._data.drawSettings) {
 					applyDrawSettings(gl, layer._data.drawSettings)
@@ -322,8 +326,6 @@ function renderLayer(gl: GL, layer: Layer) {
 				uniformsArray.length = 0
 				layer._uniforms && uniformsArray.push(layer._uniforms)
 				render(gl, effect.shade, effect.form, uniformsArray, sources)
-
-				antialiasTargetBuffer(gl, target)
 
 				layer._swapTargets()
 				remainingPasses--
