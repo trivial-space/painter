@@ -21,7 +21,7 @@ export class Layer {
             this._targets[this._targets.length - 1].textures[i]) ||
             this._textures[i]);
     }
-    update(data) {
+    update(data = {}) {
         var _a, _b, _c, _d;
         if (data.sketches) {
             this.sketches = Array.isArray(data.sketches)

@@ -17,7 +17,7 @@ export declare class Layer {
     _uniforms: Uniforms | null;
     constructor(_painter: Painter, id?: string);
     image(i?: number): Texture;
-    update(data: LayerData): this;
+    update(data?: LayerData): this;
     destroy(): void;
     clear(): void;
     _destroyTargets(): void;

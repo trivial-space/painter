@@ -30,7 +30,7 @@ export class Layer {
 		)
 	}
 
-	update(data: LayerData) {
+	update(data: LayerData = {}) {
 		if (data.sketches) {
 			this.sketches = Array.isArray(data.sketches)
 				? data.sketches
