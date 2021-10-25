@@ -44,12 +44,14 @@ module.exports = {
 
 	devServer: {
 		hot: true,
+		devMiddleware: {
+			publicPath: '/',
+			// match the output `publicPath`
+		},
+
 		// enable HMR on the server
 
-		contentBase: resolve(__dirname, 'examples'),
+		static: ['examples'],
 		// match the output path
-
-		publicPath: '/',
-		// match the output `publicPath`
 	},
 }

@@ -19,10 +19,7 @@ export function setBlendFunc(gl: GL, blendOpts: [string, string]) {
  * @param {number} [multiplier] optional `window.devicePixelRatio`.
  * @return {boolean} true if the canvas was resized.
  */
-export function resizeCanvas(
-	canvas: HTMLCanvasElement | OffscreenCanvas,
-	multiplier = 1,
-) {
+export function resizeCanvas(canvas: HTMLCanvasElement, multiplier = 1) {
 	let width = canvas.width
 	let height = canvas.height
 
