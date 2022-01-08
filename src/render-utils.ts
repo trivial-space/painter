@@ -739,6 +739,10 @@ export function applyDrawSettings(gl: GL, settings: DrawSettings) {
 		gl.blendFunc.apply(gl, settings.blendFunc)
 	}
 
+	if (settings.blendFuncSeparate) {
+		gl.blendFuncSeparate.apply(gl, settings.blendFuncSeparate)
+	}
+
 	if (settings.depthFunc != null) {
 		gl.depthFunc(settings.depthFunc)
 	}

@@ -82,6 +82,7 @@ export interface DrawSettings {
     colorMask?: [boolean, boolean, boolean, boolean];
     depthFunc?: number;
     blendFunc?: [number, number];
+    blendFuncSeparate?: [number, number, number, number];
     enable?: number[];
     disable?: number[];
     cullFace?: number;
