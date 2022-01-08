@@ -1,6 +1,6 @@
 import { equalObject } from 'tvs-libs/dist/utils/predicates'
 import { Painter } from './painter'
-import { GL2, RenderTargetData, TextureOptions } from './painter-types'
+import { RenderTargetData, TextureOptions } from './painter-types'
 import { Texture } from './texture'
 
 let targetCount = 1
@@ -50,11 +50,7 @@ export class RenderTarget {
 		if (data.bufferStructure && data.bufferStructure.length) {
 			this.bufferStructure = data.bufferStructure
 			if (this.bufferStructure.some(t => t.type === 'FLOAT')) {
-				if (this._painter.isWebGL2) {
-					gl.getExtension('EXT_color_buffer_float')
-				} else {
-					gl.getExtension('OES_texture_float')
-				}
+				gl.getExtension('EXT_color_buffer_float')
 			}
 		}
 
@@ -64,30 +60,17 @@ export class RenderTarget {
 		gl.bindFramebuffer(gl.FRAMEBUFFER, this.frameBuffer)
 
 		if (texCount > 1) {
-			let glx!: WEBGL_draw_buffers
-			if (!this._painter.isWebGL2) {
-				glx = gl.getExtension('WEBGL_draw_buffers')!
-			}
-
-			const attachment = this._painter.isWebGL2
-				? gl.COLOR_ATTACHMENT0
-				: glx.COLOR_ATTACHMENT0_WEBGL
+			const attachment = gl.COLOR_ATTACHMENT0
 			for (let i = 0; i < texCount; i++) {
 				bufferAttachments[i] = attachment + i
 			}
 
-			this._painter.isWebGL2
-				? (gl as GL2).drawBuffers(bufferAttachments)
-				: glx.drawBuffersWEBGL(bufferAttachments)
+			gl.drawBuffers(bufferAttachments)
 		}
 
-		this.antialias =
-			texCount === 1 &&
-			this._painter.isWebGL2 &&
-			(data.antialias || this._data?.antialias)
+		this.antialias = texCount === 1 && (data.antialias || this._data?.antialias)
 
 		if (this.antialias) {
-			const gl2 = gl as GL2
 			if (this.antiAliasFrameBuffer == null) {
 				this.antiAliasFrameBuffer = gl.createFramebuffer()
 			}
@@ -97,10 +80,10 @@ export class RenderTarget {
 
 			gl.bindFramebuffer(gl.FRAMEBUFFER, this.antiAliasFrameBuffer)
 			gl.bindRenderbuffer(gl.RENDERBUFFER, this.antiAliasRenderBuffer)
-			gl2.renderbufferStorageMultisample(
+			gl.renderbufferStorageMultisample(
 				gl.RENDERBUFFER,
-				Math.min(4, gl.getParameter(gl2.MAX_SAMPLES)),
-				gl2.RGBA8,
+				Math.min(4, gl.getParameter(gl.MAX_SAMPLES)),
+				gl.RGBA8,
 				width,
 				height,
 			)
@@ -112,9 +95,9 @@ export class RenderTarget {
 			)
 
 			gl.bindRenderbuffer(gl.RENDERBUFFER, this.depthBuffer)
-			gl2.renderbufferStorageMultisample(
+			gl.renderbufferStorageMultisample(
 				gl.RENDERBUFFER,
-				Math.min(4, gl.getParameter(gl2.MAX_SAMPLES)),
+				Math.min(4, gl.getParameter(gl.MAX_SAMPLES)),
 				gl.DEPTH_COMPONENT16,
 				width,
 				height,

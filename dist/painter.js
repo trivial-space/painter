@@ -8,28 +8,17 @@ import { resizeCanvas } from './utils/context';
 export class Painter {
     constructor(canvas, opts = {}) {
         this.canvas = canvas;
-        this.isWebGL2 = true;
         this.maxBufferSamples = 0;
         let gl = null;
-        if (!opts.useWebGL1) {
-            gl =
-                canvas.getContext('webgl2', opts) ||
-                    canvas.getContext('experimental-webgl2', opts);
-        }
+        gl =
+            canvas.getContext('webgl2', opts) ||
+                canvas.getContext('experimental-webgl2', opts);
         if (gl == null) {
-            this.isWebGL2 = false;
-            gl =
-                canvas.getContext('webgl', opts) ||
-                    canvas.getContext('experimental-webgl', opts);
-        }
-        if (gl == null) {
-            throw Error('Cannot initialize WebGL.');
+            throw Error('Cannot initialize WebGL2.');
         }
         this.gl = gl;
         this.sizeMultiplier = opts.sizeMultiplier || 1;
-        if (this.isWebGL2) {
-            this.maxBufferSamples = gl.getParameter(gl.MAX_SAMPLES);
-        }
+        this.maxBufferSamples = gl.getParameter(gl.MAX_SAMPLES);
         this.resize();
         applyDrawSettings(gl, getDefaultLayerSettings(gl));
         this._renderQuad = this.createForm().update(defaultForms.renderQuad);
@@ -142,12 +131,11 @@ function prepareTargetBuffer(gl, target, antialias) {
 }
 function antialiasTargetBuffer(gl, target) {
     if (target && target.antialias) {
-        const gl2 = gl;
         // "blit" the cube into the color buffer, which adds antialiasing
-        gl.bindFramebuffer(gl2.READ_FRAMEBUFFER, target.antiAliasFrameBuffer);
-        gl.bindFramebuffer(gl2.DRAW_FRAMEBUFFER, target.frameBuffer);
-        gl2.clearBufferfv(gl2.COLOR, 0, [1.0, 1.0, 1.0, 1.0]);
-        gl2.blitFramebuffer(0, 0, target.width, target.height, 0, 0, target.width, target.height, gl.COLOR_BUFFER_BIT, gl.LINEAR);
+        gl.bindFramebuffer(gl.READ_FRAMEBUFFER, target.antiAliasFrameBuffer);
+        gl.bindFramebuffer(gl.DRAW_FRAMEBUFFER, target.frameBuffer);
+        gl.clearBufferfv(gl.COLOR, 0, [1.0, 1.0, 1.0, 1.0]);
+        gl.blitFramebuffer(0, 0, target.width, target.height, 0, 0, target.width, target.height, gl.COLOR_BUFFER_BIT, gl.LINEAR);
     }
 }
 function renderSketches(gl, sketches, uniforms, source) {

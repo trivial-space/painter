@@ -7,7 +7,6 @@ export declare class Painter {
     canvas: HTMLCanvasElement;
     sizeMultiplier: number;
     gl: GL;
-    isWebGL2: boolean;
     maxBufferSamples: number;
     _renderQuad: Form;
     _staticEffect: Effect;

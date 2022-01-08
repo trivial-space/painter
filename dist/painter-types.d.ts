@@ -2,9 +2,7 @@ import { TEXTURE_FORMAT, TEXTURE_FORMAT_INTERNAL } from './contants';
 import { Form } from './form';
 import { Shade } from './shade';
 import { Effect, Sketch } from './sketch';
-export declare type GL1 = WebGLRenderingContext;
-export declare type GL2 = WebGL2RenderingContext;
-export declare type GL = GL1 | GL2;
+export declare type GL = WebGL2RenderingContext;
 export declare type ColorRG = [number, number];
 export declare type ColorRGB = [number, number, number];
 export declare type ColorRGBA = [number, number, number, number];
@@ -117,5 +115,4 @@ export interface LayerData extends RenderTargetData {
 export declare type RenderSources = Array<WebGLTexture | null>;
 export declare type PainterOptions = WebGLContextAttributes & {
     sizeMultiplier?: number;
-    useWebGL1?: boolean;
 };

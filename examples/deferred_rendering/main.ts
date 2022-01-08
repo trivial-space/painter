@@ -3,14 +3,12 @@ import createCube from 'primitive-cube'
 import { Painter } from '../../src'
 import { makeClear } from '../../src/utils/context'
 import { convertStackGLGeometry } from '../../src/utils/stackgl'
-import geoFragFallback from './geo-fallback.frag'
-import geoVertFallback from './geo-fallback.vert'
 import geoFrag from './geo.frag'
 import geoVert from './geo.vert'
 import mainFrag from './main.frag'
 
 const canvas = document.getElementById('canvas') as HTMLCanvasElement
-const painter = new Painter(canvas, { useWebGL1: false })
+const painter = new Painter(canvas)
 const { gl } = painter
 
 painter.updateDrawSettings({
@@ -19,8 +17,8 @@ painter.updateDrawSettings({
 })
 
 const geoShade = painter.createShade().update({
-	vert: painter.isWebGL2 ? geoVert : geoVertFallback,
-	frag: painter.isWebGL2 ? geoFrag : geoFragFallback,
+	vert: geoVert,
+	frag: geoFrag,
 })
 
 const cubeStackgl = createCube(1)

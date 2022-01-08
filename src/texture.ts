@@ -1,6 +1,6 @@
 import { defaultTextureSettings } from './asset-lib'
 import { Painter } from './painter'
-import { GL2, TextureData, Wrap } from './painter-types'
+import { TextureData, Wrap } from './painter-types'
 
 let textureCount = 1
 
@@ -38,7 +38,10 @@ export class Texture {
 			gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl[wrapS])
 			gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl[wrapT])
 		} else if (!(this._data.wrap || this._data.wrapS || this._data.wrapT)) {
-			this._data.wrap = this._data.wrapT = this._data.wrapS = defaultTextureSettings.wrap!
+			this._data.wrap =
+				this._data.wrapT =
+				this._data.wrapS =
+					defaultTextureSettings.wrap!
 			gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl[this._data.wrap])
 			gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl[this._data.wrap])
 		}
@@ -80,9 +83,7 @@ export class Texture {
 			gl.texImage2D(
 				gl.TEXTURE_2D,
 				0,
-				data.type === 'FLOAT' && this._painter.isWebGL2
-					? (gl as GL2).RGBA32F
-					: gl.RGBA,
+				data.type === 'FLOAT' ? gl.RGBA32F : gl.RGBA,
 				data.width!, // width and height are required if using custom data
 				data.height!,
 				0,

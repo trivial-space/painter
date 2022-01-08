@@ -8,8 +8,6 @@ import { Layer } from './layer'
 import {
 	DrawSettings,
 	GL,
-	GL1,
-	GL2,
 	LayerData,
 	PainterOptions,
 	RenderSources,
@@ -24,7 +22,6 @@ import { resizeCanvas } from './utils/context'
 export class Painter {
 	sizeMultiplier: number
 	gl: GL
-	isWebGL2: boolean = true
 	maxBufferSamples = 0
 	_renderQuad: Form
 	_staticEffect: Effect
@@ -32,28 +29,18 @@ export class Painter {
 
 	constructor(public canvas: HTMLCanvasElement, opts: PainterOptions = {}) {
 		let gl: GL | null = null
-		if (!opts.useWebGL1) {
-			gl =
-				(canvas.getContext('webgl2', opts) as GL2) ||
-				canvas.getContext('experimental-webgl2', opts as GL2)
-		}
-		if (gl == null) {
-			this.isWebGL2 = false
-			gl =
-				(canvas.getContext('webgl', opts) as GL1) ||
-				(canvas.getContext('experimental-webgl', opts) as GL1)
-		}
+		gl =
+			(canvas.getContext('webgl2', opts) as GL) ||
+			canvas.getContext('experimental-webgl2', opts as GL)
 
 		if (gl == null) {
-			throw Error('Cannot initialize WebGL.')
+			throw Error('Cannot initialize WebGL2.')
 		}
 
 		this.gl = gl
 		this.sizeMultiplier = opts.sizeMultiplier || 1
 
-		if (this.isWebGL2) {
-			this.maxBufferSamples = gl.getParameter((gl as GL2).MAX_SAMPLES)
-		}
+		this.maxBufferSamples = gl.getParameter(gl.MAX_SAMPLES)
 
 		this.resize()
 		applyDrawSettings(gl, getDefaultLayerSettings(gl))
@@ -64,7 +51,7 @@ export class Painter {
 	}
 
 	resize() {
-		resizeCanvas(this.gl.canvas, this.sizeMultiplier)
+		resizeCanvas(this.gl.canvas as HTMLCanvasElement, this.sizeMultiplier)
 		return this
 	}
 
@@ -200,12 +187,11 @@ function prepareTargetBuffer(
 
 function antialiasTargetBuffer(gl: GL, target?: RenderTarget) {
 	if (target && target.antialias) {
-		const gl2 = gl as GL2
 		// "blit" the cube into the color buffer, which adds antialiasing
-		gl.bindFramebuffer(gl2.READ_FRAMEBUFFER, target.antiAliasFrameBuffer)
-		gl.bindFramebuffer(gl2.DRAW_FRAMEBUFFER, target.frameBuffer)
-		gl2.clearBufferfv(gl2.COLOR, 0, [1.0, 1.0, 1.0, 1.0])
-		gl2.blitFramebuffer(
+		gl.bindFramebuffer(gl.READ_FRAMEBUFFER, target.antiAliasFrameBuffer)
+		gl.bindFramebuffer(gl.DRAW_FRAMEBUFFER, target.frameBuffer)
+		gl.clearBufferfv(gl.COLOR, 0, [1.0, 1.0, 1.0, 1.0])
+		gl.blitFramebuffer(
 			0,
 			0,
 			target.width,

@@ -3,9 +3,7 @@ import { Form } from './form'
 import { Shade } from './shade'
 import { Effect, Sketch } from './sketch'
 
-export type GL1 = WebGLRenderingContext
-export type GL2 = WebGL2RenderingContext
-export type GL = GL1 | GL2
+export type GL = WebGL2RenderingContext
 
 export type ColorRG = [number, number]
 export type ColorRGB = [number, number, number]
@@ -205,5 +203,4 @@ export type RenderSources = Array<WebGLTexture | null>
 
 export type PainterOptions = WebGLContextAttributes & {
 	sizeMultiplier?: number
-	useWebGL1?: boolean
 }
