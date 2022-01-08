@@ -1,8 +1,13 @@
 .DS_Store
 .idea
 .vscode
+
 node_modules
-gulpfile.js
-examples.d.ts
-webpack.config.js
 examples
+src
+
+.editorconfig
+.eslintrc.js
+.prettierrc.json
+tsconfig.*
+webpack.*

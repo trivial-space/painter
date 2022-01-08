@@ -1,9 +1,9 @@
 # trivial space painter
 
-A Typescript WebGL and WebGL2 rendering library, that enables to declaratively define and
-change scenes. Rendering is organised as a graph of Layers, for easy compositing
-and render-to-texture effects. There is no scenegraph here. Optimized for live
-coding and post processing.
+A Typescript WebGL and WebGL2 rendering library, that enables to declaratively
+define and change scenes. Rendering is organised as a graph of Layers, for easy
+compositing and render-to-texture effects. There is no scenegraph here.
+Optimized for live coding and post processing.
 
 _This library is currently alpha state, in heavy development and APIs are
 changing frequently!_
@@ -11,8 +11,8 @@ changing frequently!_
 To get some impressions, have a look at the examples. You can run them locally
 by cloning this repository, and executing
 
-    yarn install
-    yarn examples
+    npm install
+    npm run examples
 
 within the repository. The development server with the examples runs on
 `localhost:8081`.
