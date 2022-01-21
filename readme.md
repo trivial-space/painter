@@ -30,7 +30,7 @@ examples.
 - [x] enable sampled render targets (WebGL2 only)
 - [x] add data texture support, with custom texture formats
 - [ ] customize render target textures, with accessible depth texture
-- [ ] migrate to vertex array objects
+- [ ] add interleaved form buffer support
 
 ## License
 
