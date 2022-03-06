@@ -103,7 +103,7 @@ export type FormDrawType =
 export type FormStoreType = 'DYNAMIC' | 'STATIC'
 
 export interface FormBufferStore {
-	buffer: TypedArray
+	buffer: TypedArray | ArrayBuffer
 	storeType?: FormStoreType
 }
 

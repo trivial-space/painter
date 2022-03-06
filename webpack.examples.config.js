@@ -13,6 +13,9 @@ module.exports = {
 		effect_stack: ['./effect_stack/main.ts'],
 		'uniform-function': ['./uniform-function/main.ts'],
 		'game-of-life': ['./game-of-life/main.ts'],
+		'form-custom-layout-single-buffer': [
+			'./form-custom-layout-single-buffer/main.ts',
+		],
 	},
 
 	context: resolve(__dirname, 'examples'),
