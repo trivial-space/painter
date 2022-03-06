@@ -116,7 +116,7 @@ function render(
 	sources?: RenderSources,
 ) {
 	gl.useProgram(shade._program)
-	shadeForm(shade, form)
+	shadeForm(gl, shade, form)
 
 	if (Array.isArray(uniforms)) {
 		for (const uniform of uniforms) {
@@ -134,11 +134,19 @@ function render(
 	}
 }
 
-function shadeForm(shade: Shade, form: Form) {
-	for (const name in form._attribBuffers) {
-		const setter = shade._attributeSetters[name]
-		if (setter) {
-			setter.setter(form._attribBuffers[name])
+function shadeForm(gl: GL, shade: Shade, form: Form) {
+	if (form._customLayout) {
+		const buffer = form._customLayout.buffer
+		if (buffer !== undefined) {
+			gl.bindBuffer(gl.ARRAY_BUFFER, buffer)
+		}
+		// TODO ...
+	} else {
+		for (const name in form._attribBuffers) {
+			const setter = shade._attributeSetters[name]
+			if (setter) {
+				setter.setter(form._attribBuffers[name])
+			}
 		}
 	}
 }

@@ -36,8 +36,41 @@ export class Form {
 
 		if (data.customLayout) {
 			this._customLayout = this._customLayout || { attribs: {} }
+
 			const buffer = data.customLayout.data
 			if (buffer) {
+				if (this._customLayout.buffer == null) {
+					this._customLayout.buffer = gl.createBuffer()
+				}
+				gl.bindBuffer(gl.ARRAY_BUFFER, this._customLayout.buffer)
+				gl.bufferData(
+					gl.ARRAY_BUFFER,
+					buffer.buffer,
+					(gl as any)[(buffer.storeType || 'STATIC') + '_DRAW'],
+				)
+			}
+
+			let attribs = this._customLayout.attribs
+			for (let attribName in data.customLayout.layout) {
+				let layout = data.customLayout.layout[attribName]
+				if (!attribs[attribName]) {
+					attribs[attribName] = { ...layout }
+				} else {
+					Object.assign(attribs[attribName], layout)
+				}
+
+				if (!buffer && layout.data) {
+					let attrib = attribs[attribName]
+					if (attrib.buffer == null) {
+						attrib.buffer = gl.createBuffer()
+					}
+					gl.bindBuffer(gl.ARRAY_BUFFER, attrib.buffer)
+					gl.bufferData(
+						gl.ARRAY_BUFFER,
+						layout.data.buffer,
+						(gl as any)[(layout.data.storeType || 'STATIC') + '_DRAW'],
+					)
+				}
 			}
 		}
 
