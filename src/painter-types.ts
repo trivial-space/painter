@@ -107,10 +107,26 @@ export interface FormBufferStore {
 	storeType?: FormStoreType
 }
 
+export interface CustomAttribLayout {
+	size: number
+	type: number
+	normalize: boolean
+	stride: number
+	offset: number
+}
+
 export interface FormData {
 	drawType?: FormDrawType
 	itemCount?: number
-	attribs: { [id: string]: FormBufferStore }
+	attribs?: { [id: string]: FormBufferStore }
+	customLayout?: {
+		data?: FormBufferStore
+		layout: {
+			[id: string]: CustomAttribLayout & {
+				data?: FormBufferStore
+			}
+		}
+	}
 	elements?: FormBufferStore
 }
 
@@ -126,16 +142,9 @@ export interface UniformSetter {
 	setter: (val: any) => void
 }
 
-export interface AttribContext {
-	buffer: WebGLBuffer | null
-	stride?: number
-	offset?: number
-	normalize?: boolean
-}
-
 export interface AttribSetter {
 	location: number
-	setter: (ctx: AttribContext) => void
+	setter: (buffer: WebGLBuffer | null) => void
 }
 
 // Sketch

@@ -1,11 +1,5 @@
 import { GL_TYPE } from './contants'
-import {
-	AttribContext,
-	AttribSetter,
-	DrawSettings,
-	GL,
-	UniformSetter,
-} from './painter-types'
+import { AttribSetter, DrawSettings, GL, UniformSetter } from './painter-types'
 import { Texture } from './texture'
 
 // Attrib and Uniform Setters
@@ -440,31 +434,25 @@ const typeMap: { [id: number]: UniformTypeInfo } = {
 }
 
 function floatAttribSetter(gl: GL, location: number, typeInfo: any) {
-	return (b: AttribContext) => {
-		gl.bindBuffer(gl.ARRAY_BUFFER, b.buffer)
+	return (b: WebGLBuffer | null) => {
+		gl.bindBuffer(gl.ARRAY_BUFFER, b)
 		gl.enableVertexAttribArray(location)
 		gl.vertexAttribPointer(
 			location,
 			typeInfo.itemSize,
 			GL_TYPE.FLOAT,
-			b.normalize || false,
-			b.stride || 0,
-			b.offset || 0,
+			false,
+			0,
+			0,
 		)
 	}
 }
 
 function intAttribSetter(gl: any, location: number, typeInfo: any) {
-	return (b: AttribContext) => {
-		gl.bindBuffer(gl.ARRAY_BUFFER, b.buffer)
+	return (b: WebGLBuffer | null) => {
+		gl.bindBuffer(gl.ARRAY_BUFFER, b)
 		gl.enableVertexAttribArray(location)
-		gl.vertexAttribIPointer(
-			location,
-			typeInfo.itemSize,
-			GL_TYPE.INT,
-			b.stride || 0,
-			b.offset || 0,
-		)
+		gl.vertexAttribIPointer(location, typeInfo.itemSize, GL_TYPE.INT, 0, 0)
 	}
 }
 
@@ -472,15 +460,13 @@ function matAttribSetter(gl: GL, location: number, typeInfo: any) {
 	const defaultSize = typeInfo.size
 	const count = typeInfo.count
 
-	return (b: AttribContext) => {
-		gl.bindBuffer(gl.ARRAY_BUFFER, b.buffer)
+	return (b: WebGLBuffer | null) => {
+		gl.bindBuffer(gl.ARRAY_BUFFER, b)
 
 		const numComponents = defaultSize
 		const size = numComponents / count
 		const typeInfo = typeMap[GL_TYPE.FLOAT]
 		const stride = typeInfo.size * numComponents
-		const normalize = b.normalize || false
-		const offset = b.offset || 0
 		const rowOffset = stride / count
 
 		for (let i = 0; i < count; ++i) {
@@ -489,9 +475,9 @@ function matAttribSetter(gl: GL, location: number, typeInfo: any) {
 				location + i,
 				size,
 				GL_TYPE.FLOAT,
-				normalize,
+				false,
 				stride,
-				offset + rowOffset * i,
+				rowOffset * i,
 			)
 		}
 	}
@@ -503,7 +489,7 @@ interface AttribTypeInfoNumber {
 		gl: GL,
 		location: number,
 		typeInfo: any,
-	) => (b: AttribContext) => void
+	) => (b: WebGLBuffer | null) => void
 	itemSize: number
 }
 
@@ -513,7 +499,7 @@ interface AttribTypeInfoMat {
 		gl: GL,
 		location: number,
 		typeInfo: any,
-	) => (b: AttribContext) => void
+	) => (b: WebGLBuffer | null) => void
 	count: number
 }
 

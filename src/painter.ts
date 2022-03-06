@@ -135,10 +135,10 @@ function render(
 }
 
 function shadeForm(shade: Shade, form: Form) {
-	for (const name in form._attribs) {
+	for (const name in form._attribBuffers) {
 		const setter = shade._attributeSetters[name]
 		if (setter) {
-			setter.setter(form._attribs[name])
+			setter.setter(form._attribBuffers[name])
 		}
 	}
 }

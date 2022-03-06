@@ -1,5 +1,5 @@
 import { Painter } from './painter'
-import { AttribContext, FormData } from './painter-types'
+import { CustomAttribLayout, FormData } from './painter-types'
 import { getGLTypeForTypedArray } from './render-utils'
 
 let formCounter = 1
@@ -7,7 +7,15 @@ let formCounter = 1
 export class Form {
 	_drawType!: number
 	_itemCount!: number
-	_attribs!: { [id: string]: AttribContext }
+	_attribBuffers: {
+		[id: string]: WebGLBuffer | null
+	} | null = null
+	_customLayout: {
+		buffer?: WebGLBuffer | null
+		attribs: {
+			[id: string]: CustomAttribLayout & { buffer?: WebGLBuffer | null }
+		}
+	} | null = null
 	_elements?: {
 		buffer: WebGLBuffer | null
 		glType: number | null
@@ -26,23 +34,30 @@ export class Form {
 			this._itemCount = data.itemCount
 		}
 
-		this._attribs = this._attribs || {}
-
-		for (const id in data.attribs) {
-			const attribData = data.attribs[id]
-
-			if (this._attribs[id] == null) {
-				this._attribs[id] = {
-					buffer: gl.createBuffer(),
-				}
+		if (data.customLayout) {
+			this._customLayout = this._customLayout || { attribs: {} }
+			const buffer = data.customLayout.data
+			if (buffer) {
 			}
+		}
 
-			gl.bindBuffer(gl.ARRAY_BUFFER, this._attribs[id].buffer)
-			gl.bufferData(
-				gl.ARRAY_BUFFER,
-				attribData.buffer,
-				(gl as any)[(attribData.storeType || 'STATIC') + '_DRAW'],
-			)
+		if (data.attribs) {
+			this._attribBuffers = this._attribBuffers || {}
+
+			for (const id in data.attribs) {
+				const attribData = data.attribs[id]
+
+				if (this._attribBuffers[id] == null) {
+					this._attribBuffers[id] = gl.createBuffer()
+				}
+
+				gl.bindBuffer(gl.ARRAY_BUFFER, this._attribBuffers[id])
+				gl.bufferData(
+					gl.ARRAY_BUFFER,
+					attribData.buffer,
+					(gl as any)[(attribData.storeType || 'STATIC') + '_DRAW'],
+				)
+			}
 		}
 
 		if (data.elements) {
@@ -71,10 +86,11 @@ export class Form {
 	destroy() {
 		const gl = this._painter.gl
 
-		for (const id in this._attribs) {
-			gl.deleteBuffer(this._attribs[id].buffer)
+		for (const id in this._attribBuffers) {
+			gl.deleteBuffer(this._attribBuffers[id])
 		}
-		this._attribs = {}
+		this._attribBuffers = null
+		this._customLayout = null
 
 		if (this._elements) {
 			gl.deleteBuffer(this._elements.buffer)
