@@ -29,19 +29,19 @@ export function convertStackGLGeometry(stackglGeometry: {
 				itemCount: buffer.length,
 			})
 		} else if (prop === STACK_GL_GEOMETRY_PROP_POSITION) {
-			geometry.attribs[constants.GEOMETRY_PROP_POSITION] = {
+			geometry.attribs![constants.GEOMETRY_PROP_POSITION] = {
 				buffer: new Float32Array(flatten(arr)),
 			}
 		} else if (prop === STACK_GL_GEOMETRY_PROP_NORMAL) {
-			geometry.attribs[constants.GEOMETRY_PROP_NORMAL] = {
+			geometry.attribs![constants.GEOMETRY_PROP_NORMAL] = {
 				buffer: new Float32Array(flatten(arr)),
 			}
 		} else if (prop === STACK_GL_GEOMETRY_PROP_UV) {
-			geometry.attribs[constants.GEOMETRY_PROP_UV] = {
+			geometry.attribs![constants.GEOMETRY_PROP_UV] = {
 				buffer: new Float32Array(flatten(arr)),
 			}
 		} else {
-			geometry.attribs[prop] = { buffer: new Float32Array(flatten(arr)) }
+			geometry.attribs![prop] = { buffer: new Float32Array(flatten(arr)) }
 		}
 	}
 
