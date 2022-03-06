@@ -12,8 +12,8 @@ export class Shade {
 	_vert!: WebGLShader | null
 	_frag!: WebGLShader | null
 
-	_uniformSetters!: { [id: string]: UniformSetter }
-	_attributeSetters!: { [id: string]: AttribSetter }
+	_uniforms!: { [id: string]: UniformSetter }
+	_attributes!: { [id: string]: AttribSetter }
 
 	constructor(
 		private _painter: Painter,
@@ -82,8 +82,8 @@ export class Shade {
 			console.error('Error in program linking:', lastError)
 		}
 
-		this._uniformSetters = createUniformSetters(gl, program)
-		this._attributeSetters = createAttributeSetters(gl, program)
+		this._uniforms = createUniformSetters(gl, program)
+		this._attributes = createAttributeSetters(gl, program)
 
 		this.fragSource = fragSource
 		this.vertSource = vertSource
@@ -100,8 +100,8 @@ export class Shade {
 
 		this.vertSource = undefined
 		this.fragSource = undefined
-		this._attributeSetters = {}
-		this._uniformSetters = {}
+		this._attributes = {}
+		this._uniforms = {}
 	}
 }
 

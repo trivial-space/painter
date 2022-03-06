@@ -137,15 +137,32 @@ function render(
 function shadeForm(gl: GL, shade: Shade, form: Form) {
 	if (form._customLayout) {
 		const buffer = form._customLayout.buffer
-		if (buffer !== undefined) {
+		if (buffer != null) {
 			gl.bindBuffer(gl.ARRAY_BUFFER, buffer)
 		}
-		// TODO ...
+		for (const name in form._customLayout.attribs) {
+			const shaderAttrib = shade._attributes[name]
+			const attribLayout = form._customLayout.attribs[name]
+			if (shaderAttrib) {
+				if (attribLayout.buffer != null) {
+					gl.bindBuffer(gl.ARRAY_BUFFER, attribLayout.buffer)
+				}
+				gl.vertexAttribPointer(
+					shaderAttrib.location,
+					attribLayout.size,
+					attribLayout.type,
+					attribLayout.normalize,
+					attribLayout.stride,
+					attribLayout.offset,
+				)
+				gl.enableVertexAttribArray(shaderAttrib.location)
+			}
+		}
 	} else {
 		for (const name in form._attribBuffers) {
-			const setter = shade._attributeSetters[name]
-			if (setter) {
-				setter.setter(form._attribBuffers[name])
+			const shaderAttrib = shade._attributes[name]
+			if (shaderAttrib) {
+				shaderAttrib.setter(form._attribBuffers[name])
 			}
 		}
 	}
@@ -157,7 +174,7 @@ function shadeUniforms(
 	sources?: RenderSources,
 ) {
 	for (const name in uniforms) {
-		const setter = shade._uniformSetters[name]
+		const setter = shade._uniforms[name]
 		if (setter) {
 			let value = uniforms[name]
 			if (typeof value === 'function') {

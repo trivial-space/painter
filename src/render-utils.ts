@@ -436,7 +436,6 @@ const typeMap: { [id: number]: UniformTypeInfo } = {
 function floatAttribSetter(gl: GL, location: number, typeInfo: any) {
 	return (b: WebGLBuffer | null) => {
 		gl.bindBuffer(gl.ARRAY_BUFFER, b)
-		gl.enableVertexAttribArray(location)
 		gl.vertexAttribPointer(
 			location,
 			typeInfo.itemSize,
@@ -445,14 +444,15 @@ function floatAttribSetter(gl: GL, location: number, typeInfo: any) {
 			0,
 			0,
 		)
+		gl.enableVertexAttribArray(location)
 	}
 }
 
 function intAttribSetter(gl: any, location: number, typeInfo: any) {
 	return (b: WebGLBuffer | null) => {
 		gl.bindBuffer(gl.ARRAY_BUFFER, b)
-		gl.enableVertexAttribArray(location)
 		gl.vertexAttribIPointer(location, typeInfo.itemSize, GL_TYPE.INT, 0, 0)
+		gl.enableVertexAttribArray(location)
 	}
 }
 
@@ -470,7 +470,6 @@ function matAttribSetter(gl: GL, location: number, typeInfo: any) {
 		const rowOffset = stride / count
 
 		for (let i = 0; i < count; ++i) {
-			gl.enableVertexAttribArray(location + i)
 			gl.vertexAttribPointer(
 				location + i,
 				size,
@@ -479,6 +478,7 @@ function matAttribSetter(gl: GL, location: number, typeInfo: any) {
 				stride,
 				rowOffset * i,
 			)
+			gl.enableVertexAttribArray(location + i)
 		}
 	}
 }
