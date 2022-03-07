@@ -42,14 +42,29 @@ export interface RenderTargetData {
 export declare type FormDrawType = 'TRIANGLES' | 'TRIANGLE_STRIP' | 'TRIANGLE_FAN' | 'POINTS' | 'LINES' | 'LINE_LOOP' | 'LINE_STRIP';
 export declare type FormStoreType = 'DYNAMIC' | 'STATIC';
 export interface FormBufferStore {
-    buffer: TypedArray;
+    buffer: TypedArray | ArrayBuffer;
     storeType?: FormStoreType;
+}
+export interface CustomAttribLayout {
+    size: number;
+    type: number;
+    normalize: boolean;
+    stride: number;
+    offset: number;
 }
 export interface FormData {
     drawType?: FormDrawType;
     itemCount?: number;
-    attribs: {
+    attribs?: {
         [id: string]: FormBufferStore;
+    };
+    customLayout?: {
+        data?: FormBufferStore;
+        layout: {
+            [id: string]: CustomAttribLayout & {
+                data?: FormBufferStore;
+            };
+        };
     };
     elements?: FormBufferStore;
 }
@@ -61,15 +76,9 @@ export interface UniformSetter {
     location: WebGLUniformLocation;
     setter: (val: any) => void;
 }
-export interface AttribContext {
-    buffer: WebGLBuffer | null;
-    stride?: number;
-    offset?: number;
-    normalize?: boolean;
-}
 export interface AttribSetter {
     location: number;
-    setter: (ctx: AttribContext) => void;
+    setter: (buffer: WebGLBuffer | null) => void;
 }
 export interface Uniforms {
     [id: string]: any;

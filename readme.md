@@ -29,11 +29,11 @@ examples.
 
 - [x] enable sampled render targets (WebGL2 only)
 - [x] add data texture support, with custom texture formats
+- [x] add interleaved form buffer support
 - [ ] customize render target textures, with accessible depth texture
-- [ ] add interleaved form buffer support
 
 ## License
 
 MIT, see the LICENSE file in the repository.
 
-Copyright (c) 2016 - 2021 Thomas Gorny
+Copyright (c) 2016 - 2022 Thomas Gorny

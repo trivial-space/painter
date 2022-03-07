@@ -362,33 +362,31 @@ const typeMap = {
 };
 function floatAttribSetter(gl, location, typeInfo) {
     return (b) => {
-        gl.bindBuffer(gl.ARRAY_BUFFER, b.buffer);
+        gl.bindBuffer(gl.ARRAY_BUFFER, b);
+        gl.vertexAttribPointer(location, typeInfo.itemSize, GL_TYPE.FLOAT, false, 0, 0);
         gl.enableVertexAttribArray(location);
-        gl.vertexAttribPointer(location, typeInfo.itemSize, GL_TYPE.FLOAT, b.normalize || false, b.stride || 0, b.offset || 0);
     };
 }
 function intAttribSetter(gl, location, typeInfo) {
     return (b) => {
-        gl.bindBuffer(gl.ARRAY_BUFFER, b.buffer);
+        gl.bindBuffer(gl.ARRAY_BUFFER, b);
+        gl.vertexAttribIPointer(location, typeInfo.itemSize, GL_TYPE.INT, 0, 0);
         gl.enableVertexAttribArray(location);
-        gl.vertexAttribIPointer(location, typeInfo.itemSize, GL_TYPE.INT, b.stride || 0, b.offset || 0);
     };
 }
 function matAttribSetter(gl, location, typeInfo) {
     const defaultSize = typeInfo.size;
     const count = typeInfo.count;
     return (b) => {
-        gl.bindBuffer(gl.ARRAY_BUFFER, b.buffer);
+        gl.bindBuffer(gl.ARRAY_BUFFER, b);
         const numComponents = defaultSize;
         const size = numComponents / count;
         const typeInfo = typeMap[GL_TYPE.FLOAT];
         const stride = typeInfo.size * numComponents;
-        const normalize = b.normalize || false;
-        const offset = b.offset || 0;
         const rowOffset = stride / count;
         for (let i = 0; i < count; ++i) {
+            gl.vertexAttribPointer(location + i, size, GL_TYPE.FLOAT, false, stride, rowOffset * i);
             gl.enableVertexAttribArray(location + i);
-            gl.vertexAttribPointer(location + i, size, GL_TYPE.FLOAT, normalize, stride, offset + rowOffset * i);
         }
     };
 }

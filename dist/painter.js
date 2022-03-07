@@ -74,7 +74,7 @@ export class Painter {
 }
 function render(gl, shade, form, uniforms, sources) {
     gl.useProgram(shade._program);
-    shadeForm(shade, form);
+    shadeForm(gl, shade, form);
     if (Array.isArray(uniforms)) {
         for (const uniform of uniforms) {
             shadeUniforms(shade, uniform, sources);
@@ -91,17 +91,36 @@ function render(gl, shade, form, uniforms, sources) {
         gl.drawArrays(form._drawType, 0, form._itemCount);
     }
 }
-function shadeForm(shade, form) {
-    for (const name in form._attribs) {
-        const setter = shade._attributeSetters[name];
-        if (setter) {
-            setter.setter(form._attribs[name]);
+function shadeForm(gl, shade, form) {
+    if (form._customLayout) {
+        const buffer = form._customLayout.buffer;
+        if (buffer != null) {
+            gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
+        }
+        for (const name in form._customLayout.attribs) {
+            const shaderAttrib = shade._attributes[name];
+            const attribLayout = form._customLayout.attribs[name];
+            if (shaderAttrib) {
+                if (attribLayout.buffer != null) {
+                    gl.bindBuffer(gl.ARRAY_BUFFER, attribLayout.buffer);
+                }
+                gl.vertexAttribPointer(shaderAttrib.location, attribLayout.size, attribLayout.type, attribLayout.normalize, attribLayout.stride, attribLayout.offset);
+                gl.enableVertexAttribArray(shaderAttrib.location);
+            }
+        }
+    }
+    else {
+        for (const name in form._attribBuffers) {
+            const shaderAttrib = shade._attributes[name];
+            if (shaderAttrib) {
+                shaderAttrib.setter(form._attribBuffers[name]);
+            }
         }
     }
 }
 function shadeUniforms(shade, uniforms, sources) {
     for (const name in uniforms) {
-        const setter = shade._uniformSetters[name];
+        const setter = shade._uniforms[name];
         if (setter) {
             let value = uniforms[name];
             if (typeof value === 'function') {

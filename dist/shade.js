@@ -44,8 +44,8 @@ export class Shade {
             const lastError = gl.getProgramInfoLog(program);
             console.error('Error in program linking:', lastError);
         }
-        this._uniformSetters = createUniformSetters(gl, program);
-        this._attributeSetters = createAttributeSetters(gl, program);
+        this._uniforms = createUniformSetters(gl, program);
+        this._attributes = createAttributeSetters(gl, program);
         this.fragSource = fragSource;
         this.vertSource = vertSource;
         return this;
@@ -57,8 +57,8 @@ export class Shade {
         gl.deleteShader(this._vert);
         this.vertSource = undefined;
         this.fragSource = undefined;
-        this._attributeSetters = {};
-        this._uniformSetters = {};
+        this._attributes = {};
+        this._uniforms = {};
     }
 }
 function addLineNumbers(src) {

@@ -8,10 +8,10 @@ export declare class Shade {
     _program: WebGLProgram | null;
     _vert: WebGLShader | null;
     _frag: WebGLShader | null;
-    _uniformSetters: {
+    _uniforms: {
         [id: string]: UniformSetter;
     };
-    _attributeSetters: {
+    _attributes: {
         [id: string]: AttribSetter;
     };
     constructor(_painter: Painter, id?: string);

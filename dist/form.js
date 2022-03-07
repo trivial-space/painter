@@ -4,6 +4,8 @@ export class Form {
     constructor(_painter, id = 'Form' + formCounter++) {
         this._painter = _painter;
         this.id = id;
+        this._attribBuffers = null;
+        this._customLayout = null;
     }
     update(data) {
         const gl = this._painter.gl;
@@ -13,16 +15,45 @@ export class Form {
         if (data.itemCount) {
             this._itemCount = data.itemCount;
         }
-        this._attribs = this._attribs || {};
-        for (const id in data.attribs) {
-            const attribData = data.attribs[id];
-            if (this._attribs[id] == null) {
-                this._attribs[id] = {
-                    buffer: gl.createBuffer(),
-                };
+        if (data.customLayout) {
+            this._customLayout = this._customLayout || { attribs: {} };
+            const buffer = data.customLayout.data;
+            if (buffer) {
+                if (this._customLayout.buffer == null) {
+                    this._customLayout.buffer = gl.createBuffer();
+                }
+                gl.bindBuffer(gl.ARRAY_BUFFER, this._customLayout.buffer);
+                gl.bufferData(gl.ARRAY_BUFFER, buffer.buffer, gl[(buffer.storeType || 'STATIC') + '_DRAW']);
             }
-            gl.bindBuffer(gl.ARRAY_BUFFER, this._attribs[id].buffer);
-            gl.bufferData(gl.ARRAY_BUFFER, attribData.buffer, gl[(attribData.storeType || 'STATIC') + '_DRAW']);
+            let attribs = this._customLayout.attribs;
+            for (let attribName in data.customLayout.layout) {
+                let layout = data.customLayout.layout[attribName];
+                if (!attribs[attribName]) {
+                    attribs[attribName] = Object.assign({}, layout);
+                }
+                else {
+                    Object.assign(attribs[attribName], layout);
+                }
+                if (!buffer && layout.data) {
+                    let attrib = attribs[attribName];
+                    if (attrib.buffer == null) {
+                        attrib.buffer = gl.createBuffer();
+                    }
+                    gl.bindBuffer(gl.ARRAY_BUFFER, attrib.buffer);
+                    gl.bufferData(gl.ARRAY_BUFFER, layout.data.buffer, gl[(layout.data.storeType || 'STATIC') + '_DRAW']);
+                }
+            }
+        }
+        if (data.attribs) {
+            this._attribBuffers = this._attribBuffers || {};
+            for (const id in data.attribs) {
+                const attribData = data.attribs[id];
+                if (this._attribBuffers[id] == null) {
+                    this._attribBuffers[id] = gl.createBuffer();
+                }
+                gl.bindBuffer(gl.ARRAY_BUFFER, this._attribBuffers[id]);
+                gl.bufferData(gl.ARRAY_BUFFER, attribData.buffer, gl[(attribData.storeType || 'STATIC') + '_DRAW']);
+            }
         }
         if (data.elements) {
             const buffer = data.elements.buffer;
@@ -40,10 +71,23 @@ export class Form {
     }
     destroy() {
         const gl = this._painter.gl;
-        for (const id in this._attribs) {
-            gl.deleteBuffer(this._attribs[id].buffer);
+        if (this._attribBuffers) {
+            for (const id in this._attribBuffers) {
+                gl.deleteBuffer(this._attribBuffers[id]);
+            }
         }
-        this._attribs = {};
+        if (this._customLayout) {
+            if (this._customLayout.buffer != null) {
+                gl.deleteBuffer(this._customLayout.buffer);
+            }
+            for (const id in this._customLayout.attribs) {
+                if (this._customLayout.attribs[id].buffer != null) {
+                    gl.deleteBuffer(this._customLayout.attribs[id].buffer);
+                }
+            }
+        }
+        this._attribBuffers = null;
+        this._customLayout = null;
         if (this._elements) {
             gl.deleteBuffer(this._elements.buffer);
             this._elements = undefined;
