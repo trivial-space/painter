@@ -1,6 +1,8 @@
 import { painter } from '../painter'
 
 const { gl } = painter
+painter.sizeMultiplier = window.devicePixelRatio
+painter.resize()
 
 const vertices = [
 	{ position: [-0.7, 0.7], uv: [0, 0], color: [0x3f, 0xaa, 0xff] },
@@ -14,7 +16,7 @@ const buffer = new ArrayBuffer(size * vertices.length)
 //Fill array buffer
 const dv = new DataView(buffer)
 for (let i = 0; i < vertices.length; i++) {
-	dv.setFloat32(size * i, vertices[i].position[0], true)
+	dv.setFloat32(size * i, vertices[i].position[0] * 0.5 - 0.5, true)
 	dv.setFloat32(size * i + 4, vertices[i].position[1], true)
 	dv.setUint16(size * i + 8, vertices[i].uv[0] * 0xffff)
 	dv.setUint16(size * i + 10, vertices[i].uv[1] * 0xffff)
@@ -24,7 +26,7 @@ for (let i = 0; i < vertices.length; i++) {
 	dv.setUint8(size * i + 15, 0)
 }
 
-const plane = painter.createForm().update({
+const planeForm1 = painter.createForm().update({
 	customLayout: {
 		data: { buffer },
 		layout: {
@@ -48,6 +50,59 @@ const plane = painter.createForm().update({
 				size: 4,
 				stride: size,
 				type: gl.UNSIGNED_BYTE,
+			},
+		},
+	},
+	drawType: 'TRIANGLE_STRIP',
+	itemCount: 4,
+})
+
+const planeForm2 = painter.createForm().update({
+	customLayout: {
+		layout: {
+			position: {
+				data: {
+					buffer: new Float32Array(
+						vertices.reduce((arr, v) => {
+							arr.push(v.position[0] * 0.5 + 0.5)
+							arr.push(v.position[1])
+							return arr
+						}, [] as number[]),
+					),
+				},
+				size: 2,
+				type: gl.FLOAT,
+				normalize: false,
+				stride: 0,
+				offset: 0,
+			},
+			uv: {
+				data: {
+					buffer: new Uint16Array(
+						vertices.reduce((arr, v) => {
+							return arr.concat(v.uv.map(n => n * 0xffff))
+						}, [] as number[]),
+					),
+				},
+				size: 2,
+				type: gl.UNSIGNED_SHORT,
+				normalize: true,
+				stride: 0,
+				offset: 0,
+			},
+			color: {
+				data: {
+					buffer: new Uint8Array(
+						vertices.reduce((arr, v) => {
+							return arr.concat(v.color.reverse())
+						}, [] as number[]),
+					),
+				},
+				size: 3,
+				type: gl.UNSIGNED_BYTE,
+				normalize: true,
+				stride: 0,
+				offset: 0,
 			},
 		},
 	},
@@ -84,10 +139,16 @@ const paintTexture = painter.createShade().update({
 })
 
 const planeLayer = painter.createLayer().update({
-	sketches: painter.createSketch().update({
-		form: plane,
-		shade: paintTexture,
-	}),
+	sketches: [
+		painter.createSketch().update({
+			form: planeForm1,
+			shade: paintTexture,
+		}),
+		painter.createSketch().update({
+			form: planeForm2,
+			shade: paintTexture,
+		}),
+	],
 	drawSettings: {
 		clearColor: [0.0, 0.0, 0.0, 1.0],
 		clearBits: gl.COLOR_BUFFER_BIT,
