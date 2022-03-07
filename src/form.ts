@@ -119,8 +119,20 @@ export class Form {
 	destroy() {
 		const gl = this._painter.gl
 
-		for (const id in this._attribBuffers) {
-			gl.deleteBuffer(this._attribBuffers[id])
+		if (this._attribBuffers) {
+			for (const id in this._attribBuffers) {
+				gl.deleteBuffer(this._attribBuffers[id])
+			}
+		}
+		if (this._customLayout) {
+			if (this._customLayout.buffer != null) {
+				gl.deleteBuffer(this._customLayout.buffer)
+			}
+			for (const id in this._customLayout.attribs) {
+				if (this._customLayout.attribs[id].buffer != null) {
+					gl.deleteBuffer(this._customLayout.attribs[id].buffer!)
+				}
+			}
 		}
 		this._attribBuffers = null
 		this._customLayout = null
