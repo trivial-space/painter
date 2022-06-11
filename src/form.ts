@@ -111,6 +111,9 @@ export class Form {
 				buffer,
 				(gl as any)[(data.elements.storeType || 'STATIC') + '_DRAW'],
 			)
+		} else if (data.elements === null && this._elements) {
+			gl.deleteBuffer(this._elements.buffer)
+			this._elements = undefined
 		}
 
 		return this

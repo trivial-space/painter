@@ -66,7 +66,7 @@ export interface FormData {
             };
         };
     };
-    elements?: FormBufferStore;
+    elements?: FormBufferStore | null;
 }
 export interface ShadeData {
     vert?: string;

@@ -127,7 +127,7 @@ export interface FormData {
 			}
 		}
 	}
-	elements?: FormBufferStore
+	elements?: FormBufferStore | null
 }
 
 // Shade

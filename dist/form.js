@@ -67,6 +67,10 @@ export class Form {
             gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this._elements.buffer);
             gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, buffer, gl[(data.elements.storeType || 'STATIC') + '_DRAW']);
         }
+        else if (data.elements === null && this._elements) {
+            gl.deleteBuffer(this._elements.buffer);
+            this._elements = undefined;
+        }
         return this;
     }
     destroy() {
