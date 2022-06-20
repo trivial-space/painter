@@ -9,8 +9,9 @@ export class Form {
     }
     update(data) {
         const gl = this._painter.gl;
-        if (data.drawType) {
-            this._drawType = gl[data.drawType];
+        if (data.drawType != null) {
+            this._drawType =
+                typeof data.drawType === 'number' ? data.drawType : gl[data.drawType];
         }
         if (data.itemCount) {
             this._itemCount = data.itemCount;

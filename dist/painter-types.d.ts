@@ -53,7 +53,7 @@ export interface CustomAttribLayout {
     offset: number;
 }
 export interface FormData {
-    drawType?: FormDrawType;
+    drawType?: FormDrawType | number;
     itemCount?: number;
     attribs?: {
         [id: string]: FormBufferStore;

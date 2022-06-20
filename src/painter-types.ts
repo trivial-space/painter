@@ -116,7 +116,7 @@ export interface CustomAttribLayout {
 }
 
 export interface FormData {
-	drawType?: FormDrawType
+	drawType?: FormDrawType | number
 	itemCount?: number
 	attribs?: { [id: string]: FormBufferStore }
 	customLayout?: {
