@@ -32,7 +32,7 @@
   },
   "homepage": "https://github.com/trivial-space/painter#readme",
   "dependencies": {
-    "tvs-libs": "^0.6.0"
+    "tvs-libs": "^0.7.0"
   },
   "devDependencies": {
     "@types/node": "^18.16.18",
