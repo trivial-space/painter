@@ -2,17 +2,17 @@ import { TEXTURE_FORMAT, TEXTURE_FORMAT_INTERNAL } from './contants';
 import { Form } from './form';
 import { Shade } from './shade';
 import { Effect, Sketch } from './sketch';
-export declare type GL = WebGL2RenderingContext;
-export declare type ColorRG = [number, number];
-export declare type ColorRGB = [number, number, number];
-export declare type ColorRGBA = [number, number, number, number];
-export declare type TypedArray = Uint8Array | Uint16Array | Uint32Array | Int8Array | Int16Array | Int32Array | Float32Array | Float64Array;
-export declare type TypedArrayConstructor = Uint8ArrayConstructor | Uint16ArrayConstructor | Uint32ArrayConstructor | Int8ArrayConstructor | Int16ArrayConstructor | Int32ArrayConstructor | Float32ArrayConstructor | Float64ArrayConstructor;
-export declare type TypedArrayTypes = 'Uint8Array' | 'Uint16Array' | 'Uint32Array' | 'Int8Array' | 'Int16Array' | 'Int32Array' | 'Float32Array' | 'Float64Array';
-export declare type TextureType = 'UNSIGNED_BYTE' | 'UNSIGNED_SHORT' | 'UNSIGNED_INT' | 'FLOAT';
-export declare type TextureFormat = keyof typeof TEXTURE_FORMAT;
-export declare type TextureInternalFormat = keyof typeof TEXTURE_FORMAT_INTERNAL;
-export declare type TextureAsset = ImageData | HTMLCanvasElement | HTMLImageElement | HTMLVideoElement;
+export type GL = WebGL2RenderingContext;
+export type ColorRG = [number, number];
+export type ColorRGB = [number, number, number];
+export type ColorRGBA = [number, number, number, number];
+export type TypedArray = Uint8Array | Uint16Array | Uint32Array | Int8Array | Int16Array | Int32Array | Float32Array | Float64Array;
+export type TypedArrayConstructor = Uint8ArrayConstructor | Uint16ArrayConstructor | Uint32ArrayConstructor | Int8ArrayConstructor | Int16ArrayConstructor | Int32ArrayConstructor | Float32ArrayConstructor | Float64ArrayConstructor;
+export type TypedArrayTypes = 'Uint8Array' | 'Uint16Array' | 'Uint32Array' | 'Int8Array' | 'Int16Array' | 'Int32Array' | 'Float32Array' | 'Float64Array';
+export type TextureType = 'UNSIGNED_BYTE' | 'UNSIGNED_SHORT' | 'UNSIGNED_INT' | 'FLOAT';
+export type TextureFormat = keyof typeof TEXTURE_FORMAT;
+export type TextureInternalFormat = keyof typeof TEXTURE_FORMAT_INTERNAL;
+export type TextureAsset = ImageData | HTMLCanvasElement | HTMLImageElement | HTMLVideoElement;
 export interface TextureOptions {
     wrap?: Wrap;
     wrapT?: Wrap;
@@ -39,8 +39,8 @@ export interface RenderTargetData {
     bufferStructure?: TextureOptions[];
     antialias?: boolean;
 }
-export declare type FormDrawType = 'TRIANGLES' | 'TRIANGLE_STRIP' | 'TRIANGLE_FAN' | 'POINTS' | 'LINES' | 'LINE_LOOP' | 'LINE_STRIP';
-export declare type FormStoreType = 'DYNAMIC' | 'STATIC';
+export type FormDrawType = 'TRIANGLES' | 'TRIANGLE_STRIP' | 'TRIANGLE_FAN' | 'POINTS' | 'LINES' | 'LINE_LOOP' | 'LINE_STRIP';
+export type FormStoreType = 'DYNAMIC' | 'STATIC';
 export interface FormBufferStore {
     buffer: TypedArray | ArrayBuffer;
     storeType?: FormStoreType;
@@ -109,10 +109,10 @@ export interface SketchData {
     drawSettings?: DrawSettings;
     uniforms?: Uniforms | Uniforms[];
 }
-export declare type MagFilter = 'LINEAR' | 'NEAREST';
-export declare type MinFilter = MagFilter | 'LINEAR_MIPMAP_LINEAR' | 'LINEAR_MIPMAP_NEAREST' | 'NEAREST_MIPMAP_LINEAR' | 'NEAREST_MIPMAP_NEAREST';
-export declare type Wrap = 'CLAMP_TO_EDGE' | 'REPEAT' | 'MIRRORED_REPEAT';
-export declare type Cull = 'FRONT' | 'BACK' | 'FRONT_AND_BACK';
+export type MagFilter = 'LINEAR' | 'NEAREST';
+export type MinFilter = MagFilter | 'LINEAR_MIPMAP_LINEAR' | 'LINEAR_MIPMAP_NEAREST' | 'NEAREST_MIPMAP_LINEAR' | 'NEAREST_MIPMAP_NEAREST';
+export type Wrap = 'CLAMP_TO_EDGE' | 'REPEAT' | 'MIRRORED_REPEAT';
+export type Cull = 'FRONT' | 'BACK' | 'FRONT_AND_BACK';
 export interface LayerData extends RenderTargetData {
     texture?: TextureData;
     sketches?: Sketch | Sketch[];
@@ -122,7 +122,7 @@ export interface LayerData extends RenderTargetData {
     selfReferencing?: boolean;
     directRender?: boolean;
 }
-export declare type RenderSources = Array<WebGLTexture | null>;
-export declare type PainterOptions = WebGLContextAttributes & {
+export type RenderSources = Array<WebGLTexture | null>;
+export type PainterOptions = WebGLContextAttributes & {
     sizeMultiplier?: number;
 };

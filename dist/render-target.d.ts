@@ -13,7 +13,7 @@ export declare class RenderTarget {
     textures: Texture[];
     depthBuffer: WebGLRenderbuffer | null;
     bufferStructure: TextureOptions[];
-    _data?: RenderTargetData;
+    _data: RenderTargetData;
     constructor(_painter: Painter, id?: string);
     update(data: RenderTargetData): this;
     destroy(): void;

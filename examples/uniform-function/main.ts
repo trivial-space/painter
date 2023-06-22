@@ -3,8 +3,8 @@ import { adjustHue, hslToRGB } from 'tvs-libs/dist/graphics/colors'
 import { makeClear } from '../../src/utils/context'
 import { plane } from '../../src/utils/geometry/plane'
 import { painter } from '../painter'
-import planeFrag from './plane-material.frag'
-import planeVert from './plane-material.vert'
+import planeFrag from './plane-material.frag?raw'
+import planeVert from './plane-material.vert?raw'
 
 painter.sizeMultiplier = window.devicePixelRatio
 painter.resize()

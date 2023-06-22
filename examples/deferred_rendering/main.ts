@@ -3,9 +3,9 @@ import createCube from 'primitive-cube'
 import { Painter } from '../../src'
 import { makeClear } from '../../src/utils/context'
 import { convertStackGLGeometry } from '../../src/utils/stackgl'
-import geoFrag from './geo.frag'
-import geoVert from './geo.vert'
-import mainFrag from './main.frag'
+import geoFrag from './geo.frag?raw'
+import geoVert from './geo.vert?raw'
+import mainFrag from './main.frag?raw'
 
 const canvas = document.getElementById('canvas') as HTMLCanvasElement
 const painter = new Painter(canvas)

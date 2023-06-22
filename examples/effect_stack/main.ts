@@ -1,5 +1,5 @@
 import { painter } from '../painter'
-import shaderCode from './shader.glsl'
+import shaderCode from './shader.glsl?raw'
 
 painter.sizeMultiplier = window.devicePixelRatio
 painter.resize()

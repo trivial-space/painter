@@ -2,9 +2,9 @@ import { mat4 } from 'gl-matrix'
 import { makeClear } from '../../src/utils/context'
 import { plane } from '../../src/utils/geometry/plane'
 import { painter } from '../painter'
-import effectFrag from './effect.frag'
-import planeFrag from './plane-material.frag'
-import planeVert from './plane-material.vert'
+import effectFrag from './effect.frag?raw'
+import planeFrag from './plane-material.frag?raw'
+import planeVert from './plane-material.vert?raw'
 
 const { gl } = painter
 

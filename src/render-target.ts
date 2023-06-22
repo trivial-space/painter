@@ -18,7 +18,7 @@ export class RenderTarget {
 
 	bufferStructure: TextureOptions[] = []
 
-	_data?: RenderTargetData = {}
+	_data: RenderTargetData = {}
 
 	constructor(private _painter: Painter, public id = 'Form' + targetCount++) {}
 
@@ -55,7 +55,7 @@ export class RenderTarget {
 		}
 
 		const texCount = this.bufferStructure.length || 1
-		const bufferAttachments = [gl.COLOR_ATTACHMENT0]
+		const bufferAttachments: number[] = [gl.COLOR_ATTACHMENT0]
 
 		gl.bindFramebuffer(gl.FRAMEBUFFER, this.frameBuffer)
 

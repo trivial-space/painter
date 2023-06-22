@@ -1,5 +1,5 @@
 import { painter } from '../painter'
-import base from './glsl/base.frag.glsl'
+import base from './glsl/base.frag.glsl?raw'
 
 const bufferSize = 256
 
