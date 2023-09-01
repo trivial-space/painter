@@ -3,6 +3,7 @@ import { Painter } from './painter'
 import { TextureData, Wrap } from './painter-types'
 
 let textureCount = 1
+let floatTexturesInitialized = false
 
 export class Texture {
 	_texture: WebGLTexture | null = null
@@ -79,6 +80,14 @@ export class Texture {
 			)
 		}
 
+		if (data.type === 'FLOAT' && !floatTexturesInitialized) {
+			gl.getExtension('OES_texture_float')
+			gl.getExtension('OES_texture_float_linear')
+			gl.getExtension('EXT_color_buffer_float')
+			gl.getExtension('EXT_float_blend')
+			floatTexturesInitialized = true
+		}
+
 		if (data.data !== undefined) {
 			gl.texImage2D(
 				gl.TEXTURE_2D,
@@ -94,7 +103,7 @@ export class Texture {
 		}
 
 		if (data.flipY != null && data.flipY !== this._data.flipY) {
-			gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, data.flipY as any)
+			gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, data.flipY)
 		}
 
 		if (data.minFilter && data.minFilter.indexOf('MIPMAP') > 0) {

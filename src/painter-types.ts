@@ -41,11 +41,7 @@ export type TypedArrayTypes =
 
 // Texture
 
-export type TextureType =
-	| 'UNSIGNED_BYTE'
-	| 'UNSIGNED_SHORT'
-	| 'UNSIGNED_INT'
-	| 'FLOAT'
+export type TextureType = 'UNSIGNED_BYTE' | 'FLOAT'
 
 export type TextureFormat = keyof typeof TEXTURE_FORMAT
 export type TextureInternalFormat = keyof typeof TEXTURE_FORMAT_INTERNAL
@@ -85,7 +81,7 @@ export interface TextureData extends TextureOptions {
 export interface RenderTargetData {
 	width?: number
 	height?: number
-	bufferStructure?: TextureOptions[]
+	bufferStructure?: TextureOptions | TextureOptions[]
 	antialias?: boolean
 }
 

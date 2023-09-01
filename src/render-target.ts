@@ -20,20 +20,34 @@ export class RenderTarget {
 
 	_data: RenderTargetData = {}
 
-	constructor(private _painter: Painter, public id = 'Form' + targetCount++) {}
+	constructor(
+		private _painter: Painter,
+		public id = 'Form' + targetCount++,
+	) {}
 
 	update(data: RenderTargetData) {
 		const gl = this._painter.gl
 		const width = data.width || this.width
 		const height = data.height || this.height
+
+		let newBufferStructure: TextureOptions[] = []
+		if (data.bufferStructure) {
+			newBufferStructure = Array.isArray(data.bufferStructure)
+				? data.bufferStructure
+				: [data.bufferStructure]
+		}
+
 		if (!(width && height)) {
 			return this
 		} else if (width === this.width && height === this.height) {
-			if (!data.bufferStructure) return this
+			if (!newBufferStructure.length) {
+				return this
+			}
+
 			if (
-				data.bufferStructure.length === this.bufferStructure.length &&
+				newBufferStructure.length === this.bufferStructure.length &&
 				this.bufferStructure.every((buf, i) =>
-					equalObject(buf, data.bufferStructure![i]),
+					equalObject(buf, newBufferStructure[i]),
 				)
 			) {
 				return this
@@ -47,11 +61,8 @@ export class RenderTarget {
 			this.depthBuffer = gl.createRenderbuffer()
 		}
 
-		if (data.bufferStructure && data.bufferStructure.length) {
-			this.bufferStructure = data.bufferStructure
-			if (this.bufferStructure.some(t => t.type === 'FLOAT')) {
-				gl.getExtension('EXT_color_buffer_float')
-			}
+		if (newBufferStructure.length) {
+			this.bufferStructure = newBufferStructure
 		}
 
 		const texCount = this.bufferStructure.length || 1
@@ -68,7 +79,24 @@ export class RenderTarget {
 			gl.drawBuffers(bufferAttachments)
 		}
 
+		for (let i = 0; i < texCount; i++) {
+			if (!this.textures[i]) {
+				this.textures[i] = new Texture(this._painter, this.id + '_Texture' + i)
+			}
+			const texture = this.textures[i]
+			texture.update({
+				minFilter: 'NEAREST',
+				magFilter: 'NEAREST',
+				type: 'FLOAT',
+				...this.bufferStructure[i],
+				data: null,
+				width,
+				height,
+			})
+		}
+
 		this.antialias = texCount === 1 && (data.antialias || this._data?.antialias)
+		const isFloat = !this.bufferStructure.every(b => b.type === 'UNSIGNED_BYTE')
 
 		if (this.antialias) {
 			if (this.antiAliasFrameBuffer == null) {
@@ -83,7 +111,7 @@ export class RenderTarget {
 			gl.renderbufferStorageMultisample(
 				gl.RENDERBUFFER,
 				Math.min(4, gl.getParameter(gl.MAX_SAMPLES)),
-				gl.RGBA8,
+				isFloat ? gl.RGBA32F : gl.RGBA8,
 				width,
 				height,
 			)
@@ -128,24 +156,11 @@ export class RenderTarget {
 		}
 
 		for (let i = 0; i < texCount; i++) {
-			if (!this.textures[i]) {
-				this.textures[i] = new Texture(this._painter, this.id + '_Texture' + i)
-			}
-			const texture = this.textures[i]
-			texture.update({
-				minFilter: 'NEAREST',
-				magFilter: 'NEAREST',
-				...this.bufferStructure[i],
-				data: null,
-				width,
-				height,
-			})
-
 			gl.framebufferTexture2D(
 				gl.FRAMEBUFFER,
 				bufferAttachments[i],
 				gl.TEXTURE_2D,
-				texture._texture,
+				this.textures[i]._texture,
 				0,
 			)
 		}
@@ -180,7 +195,7 @@ export class RenderTarget {
 		gl.deleteFramebuffer(this.frameBuffer)
 		gl.deleteRenderbuffer(this.depthBuffer)
 		for (const texture of this.textures) {
-			gl.deleteTexture(texture)
+			texture.destroy()
 		}
 		if (this.antiAliasFrameBuffer) {
 			gl.deleteFramebuffer(this.antiAliasFrameBuffer)

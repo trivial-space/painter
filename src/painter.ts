@@ -27,7 +27,10 @@ export class Painter {
 	_staticEffect: Effect
 	_defaultLayer: Layer
 
-	constructor(public canvas: HTMLCanvasElement, opts: PainterOptions = {}) {
+	constructor(
+		public canvas: HTMLCanvasElement,
+		opts: PainterOptions = {},
+	) {
 		let gl: GL | null = null
 		gl =
 			(canvas.getContext('webgl2', opts) as GL) ||

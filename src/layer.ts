@@ -20,7 +20,10 @@ export class Layer {
 	_data: LayerData = {}
 	_uniforms: Uniforms | null = null
 
-	constructor(private _painter: Painter, public id = 'Layer' + layerCount++) {}
+	constructor(
+		private _painter: Painter,
+		public id = 'Layer' + layerCount++,
+	) {}
 
 	image(i = 0) {
 		return (
@@ -73,7 +76,7 @@ export class Layer {
 			this._data.height ||
 			this._data.texture?.height ||
 			gl.drawingBufferHeight
-		const antialias = data.antialias || this._data.antialias || true
+		const antialias = data.antialias ?? this._data.antialias ?? true
 
 		if (targetCount !== this._targets.length) {
 			this._destroyTargets()
@@ -94,7 +97,7 @@ export class Layer {
 		}
 
 		if (data.texture) {
-			// Hardcode to one static texture for now
+			// Hardcode to one static texture per layer for now
 			if (!this._textures[0]) {
 				this._textures[0] = new Texture(this._painter, this.id + '_Texture0')
 			}
