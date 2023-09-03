@@ -22,7 +22,7 @@ export class Layer {
             this._textures[i]);
     }
     update(data = {}) {
-        var _a, _b, _c, _d;
+        var _a, _b, _c, _d, _e, _f;
         if (data.sketches) {
             this.sketches = Array.isArray(data.sketches)
                 ? data.sketches
@@ -52,7 +52,7 @@ export class Layer {
             this._data.height ||
             ((_d = this._data.texture) === null || _d === void 0 ? void 0 : _d.height) ||
             gl.drawingBufferHeight;
-        const antialias = data.antialias || this._data.antialias || true;
+        const antialias = (_f = (_e = data.antialias) !== null && _e !== void 0 ? _e : this._data.antialias) !== null && _f !== void 0 ? _f : true;
         if (targetCount !== this._targets.length) {
             this._destroyTargets();
         }
@@ -66,7 +66,7 @@ export class Layer {
             });
         }
         if (data.texture) {
-            // Hardcode to one static texture for now
+            // Hardcode to one static texture per layer for now
             if (!this._textures[0]) {
                 this._textures[0] = new Texture(this._painter, this.id + '_Texture0');
             }

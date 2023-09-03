@@ -95,8 +95,8 @@ export class RenderTarget {
 			})
 		}
 
-		this.antialias = texCount === 1 && (data.antialias || this._data?.antialias)
-		const isFloat = !this.bufferStructure.every(b => b.type === 'UNSIGNED_BYTE')
+		this.antialias = texCount === 1 && (data.antialias ?? this._data?.antialias)
+		const isFloat = this.bufferStructure.length > 0 ? !this.bufferStructure.every(b => b.type === 'UNSIGNED_BYTE') : true
 
 		if (this.antialias) {
 			if (this.antiAliasFrameBuffer == null) {

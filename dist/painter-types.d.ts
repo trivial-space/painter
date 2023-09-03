@@ -9,7 +9,7 @@ export type ColorRGBA = [number, number, number, number];
 export type TypedArray = Uint8Array | Uint16Array | Uint32Array | Int8Array | Int16Array | Int32Array | Float32Array | Float64Array;
 export type TypedArrayConstructor = Uint8ArrayConstructor | Uint16ArrayConstructor | Uint32ArrayConstructor | Int8ArrayConstructor | Int16ArrayConstructor | Int32ArrayConstructor | Float32ArrayConstructor | Float64ArrayConstructor;
 export type TypedArrayTypes = 'Uint8Array' | 'Uint16Array' | 'Uint32Array' | 'Int8Array' | 'Int16Array' | 'Int32Array' | 'Float32Array' | 'Float64Array';
-export type TextureType = 'UNSIGNED_BYTE' | 'UNSIGNED_SHORT' | 'UNSIGNED_INT' | 'FLOAT';
+export type TextureType = 'UNSIGNED_BYTE' | 'FLOAT';
 export type TextureFormat = keyof typeof TEXTURE_FORMAT;
 export type TextureInternalFormat = keyof typeof TEXTURE_FORMAT_INTERNAL;
 export type TextureAsset = ImageData | HTMLCanvasElement | HTMLImageElement | HTMLVideoElement;
@@ -36,7 +36,7 @@ export interface TextureData extends TextureOptions {
 export interface RenderTargetData {
     width?: number;
     height?: number;
-    bufferStructure?: TextureOptions[];
+    bufferStructure?: TextureOptions | TextureOptions[];
     antialias?: boolean;
 }
 export type FormDrawType = 'TRIANGLES' | 'TRIANGLE_STRIP' | 'TRIANGLE_FAN' | 'POINTS' | 'LINES' | 'LINE_LOOP' | 'LINE_STRIP';

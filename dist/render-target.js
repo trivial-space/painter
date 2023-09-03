@@ -17,18 +17,25 @@ export class RenderTarget {
         this._data = {};
     }
     update(data) {
-        var _a;
+        var _a, _b;
         const gl = this._painter.gl;
         const width = data.width || this.width;
         const height = data.height || this.height;
+        let newBufferStructure = [];
+        if (data.bufferStructure) {
+            newBufferStructure = Array.isArray(data.bufferStructure)
+                ? data.bufferStructure
+                : [data.bufferStructure];
+        }
         if (!(width && height)) {
             return this;
         }
         else if (width === this.width && height === this.height) {
-            if (!data.bufferStructure)
+            if (!newBufferStructure.length) {
                 return this;
-            if (data.bufferStructure.length === this.bufferStructure.length &&
-                this.bufferStructure.every((buf, i) => equalObject(buf, data.bufferStructure[i]))) {
+            }
+            if (newBufferStructure.length === this.bufferStructure.length &&
+                this.bufferStructure.every((buf, i) => equalObject(buf, newBufferStructure[i]))) {
                 return this;
             }
         }
@@ -38,11 +45,8 @@ export class RenderTarget {
         if (this.depthBuffer == null) {
             this.depthBuffer = gl.createRenderbuffer();
         }
-        if (data.bufferStructure && data.bufferStructure.length) {
-            this.bufferStructure = data.bufferStructure;
-            if (this.bufferStructure.some(t => t.type === 'FLOAT')) {
-                gl.getExtension('EXT_color_buffer_float');
-            }
+        if (newBufferStructure.length) {
+            this.bufferStructure = newBufferStructure;
         }
         const texCount = this.bufferStructure.length || 1;
         const bufferAttachments = [gl.COLOR_ATTACHMENT0];
@@ -54,7 +58,16 @@ export class RenderTarget {
             }
             gl.drawBuffers(bufferAttachments);
         }
-        this.antialias = texCount === 1 && (data.antialias || ((_a = this._data) === null || _a === void 0 ? void 0 : _a.antialias));
+        for (let i = 0; i < texCount; i++) {
+            if (!this.textures[i]) {
+                this.textures[i] = new Texture(this._painter, this.id + '_Texture' + i);
+            }
+            const texture = this.textures[i];
+            texture.update(Object.assign(Object.assign({ minFilter: 'NEAREST', magFilter: 'NEAREST', type: 'FLOAT' }, this.bufferStructure[i]), { data: null, width,
+                height }));
+        }
+        this.antialias = texCount === 1 && ((_a = data.antialias) !== null && _a !== void 0 ? _a : (_b = this._data) === null || _b === void 0 ? void 0 : _b.antialias);
+        const isFloat = this.bufferStructure.length > 0 ? !this.bufferStructure.every(b => b.type === 'UNSIGNED_BYTE') : true;
         if (this.antialias) {
             if (this.antiAliasFrameBuffer == null) {
                 this.antiAliasFrameBuffer = gl.createFramebuffer();
@@ -64,7 +77,7 @@ export class RenderTarget {
             }
             gl.bindFramebuffer(gl.FRAMEBUFFER, this.antiAliasFrameBuffer);
             gl.bindRenderbuffer(gl.RENDERBUFFER, this.antiAliasRenderBuffer);
-            gl.renderbufferStorageMultisample(gl.RENDERBUFFER, Math.min(4, gl.getParameter(gl.MAX_SAMPLES)), gl.RGBA8, width, height);
+            gl.renderbufferStorageMultisample(gl.RENDERBUFFER, Math.min(4, gl.getParameter(gl.MAX_SAMPLES)), isFloat ? gl.RGBA32F : gl.RGBA8, width, height);
             gl.framebufferRenderbuffer(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.RENDERBUFFER, this.antiAliasRenderBuffer);
             gl.bindRenderbuffer(gl.RENDERBUFFER, this.depthBuffer);
             gl.renderbufferStorageMultisample(gl.RENDERBUFFER, Math.min(4, gl.getParameter(gl.MAX_SAMPLES)), gl.DEPTH_COMPONENT16, width, height);
@@ -77,13 +90,7 @@ export class RenderTarget {
             gl.framebufferRenderbuffer(gl.FRAMEBUFFER, gl.DEPTH_ATTACHMENT, gl.RENDERBUFFER, this.depthBuffer);
         }
         for (let i = 0; i < texCount; i++) {
-            if (!this.textures[i]) {
-                this.textures[i] = new Texture(this._painter, this.id + '_Texture' + i);
-            }
-            const texture = this.textures[i];
-            texture.update(Object.assign(Object.assign({ minFilter: 'NEAREST', magFilter: 'NEAREST' }, this.bufferStructure[i]), { data: null, width,
-                height }));
-            gl.framebufferTexture2D(gl.FRAMEBUFFER, bufferAttachments[i], gl.TEXTURE_2D, texture._texture, 0);
+            gl.framebufferTexture2D(gl.FRAMEBUFFER, bufferAttachments[i], gl.TEXTURE_2D, this.textures[i]._texture, 0);
         }
         if (this.antialias) {
             gl.bindFramebuffer(gl.FRAMEBUFFER, this.antiAliasFrameBuffer);
@@ -110,7 +117,7 @@ export class RenderTarget {
         gl.deleteFramebuffer(this.frameBuffer);
         gl.deleteRenderbuffer(this.depthBuffer);
         for (const texture of this.textures) {
-            gl.deleteTexture(texture);
+            texture.destroy();
         }
         if (this.antiAliasFrameBuffer) {
             gl.deleteFramebuffer(this.antiAliasFrameBuffer);

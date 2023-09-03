@@ -1,5 +1,6 @@
 import { defaultTextureSettings } from './asset-lib';
 let textureCount = 1;
+let floatTexturesInitialized = false;
 export class Texture {
     constructor(_painter, id = 'Texture' + textureCount++) {
         this._painter = _painter;
@@ -51,6 +52,13 @@ export class Texture {
         }
         if (data.asset) {
             gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, data.asset);
+        }
+        if (data.type === 'FLOAT' && !floatTexturesInitialized) {
+            gl.getExtension('OES_texture_float');
+            gl.getExtension('OES_texture_float_linear');
+            gl.getExtension('EXT_color_buffer_float');
+            gl.getExtension('EXT_float_blend');
+            floatTexturesInitialized = true;
         }
         if (data.data !== undefined) {
             gl.texImage2D(gl.TEXTURE_2D, 0, data.type === 'FLOAT' ? gl.RGBA32F : gl.RGBA, data.width, // width and height are required if using custom data
