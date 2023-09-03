@@ -12,7 +12,6 @@ const painter = new Painter(canvas)
 const { gl } = painter
 
 painter.updateDrawSettings({
-	// depthFunc: gl.LEQUAL,
 	blendFunc: [gl.ONE, gl.ONE],
 })
 
@@ -80,7 +79,7 @@ const geoLayer = painter.createLayer().update({
 		enable: [gl.DEPTH_TEST],
 		clearBits: makeClear(gl, 'color', 'depth'),
 	},
-	bufferStructure: [{ type: 'FLOAT' }, { type: 'FLOAT' }, { type: 'FLOAT' }],
+	bufferCount: 3
 })
 
 const lights = [

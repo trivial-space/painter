@@ -36,12 +36,7 @@ const image = painter.createLayer().update({
 	width: size,
 	height: size,
 	effects: effect,
-	bufferStructure: [
-		{
-			minFilter: 'NEAREST',
-			magFilter: 'NEAREST',
-		},
-	],
+	bufferOptions: { minFilter: 'NEAREST', magFilter: 'NEAREST', },
 })
 
 // scene
