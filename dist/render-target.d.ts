@@ -12,7 +12,7 @@ export declare class RenderTarget {
     antiAliasRenderBuffer: WebGLFramebuffer | null;
     textures: Texture[];
     depthBuffer: WebGLRenderbuffer | null;
-    bufferStructure: TextureOptions[];
+    bufferOptions: TextureOptions[];
     _data: RenderTargetData;
     constructor(_painter: Painter, id?: string);
     update(data: RenderTargetData): this;

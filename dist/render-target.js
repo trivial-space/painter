@@ -13,7 +13,7 @@ export class RenderTarget {
         this.antiAliasRenderBuffer = null;
         this.textures = [];
         this.depthBuffer = null;
-        this.bufferStructure = [];
+        this.bufferOptions = [];
         this._data = {};
     }
     update(data) {
@@ -21,21 +21,24 @@ export class RenderTarget {
         const gl = this._painter.gl;
         const width = data.width || this.width;
         const height = data.height || this.height;
-        let newBufferStructure = [];
-        if (data.bufferStructure) {
-            newBufferStructure = Array.isArray(data.bufferStructure)
-                ? data.bufferStructure
-                : [data.bufferStructure];
+        let newBufferOptions = [];
+        if (data.bufferOptions) {
+            newBufferOptions = Array.isArray(data.bufferOptions)
+                ? data.bufferOptions
+                : [data.bufferOptions];
         }
         if (!(width && height)) {
             return this;
         }
         else if (width === this.width && height === this.height) {
-            if (!newBufferStructure.length) {
+            if (data.bufferCount === this.textures.length) {
                 return this;
             }
-            if (newBufferStructure.length === this.bufferStructure.length &&
-                this.bufferStructure.every((buf, i) => equalObject(buf, newBufferStructure[i]))) {
+            if (!newBufferOptions.length) {
+                return this;
+            }
+            if (newBufferOptions.length === this.bufferOptions.length &&
+                this.bufferOptions.every((buf, i) => equalObject(buf, newBufferOptions[i]))) {
                 return this;
             }
         }
@@ -45,10 +48,10 @@ export class RenderTarget {
         if (this.depthBuffer == null) {
             this.depthBuffer = gl.createRenderbuffer();
         }
-        if (newBufferStructure.length) {
-            this.bufferStructure = newBufferStructure;
+        if (newBufferOptions.length) {
+            this.bufferOptions = newBufferOptions;
         }
-        const texCount = this.bufferStructure.length || 1;
+        const texCount = data.bufferCount || this.bufferOptions.length || this.textures.length || 1;
         const bufferAttachments = [gl.COLOR_ATTACHMENT0];
         gl.bindFramebuffer(gl.FRAMEBUFFER, this.frameBuffer);
         if (texCount > 1) {
@@ -63,11 +66,13 @@ export class RenderTarget {
                 this.textures[i] = new Texture(this._painter, this.id + '_Texture' + i);
             }
             const texture = this.textures[i];
-            texture.update(Object.assign(Object.assign({ minFilter: 'NEAREST', magFilter: 'NEAREST', type: 'FLOAT' }, this.bufferStructure[i]), { data: null, width,
+            texture.update(Object.assign(Object.assign({ minFilter: 'NEAREST', magFilter: 'NEAREST', type: 'FLOAT' }, this.bufferOptions[i]), { data: null, width,
                 height }));
         }
         this.antialias = texCount === 1 && ((_a = data.antialias) !== null && _a !== void 0 ? _a : (_b = this._data) === null || _b === void 0 ? void 0 : _b.antialias);
-        const isFloat = this.bufferStructure.length > 0 ? !this.bufferStructure.every(b => b.type === 'UNSIGNED_BYTE') : true;
+        const isFloat = this.bufferOptions.length > 0
+            ? !this.bufferOptions.every(b => b.type === 'UNSIGNED_BYTE')
+            : true;
         if (this.antialias) {
             if (this.antiAliasFrameBuffer == null) {
                 this.antiAliasFrameBuffer = gl.createFramebuffer();
@@ -80,13 +85,13 @@ export class RenderTarget {
             gl.renderbufferStorageMultisample(gl.RENDERBUFFER, Math.min(4, gl.getParameter(gl.MAX_SAMPLES)), isFloat ? gl.RGBA32F : gl.RGBA8, width, height);
             gl.framebufferRenderbuffer(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.RENDERBUFFER, this.antiAliasRenderBuffer);
             gl.bindRenderbuffer(gl.RENDERBUFFER, this.depthBuffer);
-            gl.renderbufferStorageMultisample(gl.RENDERBUFFER, Math.min(4, gl.getParameter(gl.MAX_SAMPLES)), gl.DEPTH_COMPONENT16, width, height);
+            gl.renderbufferStorageMultisample(gl.RENDERBUFFER, Math.min(4, gl.getParameter(gl.MAX_SAMPLES)), gl.DEPTH_COMPONENT24, width, height);
             gl.framebufferRenderbuffer(gl.FRAMEBUFFER, gl.DEPTH_ATTACHMENT, gl.RENDERBUFFER, this.depthBuffer);
             gl.bindFramebuffer(gl.FRAMEBUFFER, this.frameBuffer);
         }
         else {
             gl.bindRenderbuffer(gl.RENDERBUFFER, this.depthBuffer);
-            gl.renderbufferStorage(gl.RENDERBUFFER, gl.DEPTH_COMPONENT16, width, height);
+            gl.renderbufferStorage(gl.RENDERBUFFER, gl.DEPTH_COMPONENT24, width, height);
             gl.framebufferRenderbuffer(gl.FRAMEBUFFER, gl.DEPTH_ATTACHMENT, gl.RENDERBUFFER, this.depthBuffer);
         }
         for (let i = 0; i < texCount; i++) {
@@ -129,7 +134,7 @@ export class RenderTarget {
         this.frameBuffer = null;
         this.depthBuffer = null;
         this._data = {};
-        this.bufferStructure = [];
+        this.bufferOptions = [];
         this.width = 0;
         this.height = 0;
     }

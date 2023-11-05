@@ -36,7 +36,14 @@ export interface TextureData extends TextureOptions {
 export interface RenderTargetData {
     width?: number;
     height?: number;
-    bufferStructure?: TextureOptions | TextureOptions[];
+    /**
+     * use either `bufferOptions` or `bufferCount`
+     */
+    bufferOptions?: TextureOptions | TextureOptions[];
+    /**
+     * use either `bufferOptions` or `bufferCount`
+     */
+    bufferCount?: number;
     antialias?: boolean;
 }
 export type FormDrawType = 'TRIANGLES' | 'TRIANGLE_STRIP' | 'TRIANGLE_FAN' | 'POINTS' | 'LINES' | 'LINE_LOOP' | 'LINE_STRIP';

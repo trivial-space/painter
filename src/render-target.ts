@@ -69,7 +69,8 @@ export class RenderTarget {
 			this.bufferOptions = newBufferOptions
 		}
 
-		const texCount = data.bufferCount || this.bufferOptions.length || this.textures.length || 1
+		const texCount =
+			data.bufferCount || this.bufferOptions.length || this.textures.length || 1
 		const bufferAttachments: number[] = [gl.COLOR_ATTACHMENT0]
 
 		gl.bindFramebuffer(gl.FRAMEBUFFER, this.frameBuffer)
@@ -100,7 +101,10 @@ export class RenderTarget {
 		}
 
 		this.antialias = texCount === 1 && (data.antialias ?? this._data?.antialias)
-		const isFloat = this.bufferOptions.length > 0 ? !this.bufferOptions.every(b => b.type === 'UNSIGNED_BYTE') : true
+		const isFloat =
+			this.bufferOptions.length > 0
+				? !this.bufferOptions.every(b => b.type === 'UNSIGNED_BYTE')
+				: true
 
 		if (this.antialias) {
 			if (this.antiAliasFrameBuffer == null) {
@@ -130,7 +134,7 @@ export class RenderTarget {
 			gl.renderbufferStorageMultisample(
 				gl.RENDERBUFFER,
 				Math.min(4, gl.getParameter(gl.MAX_SAMPLES)),
-				gl.DEPTH_COMPONENT16,
+				gl.DEPTH_COMPONENT24,
 				width,
 				height,
 			)
@@ -146,7 +150,7 @@ export class RenderTarget {
 			gl.bindRenderbuffer(gl.RENDERBUFFER, this.depthBuffer)
 			gl.renderbufferStorage(
 				gl.RENDERBUFFER,
-				gl.DEPTH_COMPONENT16,
+				gl.DEPTH_COMPONENT24,
 				width,
 				height,
 			)
