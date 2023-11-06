@@ -119,7 +119,7 @@ export class RenderTarget {
 			gl.renderbufferStorageMultisample(
 				gl.RENDERBUFFER,
 				Math.min(4, gl.getParameter(gl.MAX_SAMPLES)),
-				isFloat ? gl.RGBA32F : gl.RGBA8,
+				isFloat ? gl.RGBA16F : gl.RGBA8,
 				width,
 				height,
 			)

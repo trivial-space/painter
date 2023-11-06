@@ -84,6 +84,11 @@ export class Texture {
 			gl.getExtension('OES_texture_float')
 			gl.getExtension('OES_texture_float_linear')
 			gl.getExtension('EXT_color_buffer_float')
+			gl.getExtension('WEBGL_color_buffer_float')
+			gl.getExtension('WEBGL_depth_texture')
+			gl.getExtension('OES_texture_half_float')
+			gl.getExtension('OES_texture_half_float_linear')
+			gl.getExtension('EXT_color_buffer_half_float')
 			gl.getExtension('EXT_float_blend')
 			floatTexturesInitialized = true
 		}
@@ -92,7 +97,7 @@ export class Texture {
 			gl.texImage2D(
 				gl.TEXTURE_2D,
 				0,
-				data.type === 'FLOAT' ? gl.RGBA32F : gl.RGBA,
+				data.type === 'FLOAT' ? gl.RGBA16F : gl.RGBA,
 				data.width!, // width and height are required if using custom data
 				data.height!,
 				0,

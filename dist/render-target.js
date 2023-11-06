@@ -82,7 +82,7 @@ export class RenderTarget {
             }
             gl.bindFramebuffer(gl.FRAMEBUFFER, this.antiAliasFrameBuffer);
             gl.bindRenderbuffer(gl.RENDERBUFFER, this.antiAliasRenderBuffer);
-            gl.renderbufferStorageMultisample(gl.RENDERBUFFER, Math.min(4, gl.getParameter(gl.MAX_SAMPLES)), isFloat ? gl.RGBA32F : gl.RGBA8, width, height);
+            gl.renderbufferStorageMultisample(gl.RENDERBUFFER, Math.min(4, gl.getParameter(gl.MAX_SAMPLES)), isFloat ? gl.RGBA16F : gl.RGBA8, width, height);
             gl.framebufferRenderbuffer(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.RENDERBUFFER, this.antiAliasRenderBuffer);
             gl.bindRenderbuffer(gl.RENDERBUFFER, this.depthBuffer);
             gl.renderbufferStorageMultisample(gl.RENDERBUFFER, Math.min(4, gl.getParameter(gl.MAX_SAMPLES)), gl.DEPTH_COMPONENT24, width, height);
