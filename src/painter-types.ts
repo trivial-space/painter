@@ -165,6 +165,8 @@ export interface DrawSettings {
 	depthFunc?: number
 	blendFunc?: [number, number]
 	blendFuncSeparate?: [number, number, number, number]
+	blendEquation?: number
+	blendEquationSeparate?: [number, number]
 	enable?: number[]
 	disable?: number[]
 	cullFace?: number
