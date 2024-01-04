@@ -103,7 +103,7 @@ export type FormDrawType =
 	| 'LINE_LOOP'
 	| 'LINE_STRIP'
 
-export type FormStoreType = 'DYNAMIC' | 'STATIC'
+export type FormStoreType = 'DYNAMIC' | 'STATIC' | 'STREAM'
 
 export interface FormBufferStore {
 	buffer: TypedArray | ArrayBuffer

@@ -47,7 +47,7 @@ export interface RenderTargetData {
     antialias?: boolean;
 }
 export type FormDrawType = 'TRIANGLES' | 'TRIANGLE_STRIP' | 'TRIANGLE_FAN' | 'POINTS' | 'LINES' | 'LINE_LOOP' | 'LINE_STRIP';
-export type FormStoreType = 'DYNAMIC' | 'STATIC';
+export type FormStoreType = 'DYNAMIC' | 'STATIC' | 'STREAM';
 export interface FormBufferStore {
     buffer: TypedArray | ArrayBuffer;
     storeType?: FormStoreType;
