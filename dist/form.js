@@ -41,7 +41,7 @@ export class Form {
                         attrib.buffer = gl.createBuffer();
                     }
                     gl.bindBuffer(gl.ARRAY_BUFFER, attrib.buffer);
-                    gl.bufferData(gl.ARRAY_BUFFER, layout.data.buffer, gl[(layout.data.storeType || 'STATIC') + '_DRAW']);
+                    gl.bufferData(gl.ARRAY_BUFFER, layout.data.buffer, gl[`${layout.data.storeType || 'STATIC'}_DRAW`]);
                 }
             }
         }
@@ -53,7 +53,7 @@ export class Form {
                     this._attribBuffers[id] = gl.createBuffer();
                 }
                 gl.bindBuffer(gl.ARRAY_BUFFER, this._attribBuffers[id]);
-                gl.bufferData(gl.ARRAY_BUFFER, attribData.buffer, gl[(attribData.storeType || 'STATIC') + '_DRAW']);
+                gl.bufferData(gl.ARRAY_BUFFER, attribData.buffer, gl[`${attribData.storeType || 'STATIC'}_DRAW`]);
             }
         }
         if (data.elements) {
@@ -66,7 +66,7 @@ export class Form {
             }
             this._elements.glType = getGLTypeForTypedArray(buffer);
             gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this._elements.buffer);
-            gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, buffer, gl[(data.elements.storeType || 'STATIC') + '_DRAW']);
+            gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, buffer, gl[`${data.elements.storeType || 'STATIC'}_DRAW`]);
         }
         else if (data.elements === null && this._elements) {
             gl.deleteBuffer(this._elements.buffer);

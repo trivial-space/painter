@@ -21,7 +21,10 @@ export class Form {
 		glType: number | null
 	}
 
-	constructor(private _painter: Painter, public id = 'Form' + formCounter++) {}
+	constructor(
+		private _painter: Painter,
+		public id = 'Form' + formCounter++,
+	) {}
 
 	update(data: FormData) {
 		const gl = this._painter.gl
@@ -69,7 +72,7 @@ export class Form {
 					gl.bufferData(
 						gl.ARRAY_BUFFER,
 						layout.data.buffer,
-						(gl as any)[(layout.data.storeType || 'STATIC') + '_DRAW'],
+						gl[`${layout.data.storeType || 'STATIC'}_DRAW`],
 					)
 				}
 			}
@@ -89,7 +92,7 @@ export class Form {
 				gl.bufferData(
 					gl.ARRAY_BUFFER,
 					attribData.buffer,
-					(gl as any)[(attribData.storeType || 'STATIC') + '_DRAW'],
+					gl[`${attribData.storeType || 'STATIC'}_DRAW`],
 				)
 			}
 		}
@@ -110,7 +113,7 @@ export class Form {
 			gl.bufferData(
 				gl.ELEMENT_ARRAY_BUFFER,
 				buffer,
-				(gl as any)[(data.elements.storeType || 'STATIC') + '_DRAW'],
+				gl[`${data.elements.storeType || 'STATIC'}_DRAW`],
 			)
 		} else if (data.elements === null && this._elements) {
 			gl.deleteBuffer(this._elements.buffer)
