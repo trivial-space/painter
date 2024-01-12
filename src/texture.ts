@@ -84,11 +84,10 @@ export class Texture {
 			gl.getExtension('OES_texture_float')
 			gl.getExtension('OES_texture_float_linear')
 			gl.getExtension('EXT_color_buffer_float')
-			gl.getExtension('WEBGL_color_buffer_float')
 			gl.getExtension('WEBGL_depth_texture')
-			// gl.getExtension('OES_texture_half_float')
-			// gl.getExtension('OES_texture_half_float_linear')
-			// gl.getExtension('EXT_color_buffer_half_float')
+			gl.getExtension('OES_texture_half_float')
+			gl.getExtension('OES_texture_half_float_linear')
+			gl.getExtension('EXT_color_buffer_half_float')
 			gl.getExtension('EXT_float_blend')
 
 			floatTexturesInitialized = true

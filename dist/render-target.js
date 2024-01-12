@@ -73,13 +73,13 @@ export class RenderTarget {
         const isFloat = (this.bufferOptions.length > 0 &&
             this.bufferOptions.some(b => b.type === 'FLOAT')) ||
             type === 'FLOAT';
-        this.antialias = texCount === 1 && ((_a = data.antialias) !== null && _a !== void 0 ? _a : (_b = this._data) === null || _b === void 0 ? void 0 : _b.antialias);
+        this.antialias = texCount === 1 && ((_b = (_a = this._data) === null || _a === void 0 ? void 0 : _a.antialias) !== null && _b !== void 0 ? _b : data.antialias);
         this.setupBuffers(gl, isFloat, width, height, texCount, bufferAttachments);
         if (this.antialias) {
             gl.bindFramebuffer(gl.FRAMEBUFFER, this.antiAliasFrameBuffer);
             const err = gl.checkFramebufferStatus(gl.FRAMEBUFFER);
             if (err !== gl.FRAMEBUFFER_COMPLETE) {
-                console.error('antialias framebuffer error', err, data);
+                console.error('antialias framebuffer error', err, data, this);
                 if (isFloat) {
                     this.antialias = false;
                     data.antialias = false;
@@ -90,7 +90,7 @@ export class RenderTarget {
         }
         const err = gl.checkFramebufferStatus(gl.FRAMEBUFFER);
         if (err !== gl.FRAMEBUFFER_COMPLETE) {
-            console.error('framebuffer error', err, data);
+            console.error('framebuffer error', err, data, this);
         }
         gl.bindFramebuffer(gl.FRAMEBUFFER, null);
         gl.bindTexture(gl.TEXTURE_2D, null);
@@ -119,6 +119,15 @@ export class RenderTarget {
             gl.bindFramebuffer(gl.FRAMEBUFFER, this.frameBuffer);
         }
         else {
+            if (this.antiAliasFrameBuffer) {
+                gl.deleteFramebuffer(this.antiAliasFrameBuffer);
+                this.antiAliasFrameBuffer = null;
+            }
+            if (this.antiAliasRenderBuffer) {
+                gl.deleteRenderbuffer(this.antiAliasRenderBuffer);
+                this.antiAliasRenderBuffer = null;
+            }
+            gl.bindFramebuffer(gl.FRAMEBUFFER, this.frameBuffer);
             gl.bindRenderbuffer(gl.RENDERBUFFER, this.depthBuffer);
             gl.renderbufferStorage(gl.RENDERBUFFER, gl.DEPTH_COMPONENT24, width, height);
             gl.framebufferRenderbuffer(gl.FRAMEBUFFER, gl.DEPTH_ATTACHMENT, gl.RENDERBUFFER, this.depthBuffer);

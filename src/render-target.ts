@@ -106,7 +106,7 @@ export class RenderTarget {
 				this.bufferOptions.some(b => b.type === 'FLOAT')) ||
 			type === 'FLOAT'
 
-		this.antialias = texCount === 1 && (data.antialias ?? this._data?.antialias)
+		this.antialias = texCount === 1 && (this._data?.antialias ?? data.antialias)
 
 		this.setupBuffers(gl, isFloat, width, height, texCount, bufferAttachments)
 
@@ -114,7 +114,7 @@ export class RenderTarget {
 			gl.bindFramebuffer(gl.FRAMEBUFFER, this.antiAliasFrameBuffer)
 			const err = gl.checkFramebufferStatus(gl.FRAMEBUFFER)
 			if (err !== gl.FRAMEBUFFER_COMPLETE) {
-				console.error('antialias framebuffer error', err, data)
+				console.error('antialias framebuffer error', err, data, this)
 
 				if (isFloat) {
 					this.antialias = false
@@ -135,7 +135,7 @@ export class RenderTarget {
 
 		const err = gl.checkFramebufferStatus(gl.FRAMEBUFFER)
 		if (err !== gl.FRAMEBUFFER_COMPLETE) {
-			console.error('framebuffer error', err, data)
+			console.error('framebuffer error', err, data, this)
 		}
 
 		gl.bindFramebuffer(gl.FRAMEBUFFER, null)
@@ -198,6 +198,17 @@ export class RenderTarget {
 
 			gl.bindFramebuffer(gl.FRAMEBUFFER, this.frameBuffer)
 		} else {
+			if (this.antiAliasFrameBuffer) {
+				gl.deleteFramebuffer(this.antiAliasFrameBuffer)
+				this.antiAliasFrameBuffer = null
+			}
+			if (this.antiAliasRenderBuffer) {
+				gl.deleteRenderbuffer(this.antiAliasRenderBuffer)
+				this.antiAliasRenderBuffer = null
+			}
+
+			gl.bindFramebuffer(gl.FRAMEBUFFER, this.frameBuffer)
+
 			gl.bindRenderbuffer(gl.RENDERBUFFER, this.depthBuffer)
 			gl.renderbufferStorage(
 				gl.RENDERBUFFER,

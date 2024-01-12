@@ -34,13 +34,6 @@ export class Layer {
         if (data.uniforms) {
             this._uniforms = data.uniforms;
         }
-        const selfReferencing = data.selfReferencing || this._data.selfReferencing;
-        let passCount = this.effects.reduce((count, effect) => count + (effect._uniforms.length || 1), this.sketches.length ? 1 : 0);
-        const targetCount = selfReferencing || passCount > 1 ? 2 : 1;
-        if (data.directRender || this._data.directRender) {
-            passCount -= 1;
-        }
-        this._passCount = passCount;
         const gl = this._painter.gl;
         const width = data.width ||
             ((_a = data.texture) === null || _a === void 0 ? void 0 : _a.width) ||
@@ -52,6 +45,27 @@ export class Layer {
             this._data.height ||
             ((_d = this._data.texture) === null || _d === void 0 ? void 0 : _d.height) ||
             gl.drawingBufferHeight;
+        if (data.texture) {
+            // Hardcode to one static texture per layer for now
+            if (!this._textures[0]) {
+                this._textures[0] = new Texture(this._painter, this.id + '_Texture0');
+            }
+            data.texture.width = width;
+            data.texture.height = height;
+            this._textures[0].update(data.texture);
+        }
+        const selfReferencing = data.selfReferencing || this._data.selfReferencing;
+        let passCount = this.effects.reduce((count, effect) => count + (effect._uniforms.length || 1), this.sketches.length ? 1 : 0);
+        const directRender = data.directRender || this._data.directRender;
+        const targetCount = selfReferencing || passCount > 1
+            ? 2
+            : directRender || this._textures.length
+                ? 0
+                : 1;
+        if (directRender) {
+            passCount -= 1;
+        }
+        this._passCount = passCount;
         const antialias = (_f = (_e = data.antialias) !== null && _e !== void 0 ? _e : this._data.antialias) !== null && _f !== void 0 ? _f : this._painter._opts.antialias;
         if (targetCount !== this._targets.length) {
             this._destroyTargets();
@@ -64,15 +78,6 @@ export class Layer {
             this._targets.forEach(t => {
                 t.update(targetData);
             });
-        }
-        if (data.texture) {
-            // Hardcode to one static texture per layer for now
-            if (!this._textures[0]) {
-                this._textures[0] = new Texture(this._painter, this.id + '_Texture0');
-            }
-            data.texture.width = width;
-            data.texture.height = height;
-            this._textures[0].update(data.texture);
         }
         Object.assign(this._data, data);
         this.width = width;
