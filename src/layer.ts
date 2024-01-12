@@ -55,7 +55,7 @@ export class Layer {
 			this.sketches.length ? 1 : 0,
 		)
 
-		const targetCount = selfReferencing || passCount > 1 ? 2 : passCount
+		const targetCount = selfReferencing || passCount > 1 ? 2 : 1
 
 		if (data.directRender || this._data.directRender) {
 			passCount -= 1

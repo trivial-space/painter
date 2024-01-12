@@ -36,7 +36,7 @@ export class Layer {
         }
         const selfReferencing = data.selfReferencing || this._data.selfReferencing;
         let passCount = this.effects.reduce((count, effect) => count + (effect._uniforms.length || 1), this.sketches.length ? 1 : 0);
-        const targetCount = selfReferencing || passCount > 1 ? 2 : passCount;
+        const targetCount = selfReferencing || passCount > 1 ? 2 : 1;
         if (data.directRender || this._data.directRender) {
             passCount -= 1;
         }
