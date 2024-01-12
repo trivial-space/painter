@@ -1,6 +1,6 @@
 {
   "name": "tvs-painter",
-  "version": "0.5.1",
+  "version": "0.6.0",
   "description": "trivialspace painter - a low level webgl rendering engine optimized for live coding and post processing",
   "repository": {
     "type": "git",
