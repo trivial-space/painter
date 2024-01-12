@@ -16,5 +16,6 @@ export declare class RenderTarget {
     _data: RenderTargetData;
     constructor(_painter: Painter, id?: string);
     update(data: RenderTargetData): this;
+    private setupBuffers;
     destroy(): void;
 }

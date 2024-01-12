@@ -52,7 +52,7 @@ export class Layer {
             this._data.height ||
             ((_d = this._data.texture) === null || _d === void 0 ? void 0 : _d.height) ||
             gl.drawingBufferHeight;
-        const antialias = (_f = (_e = data.antialias) !== null && _e !== void 0 ? _e : this._data.antialias) !== null && _f !== void 0 ? _f : true;
+        const antialias = (_f = (_e = data.antialias) !== null && _e !== void 0 ? _e : this._data.antialias) !== null && _f !== void 0 ? _f : this._painter._opts.antialias;
         if (targetCount !== this._targets.length) {
             this._destroyTargets();
         }

@@ -44,6 +44,7 @@ export interface RenderTargetData {
      * use either `bufferOptions` or `bufferCount`
      */
     bufferCount?: number;
+    bufferType?: TextureType;
     antialias?: boolean;
 }
 export type FormDrawType = 'TRIANGLES' | 'TRIANGLE_STRIP' | 'TRIANGLE_FAN' | 'POINTS' | 'LINES' | 'LINE_LOOP' | 'LINE_STRIP';

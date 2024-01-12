@@ -11,6 +11,7 @@ export declare class Painter {
     _renderQuad: Form;
     _staticEffect: Effect;
     _defaultLayer: Layer;
+    _opts: PainterOptions;
     constructor(canvas: HTMLCanvasElement, opts?: PainterOptions);
     resize(): this;
     destroy(): void;

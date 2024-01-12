@@ -24,6 +24,7 @@ export class Painter {
         this._renderQuad = this.createForm().update(defaultForms.renderQuad);
         this._staticEffect = this.createEffect();
         this._defaultLayer = this.createLayer();
+        this._opts = opts;
     }
     resize() {
         resizeCanvas(this.gl.canvas, this.sizeMultiplier);
