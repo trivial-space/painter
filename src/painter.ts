@@ -26,6 +26,7 @@ export class Painter {
 	_renderQuad: Form
 	_staticEffect: Effect
 	_defaultLayer: Layer
+	_opts: PainterOptions
 
 	constructor(
 		public canvas: HTMLCanvasElement,
@@ -51,6 +52,8 @@ export class Painter {
 		this._renderQuad = this.createForm().update(defaultForms.renderQuad)
 		this._staticEffect = this.createEffect()
 		this._defaultLayer = this.createLayer()
+
+		this._opts = opts
 	}
 
 	resize() {

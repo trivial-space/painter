@@ -89,6 +89,7 @@ export interface RenderTargetData {
 	 * use either `bufferOptions` or `bufferCount`
 	 */
 	bufferCount?: number
+	bufferType?: TextureType
 	antialias?: boolean
 }
 

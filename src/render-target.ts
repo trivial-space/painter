@@ -29,6 +29,7 @@ export class RenderTarget {
 		const gl = this._painter.gl
 		const width = data.width || this.width
 		const height = data.height || this.height
+		const type = data.bufferType || this._data.bufferType || 'UNSIGNED_BYTE'
 
 		let newBufferOptions: TextureOptions[] = []
 		if (data.bufferOptions) {
@@ -92,7 +93,7 @@ export class RenderTarget {
 			texture.update({
 				minFilter: 'NEAREST',
 				magFilter: 'NEAREST',
-				type: 'FLOAT',
+				type,
 				...this.bufferOptions[i],
 				data: null,
 				width,
@@ -100,12 +101,62 @@ export class RenderTarget {
 			})
 		}
 
-		this.antialias = texCount === 1 && (data.antialias ?? this._data?.antialias)
 		const isFloat =
-			this.bufferOptions.length > 0
-				? !this.bufferOptions.every(b => b.type === 'UNSIGNED_BYTE')
-				: true
+			(this.bufferOptions.length > 0 &&
+				this.bufferOptions.some(b => b.type === 'FLOAT')) ||
+			type === 'FLOAT'
 
+		this.antialias = texCount === 1 && (data.antialias ?? this._data?.antialias)
+
+		this.setupBuffers(gl, isFloat, width, height, texCount, bufferAttachments)
+
+		if (this.antialias) {
+			gl.bindFramebuffer(gl.FRAMEBUFFER, this.antiAliasFrameBuffer)
+			const err = gl.checkFramebufferStatus(gl.FRAMEBUFFER)
+			if (err !== gl.FRAMEBUFFER_COMPLETE) {
+				console.error('antialias framebuffer error', err, data)
+
+				if (isFloat) {
+					this.antialias = false
+					data.antialias = false
+
+					this.setupBuffers(
+						gl,
+						isFloat,
+						width,
+						height,
+						texCount,
+						bufferAttachments,
+					)
+				}
+			}
+			gl.bindFramebuffer(gl.FRAMEBUFFER, this.frameBuffer)
+		}
+
+		const err = gl.checkFramebufferStatus(gl.FRAMEBUFFER)
+		if (err !== gl.FRAMEBUFFER_COMPLETE) {
+			console.error('framebuffer error', err, data)
+		}
+
+		gl.bindFramebuffer(gl.FRAMEBUFFER, null)
+		gl.bindTexture(gl.TEXTURE_2D, null)
+		gl.bindRenderbuffer(gl.RENDERBUFFER, null)
+
+		Object.assign(this._data, data)
+		this.width = width
+		this.height = height
+
+		return this
+	}
+
+	private setupBuffers(
+		gl: WebGL2RenderingContext,
+		isFloat: boolean,
+		width: number,
+		height: number,
+		texCount: number,
+		bufferAttachments: number[],
+	) {
 		if (this.antialias) {
 			if (this.antiAliasFrameBuffer == null) {
 				this.antiAliasFrameBuffer = gl.createFramebuffer()
@@ -119,7 +170,7 @@ export class RenderTarget {
 			gl.renderbufferStorageMultisample(
 				gl.RENDERBUFFER,
 				Math.min(4, gl.getParameter(gl.MAX_SAMPLES)),
-				isFloat ? gl.RGBA16F : gl.RGBA8,
+				isFloat ? gl.RGBA32F : gl.RGBA8, // Currently isFloat is always false here
 				width,
 				height,
 			)
@@ -172,30 +223,6 @@ export class RenderTarget {
 				0,
 			)
 		}
-
-		if (this.antialias) {
-			gl.bindFramebuffer(gl.FRAMEBUFFER, this.antiAliasFrameBuffer)
-			const err = gl.checkFramebufferStatus(gl.FRAMEBUFFER)
-			if (err !== gl.FRAMEBUFFER_COMPLETE) {
-				console.error('antialias framebuffer error', err, data)
-			}
-			gl.bindFramebuffer(gl.FRAMEBUFFER, this.frameBuffer)
-		}
-
-		const err = gl.checkFramebufferStatus(gl.FRAMEBUFFER)
-		if (err !== gl.FRAMEBUFFER_COMPLETE) {
-			console.error('framebuffer error', err, data)
-		}
-
-		gl.bindFramebuffer(gl.FRAMEBUFFER, null)
-		gl.bindTexture(gl.TEXTURE_2D, null)
-		gl.bindRenderbuffer(gl.RENDERBUFFER, null)
-
-		Object.assign(this._data, data)
-		this.width = width
-		this.height = height
-
-		return this
 	}
 
 	destroy() {

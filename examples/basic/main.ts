@@ -77,6 +77,7 @@ const effect = painter.createEffect().update({
 })
 
 const planeLayer = painter.createLayer().update({
+	bufferType: 'FLOAT',
 	sketches: painter.createSketch().update({
 		form: plane,
 		shade: paintTexture,

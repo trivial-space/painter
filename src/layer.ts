@@ -76,7 +76,8 @@ export class Layer {
 			this._data.height ||
 			this._data.texture?.height ||
 			gl.drawingBufferHeight
-		const antialias = data.antialias ?? this._data.antialias ?? true
+		const antialias =
+			data.antialias ?? this._data.antialias ?? this._painter._opts.antialias
 
 		if (targetCount !== this._targets.length) {
 			this._destroyTargets()
