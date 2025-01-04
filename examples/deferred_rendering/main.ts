@@ -11,10 +11,6 @@ const canvas = document.getElementById('canvas') as HTMLCanvasElement
 const painter = new Painter(canvas)
 const { gl } = painter
 
-painter.updateDrawSettings({
-	blendFunc: [gl.ONE, gl.ONE],
-})
-
 const geoShade = painter.createShade().update({
 	vert: geoVert,
 	frag: geoFrag,
@@ -79,7 +75,7 @@ const geoLayer = painter.createLayer().update({
 		enable: [gl.DEPTH_TEST],
 		clearBits: makeClear(gl, 'color', 'depth'),
 	},
-	bufferCount: 3
+	bufferCount: 3,
 })
 
 const lights = [
@@ -119,6 +115,7 @@ const render = painter.createLayer().update({
 	},
 	drawSettings: {
 		enable: [gl.BLEND],
+		blendFunc: [gl.ONE, gl.ONE],
 		clearBits: makeClear(gl, 'color'),
 	},
 	directRender: true,
